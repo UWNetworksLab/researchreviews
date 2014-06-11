@@ -41,4 +41,15 @@ window.onload = function() {
   }); 
 
 };
+
+var app = angular.module('researcher_app', ['ngGrid']);
+
+app.controller('table_controller', function($scope) {
+  $scope.myPapers = [{date: "1996-11-06", title: "paper a"},
+                    {date: "1998-11-17", title: "paper b"},
+                    {date: "2000-01-01", title: "paper c"}];
+
+  $scope.gridOptions = { data: 'myPapers'};
+});
+
   
