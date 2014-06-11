@@ -1,0 +1,38 @@
+html, body {
+    margin: 0;
+    color: #000;
+    font-family: Helvetica; 
+}
+
+#container {
+   margin: 20px auto;
+}
+
+h1 {
+    text-align: left;
+}
+
+#main{
+    width: 70%;
+    height: 100vh; 
+    padding: 20px; 
+    float:left;
+    background: lightblue; 
+}
+
+#header{
+    height: 10vh; 
+    width: 100%; 
+}
+
+#addpaper{
+    height: 10vh;
+    width: 15%; 
+}
+
+#panel {
+    padding: 20px; 
+    height: 100vh; 
+    overflow: auto; 
+    background: gray; 
+}

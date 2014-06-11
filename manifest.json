@@ -1,0 +1,17 @@
+{
+  "name": "Research Reviewer",
+  "description": "research",
+  "app": {
+    "script": "main.js"
+  },
+  "dependencies": {
+    "socialprovider": {
+      "url": "../../providers/social/websocket-server/social.ws.json",
+      "api": "social"
+    },
+    "localstorage": {
+      "url": "../../providers/storage/isolated/storage.isolated.json",
+      "api": "storage"
+    }
+  }
+}
