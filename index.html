@@ -23,17 +23,19 @@
 </head>
 
 <body>
-<div id="container">
+
+<div id="container" ng-app='researcher_app' ng-controller='main_controller'>
   <div id="header">
-    <kbd><button id='rbutton'>Reviewer</button></kbd>
-    <kbd><button id='sbutton'>Submitter</button></kbd>
+    <button type='button' ng-click='toReviewer()' id='rbutton'>Reviewer</button>
+    <button type='button' ng-click='toSubmitter()' id='sbutton'>Submitter</button>
   </div>
 
   <div id="main">
     <h2 id="d-title">my papers</h2>
-    <div ng-app='researcher_app' ng-controller='table_controller'>
-      <button type='button' ng-click='addPaper()' ng-show='show_addpaper==true'>add paper</button> 
-      <div class="gridStyle" ng-grid="gridOptions"></div> 
+    <div>
+      <button type='button' ng-click='addPaper()' ng-show='submitter_dashboard==true'>add paper</button> 
+      <div class="gridStyle" ng-grid="reviewOptions" ng-hide='submitter_dashboard==true'></div> 
+      <div class="gridStyle" ng-grid="paperOptions" ng-show='submitter_dashboard==true'></div> 
     </div> 
   </div>
 
@@ -42,5 +44,6 @@
     <p> profile and feed </p> 
   </div> 
 </div>
+
 </body>
 </html>

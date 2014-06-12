@@ -1,20 +1,34 @@
 //interactions
-var app = angular.module('researcher_app', ['ngGrid']);
-var show_addpaper = true; 
+var app = angular.module('researcher_app', ['ngGrid']); 
 
-app.controller('table_controller', function($scope) {
-  $scope.show_addpaper = show_addpaper; 
+app.controller('main_controller', function($scope, $http) {
+  $scope.submitter_dashboard = true; 
 
-  $scope.myPapers = [{date: "1996-11-06", title: "paper a"},
-                    {date: "1998-11-17", title: "paper b"},
-                    {date: "2000-01-01", title: "paper c"}];
+  $scope.toReviewer = function() {
+    console.log("got here");
+    $scope.submitter_dashboard = false; 
+  }
 
-  $scope.gridOptions = { data: 'myPapers'};
+  $scope.toSubmitter = function() {
+    $scope.submitter_dashboard = true; 
+  }
+
+  $http.get('./papers.json').success(function (data) {
+    $scope.myPapers = data; 
+  });
+
+  $http.get('./reviews.json').success(function (data) {
+    $scope.myReviews = data; 
+  });
+
+  $scope.paperOptions = { data: 'myPapers' };
+
+  $scope.reviewOptions = { data: 'myReviews' };
 
   $scope.addPaper = function() {
     console.log("add random paper");
     $scope.myPapers.push({
-      date: Math.floor((Math.random() * 2000) + 1000).toString() +'-' + Math.floor((Math.random() * 12) + 1).toString() + '-' + Math.floor((Math.random() * 29) + 1).toString(),
+      date: Math.floor((Math.random() * 1000) + 1000).toString() +'-' + Math.floor((Math.random() * 12) + 1).toString() + '-' + Math.floor((Math.random() * 29) + 1).toString(),
       title: "paper_ex" 
     });
   }
@@ -38,17 +52,14 @@ window.onload = function() {
   };
 
   window.freedom.on('to-submitter', function(data) {
-    show_addpaper = true;
     document.getElementById('d-title').innerHTML = 'my papers'; 
   }); 
 
   window.freedom.on('to-reviewer', function(data) {
-    show_addpaper = false; 
-
     document.getElementById('d-title').innerHTML = 'my reviews'; 
   }); 
 
-};
+}; 
 
 
 
