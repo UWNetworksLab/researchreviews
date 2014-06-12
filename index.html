@@ -32,6 +32,7 @@
   <div id="main">
     <h2 id="d-title">my papers</h2>
     <div ng-app='researcher_app' ng-controller='table_controller'>
+      <button type='button' ng-click='addPaper()' ng-show='show_addpaper==true'>add paper</button> 
       <div class="gridStyle" ng-grid="gridOptions"></div> 
     </div> 
   </div>
