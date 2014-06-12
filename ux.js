@@ -1,17 +1,8 @@
 //interactions
-var app = angular.module('researcher_app', ['ngGrid']); 
+var app = angular.module('researcher_app', ['ngGrid', 'ui.bootstrap']);
 
-app.controller('main_controller', function($scope, $http) {
+app.controller('main_controller', function($scope, $http, $modal) {
   $scope.submitter_dashboard = true; 
-
-  $scope.toReviewer = function() {
-    console.log("got here");
-    $scope.submitter_dashboard = false; 
-  }
-
-  $scope.toSubmitter = function() {
-    $scope.submitter_dashboard = true; 
-  }
 
   $http.get('./papers.json').success(function (data) {
     $scope.myPapers = data; 
@@ -25,39 +16,58 @@ app.controller('main_controller', function($scope, $http) {
 
   $scope.reviewOptions = { data: 'myReviews' };
 
-  $scope.addPaper = function() {
-    console.log("add random paper");
-    $scope.myPapers.push({
-      date: Math.floor((Math.random() * 1000) + 1000).toString() +'-' + Math.floor((Math.random() * 12) + 1).toString() + '-' + Math.floor((Math.random() * 29) + 1).toString(),
-      title: "paper_ex" 
-    });
+  $scope.toReviewer = function() {
+    $scope.submitter_dashboard = false; 
   }
+
+  $scope.toSubmitter = function() {
+    $scope.submitter_dashboard = true; 
+  }
+
+  $scope.addPaper = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'paperModalTemplate.html',
+      controller: ModalInstanceCtrl,
+      size: 'lg',
+      backdrop: 'static',
+      resolve: {
+        myPapers: function() {
+          return $scope.myPapers; 
+        }
+      }
+    });
+  };
 });
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, myPapers) {
+  $scope.myPapers = myPapers; 
+
+  $scope.upload = function () {
+    $scope.paperTitle = document.getElementById('title').value;
+    $modalInstance.close($scope.paperTitle);
+    console.log("title: " + $scope.paperTitle);
+
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; 
+    var yyyy = today.getFullYear();
+
+    $scope.myPapers.push({
+      date: yyyy+'-'+mm+'-'+dd,
+      title: $scope.paperTitle 
+    });
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+}; 
 
 window.onload = function() {
 
-  var sbutton = document.getElementById('sbutton'); 
-  var rbutton = document.getElementById('rbutton');
-
   window.freedom.emit('switch-dashboard', 'submitter');
 
-  sbutton.onclick = function() {
-    console.log("clicked submitter"); 
-    window.freedom.emit('switch-dashboard', 'submitter'); 
-  } 
 
-  rbutton.onclick = function() {
-    console.log("clicked reviewer");
-    window.freedom.emit('switch-dashboard', 'reviewer'); 
-  };
-
-  window.freedom.on('to-submitter', function(data) {
-    document.getElementById('d-title').innerHTML = 'my papers'; 
-  }); 
-
-  window.freedom.on('to-reviewer', function(data) {
-    document.getElementById('d-title').innerHTML = 'my reviews'; 
-  }); 
 
 }; 
 
