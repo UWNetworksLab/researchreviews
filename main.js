@@ -1,14 +1,22 @@
 //backend
 
-var store = freedom.localstorage(); 
+var core = freedom.core();
+var social = freedom.socialprovider();
+var storage = freedom.storageprovider();
+
+var files = {};  
 
 freedom.on('add_paper', function(data) {
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; 
-  var yyyy = today.getFullYear();
+  console.log(data.key.toString());
 
-  var promise = store.get('myPapers');
+  files[data.key] = {
+    title: data.title, 
+    value: data.value, 
+    date: data.date 
+  };
+
+  freedom.emit('added_paper', data);
+  /*var promise = store.get('myPapers');
   promise.then(function(val) {
     var currPapers, prevCurrPapers;
     var newPaper = {}; 
@@ -33,7 +41,8 @@ freedom.on('add_paper', function(data) {
       store.set('myPapers', JSON.stringify(currPapers)); 
 
     freedom.emit('added_paper', currPapers); 
-  }); 
+
+  }); */ 
 });
 
 

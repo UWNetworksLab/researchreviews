@@ -23,37 +23,56 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       templateUrl: 'paperModalTemplate.html',
       controller: ModalInstanceCtrl,
       size: 'lg',
-      backdrop: 'static',
-      resolve: {
-        myPapers: function() {
-          return $scope.myPapers; 
-        }
-      }
+      backdrop: 'static'
     });
   };
 
-  $window.freedom.on('added_paper', function(paperArray) {
+  $window.freedom.on('added_paper', function(data) {
+    var dd = data.date.getDate();
+    var mm = data.date.getMonth()+1; 
+    var yyyy = data.date.getFullYear();
     $scope.myPapers.push({
-        date: paperArray[paperArray.length-1].date,
-        title: paperArray[paperArray.length-1].title
+        date: yyyy+'-'+mm+'-'+dd,
+        title: data.title
     });
-  });
+  }); 
 });
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, myPapers) {
-  $scope.myPapers = myPapers; 
-
+var ModalInstanceCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
-    $scope.paperTitle = document.getElementById('title').value;
-    $modalInstance.close($scope.paperTitle);
-
-    window.freedom.emit('add_paper', $scope.paperTitle);
+    var fileArray = document.getElementById('addFile').files; 
+    uploadFile(fileArray);  
+    $modalInstance.close(fileArray);
   };
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
 }; 
+
+function uploadFile(fileArray) { 
+  if(fileArray.length < 1) {
+    console.error("no file found");
+    document.getElementById("fileError").textContent = "no paper uploaded..."; 
+    return; 
+  }
+  document.getElementById('fileError').textContent = "";
+
+  var newPaper = fileArray[0]; 
+  var fileReader = new FileReader(); 
+
+  console.log("a file found: " + newPaper.name);
+
+  var today = new Date();  
+  var key = Math.random() + "";
+
+  window.freedom.emit('add_paper', {
+    title: newPaper.name,
+    value: newPaper, 
+    date: today,
+    key: key 
+  });
+} 
 
 window.onload = function() {
 

@@ -33,10 +33,10 @@
   <script type='text/ng-template' id="paperModalTemplate.html">
     <h3>add paper</h3>
     <div id="input">
-      <input type="text" id="title" placeholder="add title">
+      <input type="file" accept="application/pdf" id="addFile"/>
     </div>
     <div>
-      <button ng-click="upload()">upload</button>
+      <button type="button" ng-click="upload()">upload</button>
       <button ng-click="cancel()">cancel</button>  
     </div>
   </script> 
@@ -55,6 +55,7 @@
   <div id="main">
     <div>
       <button type='button' ng-click='addPaper()' ng-show='submitter_dashboard==true'>add paper</button> 
+      <h5 id="fileError"></h5>
       <div class="gridStyle" ng-grid="reviewOptions" ng-hide='submitter_dashboard==true'></div> 
       <div class="gridStyle" ng-grid="paperOptions" ng-show='submitter_dashboard==true'></div> 
     </div> 

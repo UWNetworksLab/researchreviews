@@ -1,17 +1,21 @@
 {
-  "name": "Research Reviewer",
+  "name": "Researcher reviewer",
   "description": "research",
   "app": {
     "script": "main.js"
   },
   "dependencies": {
     "socialprovider": {
-      "url": "../../providers/social/websocket-server/social.ws.json",
+      "url": "../../../providers/social/websocket-server/social.ws.json",
       "api": "social"
     },
-    "localstorage": {
-      "url": "../../providers/storage/isolated/storage.isolated.json",
+    "storageprovider": {
+      "url": "../../../providers/storage/isolated/storage.isolated.json",
       "api": "storage"
+    },
+    "transport": {
+      "url": "../../../providers/transport/webrtc/transport.webrtc.json",
+      "api": "transport"
     }
   }
 }
