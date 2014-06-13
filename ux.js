@@ -1,16 +1,10 @@
 //interactions
 var app = angular.module('researcher_app', ['ngGrid', 'ui.bootstrap']);
 
-app.controller('main_controller', function($scope, $http, $modal) {
+app.controller('main_controller', function($scope, $http, $modal, $window) {
   $scope.submitter_dashboard = true; 
-
-  $http.get('./papers.json').success(function (data) {
-    $scope.myPapers = data; 
-  });
-
-  $http.get('./reviews.json').success(function (data) {
-    $scope.myReviews = data; 
-  });
+  $scope.myPapers = [];
+  $scope.myReviews = []; 
 
   $scope.paperOptions = { data: 'myPapers' };
 
@@ -37,6 +31,13 @@ app.controller('main_controller', function($scope, $http, $modal) {
       }
     });
   };
+
+  $window.freedom.on('added_paper', function(paperArray) {
+    $scope.myPapers.push({
+        date: paperArray[paperArray.length-1].date,
+        title: paperArray[paperArray.length-1].title
+    });
+  });
 });
 
 var ModalInstanceCtrl = function ($scope, $modalInstance, myPapers) {
@@ -45,17 +46,8 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, myPapers) {
   $scope.upload = function () {
     $scope.paperTitle = document.getElementById('title').value;
     $modalInstance.close($scope.paperTitle);
-    console.log("title: " + $scope.paperTitle);
 
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; 
-    var yyyy = today.getFullYear();
-
-    $scope.myPapers.push({
-      date: yyyy+'-'+mm+'-'+dd,
-      title: $scope.paperTitle 
-    });
+    window.freedom.emit('add_paper', $scope.paperTitle);
   };
 
   $scope.cancel = function () {
@@ -64,10 +56,6 @@ var ModalInstanceCtrl = function ($scope, $modalInstance, myPapers) {
 }; 
 
 window.onload = function() {
-
-  window.freedom.emit('switch-dashboard', 'submitter');
-
-
 
 }; 
 
