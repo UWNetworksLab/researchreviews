@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/UWNetworksLab/researchreviews",
   "dependencies": {
+    "angular": "^1.2.16",
+    "angular-bootstrap": "0.0.4",
     "freedom": "^0.5.0-rc2",
-    "angular": "1.2.17",
-    "bootstrap": "0.11.0"
+    "jquery": "^2.1.1",
+    "ng-grid": "^2.0.1"
   }
 }
