@@ -6,9 +6,29 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   $scope.myPapers = [];
   $scope.myReviews = []; 
 
-  $scope.paperOptions = { data: 'myPapers' };
+  $scope.paperOptions = { 
+    data: 'myPapers',
+    multiSelect: false,
+    columnDefs: [{field: 'date', displayName: 'date'}, 
+    {field: 'title', displayName: 'title'},
+    {displayName: '', cellTemplate: '<button id="viewPaperBtn" type="button" ng-click="viewPaper(row.entity)">view paper</button>'}]
+  };
 
   $scope.reviewOptions = { data: 'myReviews' };
+
+  $scope.viewPaper = function(paper) {
+    var modalInstance = $modal.open({
+      templateUrl: 'viewPaperTemplate.html',
+      controller: viewPaperCtrl,
+      size: 'lg',
+      backdrop: 'static', 
+      resolve: {
+        title: function() {
+          return paper.title; 
+        }
+      }
+    });
+  }
 
   $scope.toReviewer = function() {
     $scope.submitter_dashboard = false; 
@@ -20,8 +40,8 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
 
   $scope.addPaper = function() {
     var modalInstance = $modal.open({
-      templateUrl: 'paperModalTemplate.html',
-      controller: ModalInstanceCtrl,
+      templateUrl: 'addPaperTemplate.html',
+      controller: addPaperCtrl,
       size: 'lg',
       backdrop: 'static'
     });
@@ -38,7 +58,15 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   }); 
 });
 
-var ModalInstanceCtrl = function ($scope, $modalInstance) {
+var viewPaperCtrl = function($scope, $modalInstance, title) {
+  $scope.viewPaperTitle = title; 
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel'); 
+  };
+}; 
+
+var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
     var fileArray = document.getElementById('addFile').files; 
     uploadFile(fileArray);  

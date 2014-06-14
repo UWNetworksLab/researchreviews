@@ -30,7 +30,13 @@
 <body>
 
 <div id="container" ng-app='researcher_app' ng-controller='main_controller'>
-  <script type='text/ng-template' id="paperModalTemplate.html">
+  <script type='text/ng-template' id='viewPaperTemplate.html'>
+    <h3>{{viewPaperTitle}}</h3> 
+    <button ng-click="cancel()">done</button> 
+  </script>
+
+
+  <script type='text/ng-template' id="addPaperTemplate.html">
     <h3>add paper</h3>
     <div id="input">
       <input type="file" accept="application/pdf" id="addFile"/>
@@ -55,7 +61,7 @@
   <div id="main">
     <div>
       <button type='button' ng-click='addPaper()' ng-show='submitter_dashboard==true'>add paper</button> 
-      <h5 id="fileError"></h5>
+      <h5 id="fileError"></h5> 
       <div class="gridStyle" ng-grid="reviewOptions" ng-hide='submitter_dashboard==true'></div> 
       <div class="gridStyle" ng-grid="paperOptions" ng-show='submitter_dashboard==true'></div> 
     </div> 
