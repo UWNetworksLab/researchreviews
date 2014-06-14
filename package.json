@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/UWNetworksLab/researchreviews",
   "dependencies": {
-    "freedom": "^0.5.0-rc2"
+    "freedom": "^0.5.0-rc2",
+    "angular": "1.2.17",
+    "bootstrap": "0.11.0"
   }
 }
