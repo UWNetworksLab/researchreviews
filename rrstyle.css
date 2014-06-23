@@ -1,3 +1,9 @@
+/**{
+    border-style: dashed;
+    border-width: 1px;
+    border-color: red;
+}*/
+
 html, body {
     margin: 0;
     color: #000;
@@ -35,4 +41,10 @@ h1 {
     height: 100vh; 
     overflow: auto; 
     background: gray; 
+}
+
+.normal .modal-dialog{
+    width:auto;
+    margin-left:20px;
+    margin-right:20px;
 }
