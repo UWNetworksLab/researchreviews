@@ -43,7 +43,7 @@ freedom.on('add_paper', function(data) {
     freedom.emit('added_paper', currPapers); 
 
   }); 
-});
+}); 
 freedom.on('delete_paper', function(paper) {
   console.log("deleting paper" + paper.title);
 
