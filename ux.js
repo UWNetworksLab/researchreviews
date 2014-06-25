@@ -1,5 +1,5 @@
 //interactions
-var app = angular.module('researcher_app', ['ngGrid', 'ui.bootstrap']);
+/*var app = angular.module('researcher_app', ['ngGrid', 'ui.bootstrap']);
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
   $scope.submitter_dashboard = true; 
@@ -116,7 +116,20 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+};*/ 
+
+var addPaperModal = {
+  open: function() {
+    document.getElementById('addpapermodal').modal('show'); 
+  },
+  close: function() {
+    document.getElementById('addpapermodal').modal('hide'); 
+  }
 };
 
 window.onload = function() {
+  document.getElementById('addPaperBtn').onclick = function() {
+    console.log("clicked add paper button");
+    addPaperModal.open(); 
+  };
 }; 
