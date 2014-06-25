@@ -7,10 +7,9 @@
   <link rel='stylesheet' type='text/css' href='bootstrap.min.css'/> 
   <link rel='stylesheet' type='text/css' href='rrstyle.css' />
 
-  <script src="node_modules/jquery/dist/cdn/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="node_modules/angular/lib/angular.min.js" type="text/javascript"></script>
+  <script src="node_modules/jquery/dist/cdn/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="node_modules/angular-bootstrap/ui-bootstrap.js" type="text/javascript"></script>
-  <script type="text/javascript" src="ux.js"></script>
 
   <script type='text/javascript'
       src='node_modules/freedom/freedom.js'
@@ -59,12 +58,12 @@
   </div> <!--profile-->
   
   <!--papers-->
-  <div class="col-md-5">
+  <div class="col-md-5" ng-app="researcher_app" ng-controller="main_controller">
     <div class="landing-container">
       <h2> My Papers 
         <span id="paper-links">
           <button class="btn btn-link">Detailed View</button> 
-          <button id="addPaperBtn" class="btn btn-link">Add Paper</a>
+          <button type="button" class="btn btn-link" ng-click="addPaper()">Add Paper</button>
         </span>
       </h2>
       <table class="table table-hover">
@@ -86,32 +85,17 @@
       </table>
     </div> <!--landing-container-->
 
-
-   <div id='addpapermodal' class="modal hide fade">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Let's do this!</h3>
+    <script type='text/ng-template' id="addPaperTemplate.html">
+      <h3>add paper</h3>
+      <div 
+      <div id="input">
+        <input type="file" accept="application/pdf" id="addFile"/>
       </div>
-      <!-- Modal Body -->
-      <div class="modal-body">
-        <!-- Progress Bar -->
-        <div class="progress progress-striped">
-          <div id='dropProgress' class="bar" style="width: 0%;"></div>
-        </div>
-        <!-- Modal Contents -->
-        <div id='dropMessageBox'>
-          <p id='dropMessage'></p>
-          <input id='dropUrl' class='input-xxlarge' type="text" readonly>
-          <button id='dropDownload' type='button' class="btn btn-success">Download File</a>
-        </div>
+      <div>
+        <button type="button" ng-click="upload()">upload</button>
+        <button ng-click="cancel()">cancel</button>  
       </div>
-      <!-- Modal Footer -->
-      <div id='modalFooter' class="modal-footer">
-        <button id='closeModal' type="button" class="btn btn-primary">Close</a>
-      </div>
-    </div>
-
+    </script> 
   </div>
 
   <div class="col-md-5">
