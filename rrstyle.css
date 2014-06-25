@@ -35,7 +35,7 @@ textarea {
     resize: none;
 }
 
-#std-container {
+.std-container {
     text-align: center;
     position: relative;
     margin:20px;
@@ -43,7 +43,7 @@ textarea {
 
 }
 
-#modal-container {
+.modal-container {
     margin:20px;
 }
 
@@ -51,12 +51,11 @@ textarea {
     position: relative;
 }
 
-#browse-container {
+.view-container {
     margin: 40px;
-    border-style: dotted;
-    border-color: grey;
     padding: 20px;
-    border-width: 2px;
+    background-color: whitesmoke;
+    border-radius: 20px;
 }
 
 #paper-links{
