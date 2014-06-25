@@ -16,7 +16,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       templateUrl: 'addPaperTemplate.html',
       windowClass:'normal',
       controller: addPaperCtrl,
-      size: 'sm',
       backdrop: 'static'
     });
   };

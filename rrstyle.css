@@ -40,8 +40,11 @@ textarea {
     position: relative;
     margin:20px;
     display: inline-block;
-    border-style: dotted;
 
+}
+
+#modal-container {
+    margin:20px;
 }
 
 .landing-container {
