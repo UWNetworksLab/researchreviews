@@ -31,10 +31,17 @@ h1,h2,h3,h4,h5{
     vertical-align: center;
 }
 
-#profile-container {
+textarea {
+    resize: none;
+}
+
+#std-container {
     text-align: center;
     position: relative;
     margin:20px;
+    display: inline-block;
+    border-style: dotted;
+
 }
 
 .landing-container {

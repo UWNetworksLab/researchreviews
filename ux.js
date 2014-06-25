@@ -16,7 +16,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       templateUrl: 'addPaperTemplate.html',
       windowClass:'normal',
       controller: addPaperCtrl,
-      size: 'lg',
+      size: 'sm',
       backdrop: 'static'
     });
   };
@@ -31,7 +31,7 @@ var addPaperCtrl = function ($scope, $modalInstance) {
     $modalInstance.dismiss('cancel');
   };
 };
-
+/*
 var browsePapersCtrl = function ($scope) {
   $scope.papers = [];
 
@@ -54,6 +54,6 @@ var browsePapersCtrl = function ($scope) {
     $modalInstance.dismiss('cancel');
   };
 };
-
+*/
 window.onload = function() {
 }; 
