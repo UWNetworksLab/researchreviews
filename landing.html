@@ -49,7 +49,7 @@
   <!--Three Columns--profile, papers, reviews-->
   <div class="col-md-2">
     <div class="sidebar">
-      <div id="profile-container">
+      <div id="std-container">
         <input type="image" src="square.png" data-toggle="tooltip" data-placement-"bottom" title="change profile picture"/>
         <h3>John Doe</h3>
         Description: I am a cs nerd. This is my profile. Welcome to my page. I write cs papers.
@@ -86,15 +86,20 @@
     </div> <!--landing-container-->
 
     <script type='text/ng-template' id="addPaperTemplate.html">
+      <div id="std-container">
       <h3>add paper</h3>
-      <div 
-      <div id="input">
+      <div><textarea rows="2" cols="50" placeholder="Add coauthors"></textarea><div> 
+      <div><textarea rows="4" cols="50" placeholder="Add comments"></textarea></div> 
+      <div><textarea rows="2" cols="50" placeholder="Add reviewers"></textarea></div>
+      <div><textarea rows="4" cols="50" placeholder="Add a message to your reviewers"></textarea></div> 
+      <div id="file-container">
         <input type="file" accept="application/pdf" id="addFile"/>
       </div>
       <div>
-        <button type="button" ng-click="upload()">upload</button>
-        <button ng-click="cancel()">cancel</button>  
+        <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+        <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
       </div>
+      </div> 
     </script> 
   </div>
 
