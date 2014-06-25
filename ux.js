@@ -30,7 +30,30 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-};  
+};
+
+var browsePapersCtrl = function ($scope) {
+  $scope.papers = [];
+
+  for ()
+  $scope.papers.push({
+    date: '1/1/2014',
+    title: 'paper 1'
+  });
+
+  $scope.papers.push({
+    date: '1/1/2014',
+    title: 'paper 1'
+  });
+
+  $scope.nextPage = function (currPage) {
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
 
 window.onload = function() {
 }; 
