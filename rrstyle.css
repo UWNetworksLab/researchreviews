@@ -1,50 +1,45 @@
-/**{
-    border-style: dashed;
-    border-width: 1px;
-    border-color: red;
-}*/
-
-html, body {
-    margin: 0;
-    color: #000;
-    font-family: Helvetica; 
+#login-container {
+    text-align: center;
+    position: relative;
+    top:30%;
+    margin: auto;
 }
 
-#container {
-   margin: 20px auto;
+html{
+    height:100%;
 }
 
-h1 {
-    text-align: left;
+h1,h2,h3,h4,h5{
+    font-family:'Times', sans-serif;
+    font-style: italic;
 }
 
-#main{
-    width: 70%;
-    height: 100vh; 
-    padding: 20px; 
-    float:left;
-    background: lightblue; 
+#login-body {
+    background-color: lightgrey;
+    height:100%;
+    min-height: 100%;
+    vertical-align: center;
 }
 
-#header{
-    height: 10vh; 
-    width: 100%; 
+#sign-up {
+    text-align: right;
 }
 
-#addpaper{
-    height: 10vh;
-    width: 15%; 
+.sidebar {
+    height:100%;
+    min-height: 100%;
+    vertical-align: center;
 }
 
-#panel {
-    padding: 20px; 
-    height: 100vh; 
-    overflow: auto; 
-    background: gray; 
+#profile-container {
+    text-align: center;
+    position: relative;
+    margin:20px;
+}
+.landing-container {
+    position: relative;
 }
 
-.normal .modal-dialog{
-    width:auto;
-    margin-left:20px;
-    margin-right:20px;
+#paper-links{
+    float: right;
 }
