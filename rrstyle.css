@@ -36,10 +36,23 @@ h1,h2,h3,h4,h5{
     position: relative;
     margin:20px;
 }
+
 .landing-container {
     position: relative;
 }
 
+#browse-container {
+    margin: 40px;
+    border-style: dotted;
+    border-color: grey;
+    padding: 20px;
+    border-width: 2px;
+}
+
 #paper-links{
     float: right;
+}
+
+.pagination {
+    margin: 0px !important;
 }
