@@ -52,7 +52,7 @@ textarea {
 }
 
 .view-container {
-    margin: 40px;
+    margin: 25px;
     padding: 20px;
     background-color: whitesmoke;
     border-radius: 20px;
@@ -64,4 +64,8 @@ textarea {
 
 .pagination {
     margin: 0px !important;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: white;
 }
