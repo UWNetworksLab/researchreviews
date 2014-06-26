@@ -69,3 +69,9 @@ textarea {
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
   background-color: white;
 }
+
+#options-butt{
+    height: 34px;
+    width: 87px;
+    font-size: 14px;
+}

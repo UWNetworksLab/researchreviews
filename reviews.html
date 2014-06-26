@@ -33,8 +33,8 @@
 
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">My Papers</a></li>
-          <li><a href="reviews.html">My Reviews</a></li>
+          <li><a href="papers.html">My Papers</a></li>
+          <li class="active"><a href="reviews.html">My Reviews</a></li>
           <li><a href="#">Alerts <span class="badge">2</span></a></li>
           <li><a href="browse.html">Browse</a></li>
         </ul>
@@ -45,45 +45,16 @@
   </nav> <!--nav bar-->
 
   <div ng-app="researcher_app" ng-controller="main_controller" class="view-container">
-
-
     <!--Two Columns--papers, paper view-->
     <div class="row">
       <div class="col-md-4">
         <div style="margin-bottom:20px; margin-top:20px">
-          <button class="btn btn-default" ng-click="addPaper()">add paper</button>
-          <script type='text/ng-template' id="addPaperTemplate.html">
-          <div class='modal-container'> 
-            <h3>Add Paper</h3>
-            <div><textarea rows="2" cols="90" placeholder="Add coauthors"></textarea><div> 
-            <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-            <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
-            <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
+          <div class="btn-group">
+            <button type="button" class="btn btn-default active">Past Reviews</button>
+            <button type="button" class="btn btn-default">Pending Reviews</button>
+          </div>
+        </div>
 
-            <h4>Privacy Settings</h4> 
-
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                  Private (only co-authors and invited reviewers can see this)
-                </label>
-              </div>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                  Public (everyone can see this)
-                </label>
-              </div>
-
-
-            <div id="file-container">
-              <input type="file" accept="application/pdf" id="addFile"/>
-              <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
-              <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
-            </div>
-          </div> 
-        </script> 
-        </div><!--add paper button and modal-->
         <table class="table table-hover">
           <tr>
             <th>
@@ -106,51 +77,14 @@
     <!--papers-->
       <div class="col-md-8">
         <div class="landing-container">
-          <h1>My Paper (Version 6/6)</h1>
+          <h1>Peer Paper (Version 6/6)</h1>
           <div id = "options-and-nav">
             <div class="btn-group" dropdown is-open="status.isopen" ng-controller="sort_controller">
               <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
                 Options <span class="caret">
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li><a>Download This Version</a></li>
-                <li><a href="#">Invite Reviewers</a></li>
-                <li><a ng-click="addVersion()">Add New Version</a></li>
-
-                <script type='text/ng-template' id="addVersionTemplate.html">
-                  <div class='modal-container'> 
-                    <h3>Add Version</h3>
-                    <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-                    <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
-                    <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
-
-                    <h4>Privacy Settings</h4>
-                      <div class="radio">
-                        <label>
-                          <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                          Private (only co-authors and invited reviewers can see this)
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <label>
-                          <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                          Public (everyone can see this)
-                        </label>
-                      </div>
-
-
-                    <div id="file-container">
-                      <input type="file" accept="application/pdf" id="addFile"/>
-                      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
-                      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
-                    </div>
-                  </div> 
-                </script> 
-
-
-
-                <li><a href="#">Delete paper</a></li>
-                <li><a href="#">Edit Privacy Settings</a></li>
+                <li><a href="#">See My Review</a></li>
               </ul>
             </div>
             <div class="btn-group pull-right">

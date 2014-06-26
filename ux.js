@@ -24,6 +24,17 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       backdrop: 'static'
     });
   };
+
+  $scope.addVersion = function() {
+    console.log("add Version button");
+    var modalInstance = $modal.open({
+      templateUrl: 'addVersionTemplate.html',
+      windowClass:'normal',
+      controller: addPaperCtrl,
+      backdrop: 'static'
+    });
+  };
+
 }); 
 
 var addPaperCtrl = function ($scope, $modalInstance) {
