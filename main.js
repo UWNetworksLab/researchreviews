@@ -4,68 +4,47 @@ var core = freedom.core();
 var social = freedom.socialprovider();
 var storage = freedom.storageprovider();
 
-var files = {};
+var myClientState = null;
+var files = {};       // Files served from this node
+var fetchQueue = [];  // Files on queue to be downloaded
 
-freedom.on('add_paper', function(data) {
-  console.log(data.key.toString());
-
+freedom.on('serve-data', function(data) {
+  if (!data.key || !data.value) {
+    console.log('serve-data: malformed request ' + JSON.stringify(data));
+    return;
+  }
+  console.log('serve-data: now serving ' + data.key + " " + data.name + " " + data.value);
   files[data.key] = {
-    title: data.title, 
-    value: data.value, 
-    date: data.date 
+    data: data.value
   };
+  if (myClientState.status == social.STATUS["ONLINE"]) {
+    console.log("emit serve-descriptor");
+    freedom.emit('serve-descriptor', {
+      key: data.key,
+      name: data.name
+    });
+  } else {
+    freedom.emit('serve-error', "Error connecting to server.");
+  }
+});
 
-  freedom.emit('added_paper', data);
-  var promise = storage.get('myPapers');
-  promise.then(function(val) {
-    var currPapers, prevCurrPapers;
-    var newPaper = {}; 
-
-    try {
-      currPapers = JSON.parse(val);
-      prevCurrPapers = JSON.parse(val); 
-    } catch(e) {}  
-
-    if (!currPapers || typeof currPapers !== "object") 
-      currPapers = []; 
-
-    newPaper.date = yyyy+'-'+mm+'-'+dd; 
-    newPaper.title = data; 
-
-    currPapers.push(newPaper);  
-
-    for(var i = 0; i < currPapers.length; i++)
-      console.log(currPapers[i].date + " AND " + currPapers[i].title); 
-
-    if(currPapers !== prevCurrPapers)
-      storage.set('myPapers', JSON.stringify(currPapers)); 
-
-    freedom.emit('added_paper', currPapers); 
-
-  }); 
-}); 
-freedom.on('delete_paper', function(paper) {
-  console.log("deleting paper" + paper.title);
-
-  var promise = storage.get('myPapers');
-  promise.then(function(val) {
-    var currPapers, prevCurrPapers;
-    var newPaper = {};
-
-    try {
-      currPapers = JSON.parse(val);
-      prevCurrPapers = JSON.parse(val); 
-    } catch(e) {}  
-
-    if (!currPapers || typeof currPapers !== "object") 
-      currPapers = []; 
-
-    for(var i = 0; i < currPapers.length; i++){
-      if(currPapers[i].title === paper.title) {
-        currPapers.splice(i, 1);
-        break;
-      }
+console.log('Logging in to social API');
+social.login({
+  agent: 'researchreviews', 
+  version: '0.1', 
+  url: '',
+  interactive: true,
+  rememberLogin: false
+}).then(function(ret) {
+  myClientState = ret;
+  if (ret.status == social.STATUS["ONLINE"]) {
+    console.log('social.onStatus: ONLINE!');
+    while (fetchQueue.length > 0) {
+      fetch(fetchQueue.shift());
     }
-    storage.set('myPapers', JSON.stringify(currPapers));
-  });
+  } else {
+    freedom.emit("serve-error", "Failed logging in. Status: "+ret.status);
+  }
+}, function(err) {
+  freedom.emit("serve-error", err.message); 
 });
