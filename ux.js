@@ -1,6 +1,11 @@
 //interactions
 var app = angular.module('researcher_app', ['ui.bootstrap']);
 
+
+app.controller('sort_controller', function($scope) {
+
+});
+
 app.controller('main_controller', function($scope, $http, $modal, $window) {
   /*$scope.deletePaper = function(paper, index) {
     window.freedom.emit('delete_paper', {

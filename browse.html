@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang='en-US'>
+<html lang='en-US' ng-app='researcher_app'>
 <head>
   <title>Research Review</title>
   <meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
@@ -55,27 +55,17 @@
 
       <h2> Browse Papers
         <!-- Sort by -->
-        <span class="btn-group">
-          <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-            Sort by <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </span> <!--sort by-->
-        <ul class="pagination pagination-sm pull-right">
-          <li class="disabled"><a href="#">&laquo;</a></li>
-          <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">&raquo;</a></li>
-        </ul>       
+      <span class="btn-group" dropdown is-open="status.isopen" ng-controller="sort_controller">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
+          Sort By <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Title</a></li>
+          <li><a href="#">Date</a></li>
+          <li><a href="#">Rating</a></li>
+        </ul>
+      </span>
+      <!-- Sort by -->
       </h2>
 
       <table class="table table-hover">
