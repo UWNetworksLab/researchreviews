@@ -76,18 +76,29 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 
 function makeRow(url, title) {
   console.log(url + " " + title);
-  return "<th><a href=" + url + ">" + title + " </a> by John Doe on 1/1/2014</th>"; 
+  return "<th><a href=" + url + " target='_blank'>" + title + "</a> by John Doe on 1/1/2014</th>"; 
 }
 
- window.freedom.on('serve-descriptor', function(val) {
-    var displayUrl = window.location + "#" + JSON.stringify(val);
-    var paper_table = document.getElementById('paper-table'); 
-    var p = document.createElement('tr'); 
-    
-    p.innerHTML = makeRow(displayUrl, val.name); 
-    paper_table.appendChild(p);  
-    //paper_table.insertBefore(p,paper_table[0]);
-  });
+window.freedom.on('download-data', function(val) {
+  console.log("Download complete"); 
+  var blob = new Blob([val]);
+
+  if (window.rr_name) {
+    saveAs(blob, window.rr_name);
+  } else {
+    saveAs(blob, 'unnamed');
+  }
+});
+
+window.freedom.on('serve-descriptor', function(val) {
+  var displayUrl = window.location + "#" + JSON.stringify(val);
+  var paper_table = document.getElementById('paper-table'); 
+  var p = document.createElement('tr'); 
+  
+  p.innerHTML = makeRow(displayUrl, val.name); 
+  paper_table.appendChild(p);  
+  //paper_table.insertBefore(p,paper_table[0]);
+});
 /*
 var browsePapersCtrl = function ($scope) {
   $scope.papers = [];
@@ -113,5 +124,14 @@ var browsePapersCtrl = function ($scope) {
 };
 */
 window.onload = function() {
-
+  try {
+    var hash = JSON.parse(window.location.hash.substr(1));
+    console.log("hash " + hash.name); 
+    freedom.emit('download', hash);
+    if (hash.name) {
+      window.rr_name = hash.name;
+    }
+  } catch (e) {
+    console.log("No parseable hash. Don't download");
+  }
 }; 
