@@ -93,8 +93,9 @@ function makeRow(url, title) {
 window.freedom.on('display-papers', function(data) {
   console.log('display papers ' + data.length); 
   var paper_table = document.getElementById('paper-table');
+
   var displayUrl = '#'; 
-  for (var i = 0; i < data.length; i++){
+  for (var i = paper_table.rows.length; i < data.length; i++){
     var p = document.createElement('tr'); 
     p.innerHTML = makeRow(displayUrl, data[i].title); 
     paper_table.appendChild(p);
