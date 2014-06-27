@@ -35,7 +35,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 }); 
 
-var FileRead = {
+/*var FileRead = {
   onLoad: function(file, evt) {
     console.log("File Read Done");
     // Send data to be served. Expect a 'serve-url' response with our descriptor
@@ -46,7 +46,7 @@ var FileRead = {
       name: file.name
     });
   } 
-};
+};*/ 
 
 var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
@@ -59,9 +59,9 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 
     var file = files[0];
     var reader = new FileReader();
-    console.log("Dropped a file. Let's start reading " + file);
+    /*console.log("Dropped a file. Let's start reading " + file);
     reader.onload = FileRead.onLoad.bind({}, file);
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(file);*/ 
 
     $modalInstance.dismiss('cancel');
   };
@@ -76,7 +76,7 @@ function makeRow(url, title) {
   return "<th><a href=" + url + " target='_blank'>" + title + "</a> by John Doe on 1/1/2014</th>"; 
 }
 
-window.freedom.on('download-data', function(val) {
+/*window.freedom.on('download-data', function(val) {
   console.log("Download complete"); 
   var blob = new Blob([val]);
 
@@ -95,7 +95,7 @@ window.freedom.on('serve-descriptor', function(val) {
   p.innerHTML = makeRow(displayUrl, val.name); 
   paper_table.appendChild(p);  
   //paper_table.insertBefore(p,paper_table[0]);
-});
+});*/ 
 /*
 var browsePapersCtrl = function ($scope) {
   $scope.papers = [];
@@ -120,7 +120,7 @@ var browsePapersCtrl = function ($scope) {
   };
 };
 */
-
+/*
   try {
     var hash = JSON.parse(window.location.hash.substr(1));
     console.log("hash " + hash.name); 
@@ -130,7 +130,7 @@ var browsePapersCtrl = function ($scope) {
     }
   } catch (e) {
     console.log("No parseable hash. Don't download");
-  }
+  }*/ 
 
 
 window.onload = function() {

@@ -16,6 +16,10 @@
     "transport": {
       "url": "node_modules/freedom/providers/transport/webrtc/transport.webrtc.json",
       "api": "transport"
-    }
+    },
+    "localstorage": {
+      "url": "node_modules/freedom/providers/storage/isolated/storage.isolated.json",
+      "api": "storage"
+    } 
   }
 }

@@ -6,17 +6,17 @@ var social = freedom.socialprovider();
 var storage = freedom.storageprovider();
 
 // Internal State
-var myClientState = null;
+/*var myClientState = null;
 var userList = {};
 var clientList = {};
 var files = {};       // Files served from this node
-var fetchQueue = [];  // Files on queue to be downloaded
+var fetchQueue = [];  // Files on queue to be downloaded*/ 
 
 // PC
 var connections = {};
 var signallingChannels = {};
 
-function makeID(clientID){
+/*function makeID(clientID){
   return clientID.replace(/\s+/g, '-');
 }
 
@@ -154,11 +154,11 @@ social.on('onMessage', function(data) {
     console.log("social.onMessage: Unrecognized message: " + JSON.stringify(data));
   }
   
-});
+});*/ 
 
 /** LOGIN AT START **/
 
-console.log('Logging in to social API');
+/*console.log('Logging in to social API');
 social.login({
   agent: 'researchreviews', 
   version: '0.1', 
@@ -178,4 +178,4 @@ social.login({
   }
 }, function(err) {
   freedom.emit("serve-error", err.message); 
-});
+});*/ 
