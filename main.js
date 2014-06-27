@@ -1,19 +1,50 @@
 //backend
 
+// FreeDOM APIs
 var core = freedom.core();
 var social = freedom.socialprovider();
 var storage = freedom.storageprovider();
 
+// Internal State
 var myClientState = null;
+var userList = {};
+var clientList = {};
 var files = {};       // Files served from this node
 var fetchQueue = [];  // Files on queue to be downloaded
 
+// PC
 var connections = {};
+var signallingChannels = {};
 
-function setupConnection(name, key) {
-  console.log("set up connection with " + name + " " + key);
-  connections["johndoe"] = freedom.transport();
-  connections["johndoe"].on('onData', function(message) {
+function makeID(clientID){
+  return clientID.replace(/\s+/g, '-');
+}
+
+freedom.on('serve-data', function(data) {
+  if (!data.key || !data.value) {
+    console.log('serve-data: malformed request ' + JSON.stringify(data));
+    return;
+  }
+  console.log('serve-data: now serving key name value: ' + data.key + " " + data.name + " " + data.value);
+  files[data.key] = {
+    data: data.value
+  };
+  if (myClientState.status == social.STATUS["ONLINE"]) {
+    console.log("emit serve-descriptor");
+    freedom.emit('serve-descriptor', {
+      targetId: makeID(myClientState.clientId),
+      key: data.key,
+      name: data.name
+    });
+  } else {
+    freedom.emit('serve-error', "Error connecting to server.");
+  }
+});
+
+function setupConnection(name, targetId, key) {
+  console.log("here");
+  connections[targetId] = freedom.transport();
+  connections[targetId].on('onData', function(message) {
     console.log("Receiving data with tag: " + message.tag);
     social.sendMessage(targetId, JSON.stringify({
       cmd: 'done',
@@ -25,48 +56,32 @@ function setupConnection(name, key) {
     // Set up the signalling channel first, it may be needed in the
     // peerconnection setup.
     chan.channel.on('message', function(msg) {
-      social.sendMessage("johndoe", JSON.stringify({
+      social.sendMessage(targetId, JSON.stringify({
         cmd: 'signal',
         data: msg
       }));
     });
-    signallingChannels["johndoe"] = chan.channel;
-    return connections["johndoe"].setup(name, chan.identifier);
+    signallingChannels[targetId] = chan.channel;
+    return connections[targetId].setup(name, chan.identifier);
   });
 }
 
+
 function fetch(data) {
   //@todo smarter way to choose a target in the future
+  var serverId = data.targetId.replace(/-/g, ' ');
+
   var key = data.key;
   
-  console.log("fetch: downloading " + key);
+  console.log("fetch: downloading " + key + " from " + serverId);
   //Tell 'em I'm comin' for them
-  social.sendMessage(JSON.stringify({
+  social.sendMessage(serverId, JSON.stringify({
     cmd: 'fetch',
     data: key
   }));
-  setupConnection("fetcher", key);
+  setupConnection("fetcher", serverId, key);
 }
 
-freedom.on('serve-data', function(data) {
-  if (!data.key || !data.value) {
-    console.log('serve-data: malformed request ' + JSON.stringify(data));
-    return;
-  }
-  console.log('serve-data: now serving ' + data.key + " " + data.name + " " + data.value);
-  files[data.key] = {
-    data: data.value
-  };
-  if (myClientState.status == social.STATUS["ONLINE"]) {
-    console.log("emit serve-descriptor");
-    freedom.emit('serve-descriptor', {
-      key: data.key,
-      name: data.name
-    });
-  } else {
-    freedom.emit('serve-error', "Error connecting to server.");
-  }
-});
 
 freedom.on('download', function(data) {
   console.log("on download"); 
@@ -78,6 +93,18 @@ freedom.on('download', function(data) {
   }
 });
 
+
+social.on('onUserProfile', function(data) {
+  userList[data.userId] = data;
+});
+
+social.on('onClientState', function(data) {
+  clientList[data.clientId] = data;
+  if (myClientState !== null && 
+      data.clientId == myClientState.clientId) {
+    myClientState = data;
+  }
+});
 
 social.on('onMessage', function(data) {
   var msg;
@@ -95,7 +122,6 @@ social.on('onMessage', function(data) {
   if (data.from.clientId && msg.cmd && msg.data && msg.cmd == 'fetch') {
     key = msg.data;
     targetId = data.from.clientId;
-    updateStats(key, 1, 0);
 
     console.log("social.onMessage: Received request for " + key + " from " + targetId);
     setupConnection("server-"+targetId, targetId).then(function(){ //SEND IT
@@ -112,7 +138,6 @@ social.on('onMessage', function(data) {
     });
   } else if (data.from.clientId && msg.cmd && msg.data && msg.cmd == 'done') {
     key = msg.data;
-    updateStats(key, -1, 1);
   } else if (data.from.clientId && msg.cmd && msg.data && msg.cmd == 'signal') {
     console.log('social.onMessage: signalling message');
     targetId = data.from.clientId;
@@ -131,6 +156,7 @@ social.on('onMessage', function(data) {
   
 });
 
+/** LOGIN AT START **/
 
 console.log('Logging in to social API');
 social.login({

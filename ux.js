@@ -3,7 +3,6 @@ var app = angular.module('researcher_app', ['ui.bootstrap']);
 
 
 app.controller('sort_controller', function($scope) {
-
 });
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
@@ -34,9 +33,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       backdrop: 'static'
     });
   };
-
 }); 
-
 
 var FileRead = {
   onLoad: function(file, evt) {
@@ -123,15 +120,28 @@ var browsePapersCtrl = function ($scope) {
   };
 };
 */
-window.onload = function() {
+
   try {
     var hash = JSON.parse(window.location.hash.substr(1));
     console.log("hash " + hash.name); 
     freedom.emit('download', hash);
     if (hash.name) {
-      window.rr_name = hash.name;
+      window.rr_name = hash.name; //i-9.pdf
     }
   } catch (e) {
     console.log("No parseable hash. Don't download");
   }
+
+
+window.onload = function() {
+/*  try {
+    var hash = JSON.parse(window.location.hash.substr(1));
+    console.log("hash " + hash.name); 
+    freedom.emit('download', hash);
+    if (hash.name) {
+      window.rr_name = hash.name; //i-9.pdf
+    }
+  } catch (e) {
+    console.log("No parseable hash. Don't download");
+  }*/
 }; 
