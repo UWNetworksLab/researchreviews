@@ -1,9 +1,9 @@
 //backend
 
 // FreeDOM APIs
-//var core = freedom.core();
-//var social = freedom.socialprovider();
-//var storage = freedom.storageprovider();
+var core = freedom.core();
+var social = freedom.socialprovider();
+var storage = freedom.storageprovider();
 var store = freedom.localstorage();
 
 // Internal State
@@ -18,7 +18,6 @@ var connections = {};
 var signallingChannels = {};
 
 freedom.on('add-paper', function(data) {
-  console.log('on add paper');
 
   files[data.key] = {
     title: data.title, 
@@ -26,11 +25,14 @@ freedom.on('add-paper', function(data) {
     date: data.date 
   };
 
+  console.log("on add paper " + data.title + " " + data.date.toString());
+
   var promise = store.get('papers');
+  
   promise.then(function(val) {
     var papers;
     var newPaper = {};
-
+     
     try {
       papers = JSON.parse(val);
     } catch(e) {}
@@ -38,22 +40,21 @@ freedom.on('add-paper', function(data) {
     if(!papers || typeof papers !== "object")
       papers = [];
 
+
     var dd = data.date.getDate();
     var mm = data.date.getMonth()+1; 
     var yyyy = data.date.getFullYear();
     newPaper.date = yyyy+'-'+mm+'-'+dd; 
 
-    newPaper.title = data; 
+    newPaper.title = data.title; 
+
+    console.log(newPaper.title + " " + newPaper.date); 
 
     papers.push(newPaper);
-
     store.set('papers', JSON.stringify(papers)); 
 
-    for(int i = 0; i < papers.length; i++) 
-      console.log(papers[i].title); 
-
-    freedom.emit('display-papers', papers); 
-  });
+    freedom.emit('display-papers', papers);  
+  }); 
 }); 
 
 /*function makeID(clientID){

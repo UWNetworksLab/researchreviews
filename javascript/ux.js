@@ -87,9 +87,9 @@ function uploadFile(files) {
   });
 }
 
-function makeRow(url, title) {
+function makeRow(url, title, date) {
   console.log(url + " " + title);
-  return "<th><a href=" + url + " target='_blank'>" + title + "</a> by John Doe on 1/1/2014</th>"; 
+  return "<th><a href=" + url + " target='_blank'>" + title + "</a> by John Doe on " + date + "</th>"; 
 }
 
 window.freedom.on('display-papers', function(data) {
@@ -97,7 +97,7 @@ window.freedom.on('display-papers', function(data) {
   var p = document.createElement('tr'); 
   
   var displayUrl = '#'; 
-  p.innerHTML = makeRow(displayUrl, data[0].title); 
+  p.innerHTML = makeRow(displayUrl, data[data.length-1].title, data[data.length-1].date); 
   paper_table.appendChild(p);  
 }); 
 
