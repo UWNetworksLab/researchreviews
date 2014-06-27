@@ -2,7 +2,7 @@
   "name": "Researcher reviewer",
   "description": "research",
   "app": {
-    "script": "main.js"
+    "script": "javascript/main.js"
   },
   "dependencies": {
     "socialprovider": {

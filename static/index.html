@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+<head>
+  <title>Research Review</title>
+  <meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
+
+  <link rel='stylesheet' type='text/css' href='../css/bootstrap.min.css'/> 
+  <link rel='stylesheet' type='text/css' href='../css/rrstyle.css' />
+
+  <script src="../node_modules/angular/lib/angular.min.js" type="text/javascript"></script>
+  <script src="../node_modules/jquery/dist/cdn/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="../javascript/ui-bootstrap-tpls-0.11.0.min.js" type="text/javascript"></script>
+
+  <script type='text/javascript'
+      src='../node_modules/freedom/freedom.js'
+      data-manifest='../manifest.json'>
+  {
+    "strongIsolation": true,
+    "stayLocal": true,
+    "debug": false
+  }
+  </script>
+  <script type='text/javascript' src='../javascript/ux.js'></script>
+
+</head>
+
+<body id="login-body">
+  <div id="sign-up">
+    <button class = "btn btn-primary btn-lg">sign up</button>
+  </div>
+  <div id="login-container">
+    <h1>Research Reviews</h1>
+    <form>
+      Username: <input type="text" class="form-group" name="username"><br>
+      Password: <input type="password" class="form-group" name="password"><br>
+    </form>
+      <button class="btn btn-default" onclick="location.href = 'landing.html'">Log in</button>
+  </div>
+</body>
+</html>
