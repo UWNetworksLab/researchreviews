@@ -74,8 +74,6 @@ function uploadFile(files) {
   var newPaper = files[0];
   var reader = new FileReader(); 
 
-  console.log("found paper: " + newPaper.name);
-
   var today = new Date();  
   var key = Math.random() + "";
 
@@ -102,73 +100,8 @@ window.freedom.on('display-papers', function(data) {
     paper_table.appendChild(p);
   }
 }); 
-/*window.freedom.on('download-data', function(val) {
-  console.log("Download complete"); 
-  var blob = new Blob([val]);
 
-  if (window.rr_name) {
-    saveAs(blob, window.rr_name);
-  } else {
-    saveAs(blob, 'unnamed');
-  }
-});
-
-window.freedom.on('serve-descriptor', function(val) {
-  var displayUrl = window.location + "#" + JSON.stringify(val);
-  var paper_table = document.getElementById('paper-table'); 
-  var p = document.createElement('tr'); 
-  
-  p.innerHTML = makeRow(displayUrl, val.name); 
-  paper_table.appendChild(p);  
-  //paper_table.insertBefore(p,paper_table[0]);
-});*/ 
-/*
-var browsePapersCtrl = function ($scope) {
-  $scope.papers = [];
-
-  for ()
-  $scope.papers.push({
-    date: '1/1/2014',
-    title: 'paper 1'
-  });
-
-  $scope.papers.push({
-    date: '1/1/2014',
-    title: 'paper 1'
-  });
-
-  $scope.nextPage = function (currPage) {
-    $modalInstance.dismiss('cancel');
-  };
-
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-};
-*/
-/*
-  try {
-    var hash = JSON.parse(window.location.hash.substr(1));
-    console.log("hash " + hash.name); 
-    freedom.emit('download', hash);
-    if (hash.name) {
-      window.rr_name = hash.name; //i-9.pdf
-    }
-  } catch (e) {
-    console.log("No parseable hash. Don't download");
-  }*/ 
 
 window.onload = function() {
    window.freedom.emit('load-papers', 0);
-
-/*  try {
-    var hash = JSON.parse(window.location.hash.substr(1));
-    console.log("hash " + hash.name); 
-    freedom.emit('download', hash);
-    if (hash.name) {
-      window.rr_name = hash.name; //i-9.pdf
-    }
-  } catch (e) {
-    console.log("No parseable hash. Don't download");
-  }*/
 } 
