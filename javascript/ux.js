@@ -93,14 +93,15 @@ function makeRow(url, title) {
 }
 
 window.freedom.on('display-papers', function(data) {
-  var paper_table = document.getElementById('paper-table'); 
-  var p = document.createElement('tr'); 
-  
+  console.log('display papers ' + data.length); 
+  var paper_table = document.getElementById('paper-table');
   var displayUrl = '#'; 
-  p.innerHTML = makeRow(displayUrl, data[0].title); 
-  paper_table.appendChild(p);  
+  for (var i = 0; i < data.length; i++){
+    var p = document.createElement('tr'); 
+    p.innerHTML = makeRow(displayUrl, data[i].title); 
+    paper_table.appendChild(p);
+  }
 }); 
-
 /*window.freedom.on('download-data', function(val) {
   console.log("Download complete"); 
   var blob = new Blob([val]);
@@ -157,8 +158,9 @@ var browsePapersCtrl = function ($scope) {
     console.log("No parseable hash. Don't download");
   }*/ 
 
-
 window.onload = function() {
+   window.freedom.emit('load-papers', 0);
+
 /*  try {
     var hash = JSON.parse(window.location.hash.substr(1));
     console.log("hash " + hash.name); 
@@ -169,4 +171,4 @@ window.onload = function() {
   } catch (e) {
     console.log("No parseable hash. Don't download");
   }*/
-}; 
+} 

@@ -17,43 +17,40 @@ var files = {};       // Files served from this node
 var connections = {};
 var signallingChannels = {};
 
+function getPapers(){
+  console.log("getPapers");
+  var promise = store.get('papers');
+  var papers = [];
+  promise.then(function(val) {
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+  }); 
+  return papers;
+}
+
+function setPapers(newPaper, papers){
+  papers.push(newPaper);
+  store.set('papers', JSON.stringify(papers)); 
+}
+
 freedom.on('add-paper', function(data) {
   console.log('on add paper');
-
   files[data.key] = {
     title: data.title, 
     value: data.value, 
     date: data.date 
   };
+  var oldPapers = getPapers();
+  setPapers(data, oldPapers);//papers? here is a line
+  freedom.emit('display-papers', oldPapers);
+}); 
 
-  var promise = store.get('papers');
-  promise.then(function(val) {
-    var papers;
-    var newPaper = {};
-
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    if(!papers || typeof papers !== "object")
-      papers = [];
-
-    var dd = data.date.getDate();
-    var mm = data.date.getMonth()+1; 
-    var yyyy = data.date.getFullYear();
-    newPaper.date = yyyy+'-'+mm+'-'+dd; 
-
-    newPaper.title = data; 
-
-    papers.push(newPaper);
-
-    store.set('papers', JSON.stringify(papers)); 
-
-    for(int i = 0; i < papers.length; i++) 
-      console.log(papers[i].title); 
-
-    freedom.emit('display-papers', papers); 
-  });
+freedom.on('load-papers', function(data) {
+  console.log('loadpapers');
+  var papers = getPapers();
+  console.log("length of papers: " + papers.length);
+  freedom.emit('display-papers', papers);
 }); 
 
 /*function makeID(clientID){
