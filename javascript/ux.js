@@ -57,8 +57,7 @@ var addPaperCtrl = function ($scope, $modalInstance) {
       return;
     }
 
-    var file = files[0];
-    var reader = new FileReader();
+    uploadFile(files);
     /*console.log("Dropped a file. Let's start reading " + file);
     reader.onload = FileRead.onLoad.bind({}, file);
     reader.readAsArrayBuffer(file);*/ 
@@ -71,10 +70,36 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   };
 };
 
+function uploadFile(files) {
+  var newPaper = files[0];
+  var reader = new FileReader(); 
+
+  console.log("found paper: " + newPaper.name);
+
+  var today = new Date();  
+  var key = Math.random() + "";
+
+  window.freedom.emit('add-paper', {
+    title: newPaper.name,
+    value: newPaper, 
+    date: today,
+    key: key 
+  });
+}
+
 function makeRow(url, title) {
   console.log(url + " " + title);
   return "<th><a href=" + url + " target='_blank'>" + title + "</a> by John Doe on 1/1/2014</th>"; 
 }
+
+window.freedom.on('display-papers', function(data) {
+  var paper_table = document.getElementById('paper-table'); 
+  var p = document.createElement('tr'); 
+  
+  var displayUrl = '#'; 
+  p.innerHTML = makeRow(displayUrl, data[0].title); 
+  paper_table.appendChild(p);  
+}); 
 
 /*window.freedom.on('download-data', function(val) {
   console.log("Download complete"); 
