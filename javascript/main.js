@@ -10,42 +10,49 @@ var store = freedom.localstorage();
 //var myClientState = null;
 //var userList = {};
 //var clientList = {};
-var files = {};       // Files served from this node
 //var fetchQueue = [];  // Files on queue to be downloaded*/ 
 
-// PC
-var connections = {};
-var signallingChannels = {};
-
 function getPapers(newPaper){
-  var papers = [];
+  console.log("get paper");
   var promise = store.get('papers');
   promise.then(function(val) {
+    console.log("in promise");
+    var papers; 
     try {
       papers = JSON.parse(val);
-
-      if(newPaper || typeof newPaper === "object") {
-        papers.push(newPaper);
-        store.set('papers', JSON.stringify(papers)); 
-      }
-
-      for(var i = 0; i < papers.length; i++)
-        console.log("stored papers..." + papers[i].title); 
     } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      console.log("nothing in papers");
+      papers = []; 
+    }
+    
+    if(newPaper && typeof newPaper === "object") {
+      console.log("pushing new paper");
+      papers.push(newPaper);
+      store.set('papers', JSON.stringify(papers)); 
+    }
+
+    console.log("papers length: " + papers.length);
+    for(var i = 0; i < papers.length; i++)
+      console.log("stored papers..." + papers[i].title); 
+
     freedom.emit('display-papers', papers);
   }); 
 }
 
 freedom.on('add-paper', function(data) {
-  files[data.key] = {
-    title: data.title, 
-    value: data.value, 
-    date: data.date 
-  };
+  var dd = data.date.getDate();
+  var mm = data.date.getMonth()+1; 
+  var yyyy = data.date.getFullYear();
+  data.date = yyyy+'-'+mm+'-'+dd; 
+
+  console.log("on add paper: " + data.title + " " + data.date); 
+
   getPapers(data);
 }); 
 
 freedom.on('load-papers', function(data) {
+  console.log("on load papers");
   getPapers(); 
 }); 
-
