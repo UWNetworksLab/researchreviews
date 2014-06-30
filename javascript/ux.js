@@ -49,36 +49,54 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 function uploadFile(files) {
   var newPaper = files[0];
   var reader = new FileReader(); 
+  var blob = new Blob([newPaper], {type: 'application/pdf'});
 
-  var today = new Date();  
-  var key = Math.random() + "";
+  var bloburl = URL.createObjectURL(blob);
+  console.log("url : " + bloburl);
 
-  console.log("emit add paper");
-  window.freedom.emit('add-paper', {
-    title: newPaper.name,
-    value: newPaper, 
-    date: today,
-    key: key 
-  });
+//  var fileBlob = newPaper.slice(0, newPaper.size);
 
-  reader.readAsArrayBuffer(newPaper); 
+  reader.onload = function(evt) {
+    if(evt.target.readyState === FileReader.DONE){
+      //var blobURL = window.URL.createObjectURL(fileBlob);
+      var today = new Date();  
+      var key = Math.random() + "";
+
+      console.log("blob " + blob);
+      console.log("blob stringy " + JSON.stringify(blob));
+
+      console.log("emit add paper");
+      window.freedom.emit('add-paper', {
+        title: newPaper.name,
+        value: blob, 
+        date: today,
+        key: key,
+        binaryString: evt.target.result
+      });
+    }
+  }
+  reader.readAsBinaryString(newPaper);
 }
 
-function downloadPaper(key, title) {
-  console.log(key + " " + title); 
-
-  var data = {
-    key: key,
-    title: title
-  };
-
-  var url = window.location + "#" + JSON.stringify(data); 
-
-  alert("download url: " + url); 
+function downloadPaper(key) {
+  console.log("key " + key);
+  window.freedom.emit('download-paper', {paperkey: key});
+//  alert("download url: "); 
 }
+
+window.freedom.on('got-paper', function(data){
+  console.log("got paper " + data);
+
+  var reader = new FileReader(); 
+  var blob = new Blob([data], {type:'application/pdf'});
+  reader.readAsArrayBuffer(blob);
+  saveAs(blob, "downloadstuff"); 
+  //var bloburl = URL.createObjectURL(blob);
+  //window.location.href = bloburl;
+});
 
 function makeRow(title, date, key) {
-  return '<th><a onclick="downloadPaper(\'' + key + '\',\'' + title + '\')">' + title + '</a> by John Doe on ' + date + '</th>'; 
+  return '<th><a onclick="downloadPaper(' + key + ')"">' + title + '</a> by John Doe on ' + date + '</th>'; 
 }
 
 window.freedom.on('display-papers', function(data) {
@@ -87,7 +105,7 @@ window.freedom.on('display-papers', function(data) {
 
   for (var i = paper_table.rows.length; i < data.length; i++){
     var p = document.createElement('tr'); 
-    p.innerHTML = makeRow(data[i].title, data[i].date, data[i].key); 
+    p.innerHTML = makeRow(data[i].title, data[i].date, data[i].key, data[i]); 
     paper_table.appendChild(p);
   }
 }); 
