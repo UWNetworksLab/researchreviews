@@ -6,6 +6,8 @@
 //var storage = freedom.storageprovider();
 var store = freedom.localstorage();
 
+//store.set('papers', []);
+
 function getPapers(newPaper){
   console.log("get paper");
   var promise = store.get('papers');
@@ -59,6 +61,11 @@ freedom.on('add-paper', function(data) {
   var yyyy = data.date.getFullYear();
   data.date = yyyy+'-'+mm+'-'+dd; 
   console.log("on add paper: " + data.title + " " + data.date); 
+
+  var blob = new Blob([data.binaryString], {type: 'application/pdf'});
+  var bloburl = URL.createObjectURL(blob);
+  console.log("url : " + bloburl);
+
   getPapers(data);
 }); 
 

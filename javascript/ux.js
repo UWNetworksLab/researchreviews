@@ -48,34 +48,41 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 
 function uploadFile(files) {
   var newPaper = files[0];
-  var reader = new FileReader(); 
-  var blob = new Blob([newPaper], {type: 'application/pdf'});
+  var reader = new FileReader();
+  //var blob = new Blob([newPaper], {type: 'application/pdf'});
 
-  var bloburl = URL.createObjectURL(blob);
-  console.log("url : " + bloburl);
+  //var bloburl = URL.createObjectURL(blob);
+  //console.log("url : " + bloburl);
 
 //  var fileBlob = newPaper.slice(0, newPaper.size);
 
-  reader.onload = function(evt) {
-    if(evt.target.readyState === FileReader.DONE){
-      //var blobURL = window.URL.createObjectURL(fileBlob);
-      var today = new Date();  
-      var key = Math.random() + "";
+  reader.onload = function() {
 
-      console.log("blob " + blob);
-      console.log("blob stringy " + JSON.stringify(blob));
+    var arrayBuffer = reader.result;
+    //var blobURL = window.URL.createObjectURL(fileBlob);
+    var today = new Date();  
+    var key = Math.random() + "";
 
-      console.log("emit add paper");
-      window.freedom.emit('add-paper', {
-        title: newPaper.name,
-        value: blob, 
-        date: today,
-        key: key,
-        binaryString: evt.target.result
-      });
-    }
+    //console.log("blob " + blob);
+    //console.log("blob stringy " + JSON.stringify(blob));
+
+
+
+    //var blob = new Blob([reader.result], {type: 'application/pdf'});
+    //var bloburl = URL.createObjectURL(blob);
+    //console.log("uploadfile end: " + bloburl);
+
+
+    console.log("emit add paper");
+    window.freedom.emit('add-paper', {
+      title: newPaper.name,
+      date: today,
+      key: key,
+      binaryString: abToString(arrayBuffer)
+    });
   }
-  reader.readAsBinaryString(newPaper);
+  reader.readAsArrayBuffer(newPaper);
+//reader.readAsBinaryString(newPaper);
 }
 
 function downloadPaper(key) {
@@ -84,13 +91,34 @@ function downloadPaper(key) {
 //  alert("download url: "); 
 }
 
-window.freedom.on('got-paper', function(data){
-  console.log("got paper " + data);
+function abToString(ab){
+  var binary = '';
+  var bytes = new Uint8Array(ab);
+  var len = bytes.byteLength;
+  for (var i = 0; i < len; i++){
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
 
-  var reader = new FileReader(); 
-  var blob = new Blob([data], {type:'application/pdf'});
+function stringToAB(string){
+  var bytes = new Uint8Array(string.length);
+  for (var i = 0; i < string.length; i++){
+    bytes[i] = string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+window.freedom.on('got-paper', function(data){
+  console.log("got paper "); //data is string
+  var ab = stringToAB(data);
+
+  var reader = new FileReader();
+
+
+  var blob = new Blob([ab], {type:'application/pdf'});
   reader.readAsArrayBuffer(blob);
-  saveAs(blob, "downloadstuff"); 
+saveAs(blob, "downloadstuff"); 
   //var bloburl = URL.createObjectURL(blob);
   //window.location.href = bloburl;
 });
@@ -105,7 +133,7 @@ window.freedom.on('display-papers', function(data) {
 
   for (var i = paper_table.rows.length; i < data.length; i++){
     var p = document.createElement('tr'); 
-    p.innerHTML = makeRow(data[i].title, data[i].date, data[i].key, data[i]); 
+    p.innerHTML = makeRow(data[i].title, data[i].date, data[i].key); 
     paper_table.appendChild(p);
   }
 }); 
