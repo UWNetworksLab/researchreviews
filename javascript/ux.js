@@ -93,5 +93,7 @@ window.freedom.on('display-papers', function(data) {
 }); 
 
 window.onload = function() {
+  console.log("page path is " + window.location.pathname);
+  if(window.location.pathname == "/static/papers.html" || "/static/browse.html"); 
    window.freedom.emit('load-papers', 0);
 } 
