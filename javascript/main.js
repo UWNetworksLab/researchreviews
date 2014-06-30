@@ -31,9 +31,9 @@ function getPapers(newPaper){
     }
 
     console.log("papers length: " + papers.length);
-    for(var i = 0; i < papers.length; i++)
+/*    for(var i = 0; i < papers.length; i++)
       console.log("stored papers..." + papers[i].title + " key : " + papers[i].key); 
-
+*/
     freedom.emit('display-papers', papers);
   }); 
 }
@@ -45,7 +45,6 @@ freedom.on('download-paper', function(data){
 
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
-      console.log("paperskey " + papers[i].key + " datakey: " + data.paperkey);
       if (papers[i].key.toString() === data.paperkey.toString()){
         console.log(papers[i].value);
         freedom.emit('got-paper', papers[i].binaryString);

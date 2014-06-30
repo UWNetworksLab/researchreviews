@@ -27,6 +27,19 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 }); 
 
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i=0, strLen=str.length; i<strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
 var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
@@ -78,7 +91,7 @@ function uploadFile(files) {
       title: newPaper.name,
       date: today,
       key: key,
-      binaryString: abToString(arrayBuffer)
+      binaryString: ab2str(arrayBuffer)
     });
   }
   reader.readAsArrayBuffer(newPaper);
@@ -91,27 +104,10 @@ function downloadPaper(key) {
 //  alert("download url: "); 
 }
 
-function abToString(ab){
-  var binary = '';
-  var bytes = new Uint8Array(ab);
-  var len = bytes.byteLength;
-  for (var i = 0; i < len; i++){
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return window.btoa(binary);
-}
-
-function stringToAB(string){
-  var bytes = new Uint8Array(string.length);
-  for (var i = 0; i < string.length; i++){
-    bytes[i] = string.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
 
 window.freedom.on('got-paper', function(data){
   console.log("got paper "); //data is string
-  var ab = stringToAB(data);
+  var ab = str2ab(data);
 
   var reader = new FileReader();
 
