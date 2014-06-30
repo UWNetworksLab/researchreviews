@@ -53,15 +53,13 @@ function uploadFile(files) {
   var today = new Date();  
   var key = Math.random() + "";
 
-  console.log("emit add paper");
+  console.log("emit add paper: " + blobURL);
   window.freedom.emit('add-paper', {
     title: newPaper.name,
     value: newPaper, 
     date: today,
-    key: key 
+    key: key
   });
-
-  reader.readAsArrayBuffer(newPaper); 
 }
 
 function downloadPaper(key, title) {
@@ -92,8 +90,18 @@ window.freedom.on('display-papers', function(data) {
   }
 }); 
 
+function login() {
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
+  console.log(username + " " + password);
+
+  document.cookie = "username="+username; 
+  window.location.href = "papers.html";
+}
+
 window.onload = function() {
-  console.log("page path is " + window.location.pathname);
-  if(window.location.pathname == "/static/papers.html" || "/static/browse.html"); 
-   window.freedom.emit('load-papers', 0);
+  if(window.location.pathname == "/static/papers.html" || window.location.pathname == "/static/browse.html") {
+    console.log("page path is " + window.location.pathname);
+    window.freedom.emit('load-papers', 0); 
+  }
 } 
