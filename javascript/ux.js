@@ -6,6 +6,7 @@ app.controller('sort_controller', function($scope) {
 });
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
+
   $scope.addPaper = function() {
     console.log("add Paper button");
     var modalInstance = $modal.open({
@@ -105,20 +106,44 @@ window.freedom.on('got-paper', function(data){
 saveAs(blob, "downloadstuff"); 
 });
 
+function deletePaper(){
+  console.log("delete : "  + currPaperKey);
+  window.freedom.emit('delete-paper', currPaperKey);
+}
+
+
 function makeRow(title, date, key) {
   return '<th onclick="freedom.emit(\'show-paper\',' + key + ')"><a onclick="downloadPaper(' + key + ')"">' + title + '</a> by John Doe on ' + date + '</th>'; 
 }
 
 window.freedom.on('display-papers', function(data) {
-  console.log('display papers ' + data.length); 
+  console.log('display papers ' + data.paperAction); 
   var paper_table = document.getElementById('paper-table');
 
-  for (var i = paper_table.rows.length; i < data.length; i++){
+  if (data.paperAction == -1){
+    for (var i = 0; i < paper_table.rows.length; i++){
+      if (data.key == paper_table.rows[i].getAttribute("id")){
+        paper_table.deleteRow(i);
+      }
+    }
+  }
+  else if (data.paperAction == 1) {
     var p = document.createElement('tr'); 
-    p.innerHTML = makeRow(data[i].title, data[i].date, data[i].key); 
+    p.setAttribute("id", data.key);
+    p.innerHTML = makeRow(data.value.title, data.value.date, data.key); 
     paper_table.appendChild(p);
   }
 }); 
+
+window.freedom.on('display-default-papers', function(papers){
+  var paper_table = document.getElementById('paper-table');
+  for (var i = 0; i < papers.length; i++){
+    var p = document.createElement('tr'); 
+    p.setAttribute("id", papers[i].key);
+    p.innerHTML = makeRow(papers[i].title, papers[i].date, papers[i].key); 
+    paper_table.appendChild(p);    
+  }
+});
 
 window.freedom.on('show-paper-view', function(data) {
   currPaperKey = data.key; 
