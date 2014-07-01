@@ -7,14 +7,11 @@
 var store = freedom.localstorage();
 
 //store.set('papers', []);
-
-function getPapers(newPaper){
-  console.log("get paper");
+ 
+function processPapers(paperAction, data){
+  console.log("process papers");
   var promise = store.get('papers');
   promise.then(function(val) {
-    var paperAction = 0; 
-    var key = -1;
-
     console.log("in promise");
     var papers; 
     try {
@@ -25,21 +22,28 @@ function getPapers(newPaper){
       console.log("nothing in papers");
       papers = []; 
     }
-    
-    if(newPaper && typeof newPaper === "object") {
-      console.log("pushing new paper");
-      papers.push(newPaper);
-      store.set('papers', JSON.stringify(papers)); 
-      paperAction = 1;
-      key = newPaper.key;
-    }
 
-    console.log("papers length: " + papers.length);
-/*    for(var i = 0; i < papers.length; i++)
-      console.log("stored papers..." + papers[i].title + " key : " + papers[i].key); 
-*/
-    if (paperAction == 0) freedom.emit('display-default-papers', papers);
-    else freedom.emit('display-papers', {value: newPaper, paperAction: paperAction, key: key});
+    if(paperAction == 0) {
+      freedom.emit('display-paper-table', papers);
+    }
+    else if(paperAction == 1) {
+      console.log("pushing new paper");
+      papers.push(data);
+      key = data.key;
+      store.set('papers', JSON.stringify(papers)); 
+      freedom.emit('display-papers', {value: data, paperAction: paperAction, key: data.key});
+    }
+    else if (paperAction == -1) {
+      console.log("deleting papers");
+      for(var i = 0; i < papers.length; i++){
+        if(papers[i].key == data) {
+          papers.splice(i, 1);
+          break;
+        }
+      }
+      store.set('papers', JSON.stringify(papers)); 
+      freedom.emit('display-papers', {value: 0, paperAction: -1, key: data});
+    }
   }); 
 }
 
@@ -47,7 +51,6 @@ freedom.on('download-paper', function(data){
   console.log("downloadpaper");
   var promise = store.get('papers');
   promise.then(function(val) {
-
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
       if (papers[i].key.toString() === data.toString()){
@@ -86,32 +89,15 @@ freedom.on('add-paper', function(data) {
   data.date = yyyy+'-'+mm+'-'+dd; 
   console.log("on add paper: " + data.title + " " + data.date); 
 
-  getPapers(data);
+  processPapers(1, data);
 }); 
 
 freedom.on('delete-paper', function(key){
-
   console.log("on delete-paper");
-  var promise = store.get('papers');
-  promise.then(function(val) {
-    var papers = JSON.parse(val);
-    for(var i = 0; i < papers.length; i++){
-      console.log("papers key" +  papers[i].key + " key " + key);
-      if(papers[i].key == key) {
-        papers.splice(i, 1);
-        break;
-      }
-    }
-    store.set('papers', JSON.stringify(papers)); 
-    console.log("papers length: " + papers.length);
-    for(var i = 0; i < papers.length; i++)
-      console.log("stored papers..." + papers[i].title + " key : " + papers[i].key); 
-
-    freedom.emit('display-papers', {value: 0, paperAction: -1, key: key});
-  });
+  processPapers(-1, key); 
 });
 
 freedom.on('load-papers', function(data) {
-  console.log("on load papers");
-  getPapers(); 
+  console.log("on load papers"); 
+  processPapers(0); 
 }); 

@@ -45,8 +45,6 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
-
-    //console.log("aohsdfashdfkjhasdfhasdlfjalsdf" + document.getElementById("paper-view-container").getElementsByTagName("p")[0].innerHTML);
     
     if (files.length < 1) {
       alert("No files found.");
@@ -71,8 +69,6 @@ function uploadFile(files, comments) {
   reader.onload = function() {
     var arrayBuffer = reader.result;
     var today = new Date();  
-
-    console.log("coajfoiasjdfoijsda: " + comments);
 
     console.log("emit add paper");
     window.freedom.emit('add-paper', {
@@ -135,7 +131,7 @@ window.freedom.on('display-papers', function(data) {
   }
 }); 
 
-window.freedom.on('display-default-papers', function(papers){
+window.freedom.on('display-paper-table', function(papers){
   var paper_table = document.getElementById('paper-table');
   for (var i = 0; i < papers.length; i++){
     var p = document.createElement('tr'); 
