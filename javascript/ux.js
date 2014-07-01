@@ -2,8 +2,8 @@
 var app = angular.module('researcher_app', ['ui.bootstrap']);
 var currPaperKey = -1; 
 
-app.controller('sort_controller', function($scope) {
-});
+/*app.controller('sort_controller', function($scope) {
+});*/ 
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
 
@@ -133,7 +133,7 @@ window.freedom.on('display-papers', function(data) {
 
 window.freedom.on('display-paper-table', function(papers){
   var paper_table = document.getElementById('paper-table');
-  for (var i = 0; i < papers.length; i++){
+  for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
     p.setAttribute("id", papers[i].key);
     p.innerHTML = makeRow(papers[i].title, papers[i].date, papers[i].key); 
@@ -155,15 +155,36 @@ function login() {
   console.log(username + " " + password);
 
   document.cookie = "username="+username; 
-  window.location.href = "papers.html";
+  //window.location.href = "papers.html";
+  showPage("papers-page");
+}
+
+// show the given page, hide the rest
+function showPage(id) {
+  console.log("show page: " + id);
+    var pg = document.getElementById(id);
+    if (!pg) {
+        alert("no such page");
+        return;
+    }
+
+    // get all pages, loop through them and hide them
+    var pages = document.getElementsByClassName('page');
+    for(var i = 0; i < pages.length; i++) 
+        pages[i].style.display = 'none';
+
+    /*if(id === "papers-page" || id === "browse-page") {
+      window.freedom.emit('load-papers', 0);
+    }*/ 
+
+    if(id === "papers-page") {
+      window.freedom.emit('load-papers', 0);
+      window.freedom.emit('show-paper', -1); 
+    }
+
+    pg.style.display = 'block';
 }
 
 window.onload = function() {
-  if(window.location.pathname === "/static/papers.html" || window.location.pathname === "/static/browse.html") {
-    console.log("page path is " + window.location.pathname);
-    window.freedom.emit('load-papers', 0); 
-  }
-  if(window.location.pathname === "/static/papers.html") {
-    freedom.emit('show-paper', -1); 
-  }
+  showPage("login-page");
 } 
