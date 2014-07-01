@@ -1,6 +1,6 @@
 //interactions
 var app = angular.module('researcher_app', ['ui.bootstrap']);
-
+var currPaperKey = -1; 
 
 app.controller('sort_controller', function($scope) {
 });
@@ -43,13 +43,16 @@ function str2ab(str) {
 var addPaperCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
+    var comments = document.getElementById("add-paper-comments").value;
+
+    //console.log("aohsdfashdfkjhasdfhasdlfjalsdf" + document.getElementById("paper-view-container").getElementsByTagName("p")[0].innerHTML);
     
     if (files.length < 1) {
       alert("No files found.");
       return;
     }
 
-    uploadFile(files);
+    uploadFile(files, comments);
 
     $modalInstance.dismiss('cancel');
   };
@@ -59,48 +62,34 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   };
 };
 
-function uploadFile(files) {
+function uploadFile(files, comments) {
   var newPaper = files[0];
   var reader = new FileReader();
-  //var blob = new Blob([newPaper], {type: 'application/pdf'});
-
-  //var bloburl = URL.createObjectURL(blob);
-  //console.log("url : " + bloburl);
-
-//  var fileBlob = newPaper.slice(0, newPaper.size);
+  var key = Math.random() + "";
 
   reader.onload = function() {
     var arrayBuffer = reader.result;
-    //var blobURL = window.URL.createObjectURL(fileBlob);
     var today = new Date();  
-    var key = Math.random() + "";
 
-    //console.log("blob " + blob);
-    //console.log("blob stringy " + JSON.stringify(blob));
-
-
-
-    //var blob = new Blob([reader.result], {type: 'application/pdf'});
-    //var bloburl = URL.createObjectURL(blob);
-    //console.log("uploadfile end: " + bloburl);
-
+    console.log("coajfoiasjdfoijsda: " + comments);
 
     console.log("emit add paper");
     window.freedom.emit('add-paper', {
       title: newPaper.name,
       date: today,
       key: key,
+      comments: comments, 
       binaryString: ab2str(arrayBuffer)
     });
   }
   reader.readAsArrayBuffer(newPaper);
-//reader.readAsBinaryString(newPaper);
+
+  window.freedom.emit('show-paper', key);
 }
 
 function downloadPaper(key) {
   console.log("key " + key);
   window.freedom.emit('download-paper', {paperkey: key});
-//  alert("download url: "); 
 }
 
 
@@ -114,12 +103,10 @@ window.freedom.on('got-paper', function(data){
   var blob = new Blob([ab], {type:'application/pdf'});
   reader.readAsArrayBuffer(blob);
 saveAs(blob, "downloadstuff"); 
-  //var bloburl = URL.createObjectURL(blob);
-  //window.location.href = bloburl;
 });
 
 function makeRow(title, date, key) {
-  return '<th><a onclick="downloadPaper(' + key + ')"">' + title + '</a> by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'show-paper\',' + key + ')"><a onclick="downloadPaper(' + key + ')"">' + title + '</a> by John Doe on ' + date + '</th>'; 
 }
 
 window.freedom.on('display-papers', function(data) {
@@ -133,6 +120,14 @@ window.freedom.on('display-papers', function(data) {
   }
 }); 
 
+window.freedom.on('show-paper-view', function(data) {
+  currPaperKey = data.key; 
+  console.log("show paper view " + data.title + " " + currPaperKey);
+  var paper_view = document.getElementById("paper-view-container");
+  paper_view.getElementsByTagName("h1")[0].innerHTML = data.title;
+  paper_view.getElementsByTagName("p")[0].innerHTML = data.comments; 
+});
+
 function login() {
   var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
@@ -143,8 +138,11 @@ function login() {
 }
 
 window.onload = function() {
-  if(window.location.pathname == "/static/papers.html" || window.location.pathname == "/static/browse.html") {
+  if(window.location.pathname === "/static/papers.html" || window.location.pathname === "/static/browse.html") {
     console.log("page path is " + window.location.pathname);
     window.freedom.emit('load-papers', 0); 
+  }
+  if(window.location.pathname === "/static/papers.html") {
+    freedom.emit('show-paper', -1); 
   }
 } 

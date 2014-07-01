@@ -46,7 +46,6 @@ freedom.on('download-paper', function(data){
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
       if (papers[i].key.toString() === data.paperkey.toString()){
-        console.log(papers[i].value);
         freedom.emit('got-paper', papers[i].binaryString);
         break;
       }
@@ -54,16 +53,30 @@ freedom.on('download-paper', function(data){
   });
 });
 
+freedom.on('show-paper', function(key) {
+  var promise = store.get('papers');
+  promise.then(function(val) {
+    var papers = JSON.parse(val);
+ 
+    if(key == -1) {
+      freedom.emit('show-paper-view', papers[0]); 
+      return; 
+    }
+    for(var i = 0; i < papers.length; i++){
+      if (papers[i].key.toString() === key.toString()){
+        freedom.emit('show-paper-view', papers[i]); 
+        break;
+      } 
+    }
+  }); 
+}); 
+
 freedom.on('add-paper', function(data) {
   var dd = data.date.getDate();
   var mm = data.date.getMonth()+1; 
   var yyyy = data.date.getFullYear();
   data.date = yyyy+'-'+mm+'-'+dd; 
   console.log("on add paper: " + data.title + " " + data.date); 
-
-  var blob = new Blob([data.binaryString], {type: 'application/pdf'});
-  var bloburl = URL.createObjectURL(blob);
-  console.log("url : " + bloburl);
 
   getPapers(data);
 }); 

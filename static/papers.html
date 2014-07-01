@@ -57,7 +57,7 @@
           <div class='modal-container'> 
             <h3>Add Paper</h3>
             <div><textarea rows="2" cols="90" placeholder="Add coauthors"></textarea><div> 
-            <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div> 
+            <div><textarea id="add-paper-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
             <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
             <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
 
@@ -93,8 +93,8 @@
     
     <!--papers-->
       <div class="col-md-8">
-        <div class="landing-container">
-          <h1>My Paper (Version 6/6)</h1>
+        <div id="paper-view-container" class="landing-container">
+          <h1></h1>
           <div id = "options-and-nav">
             <div class="btn-group" dropdown is-open="status.isopen" ng-controller="sort_controller">
               <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
@@ -107,7 +107,7 @@
 
                 <script type='text/ng-template' id="addVersionTemplate.html">
                   <div class='modal-container'> 
-                    <h3>Add Version</h3>
+                    <h3>Add Version</h3>    
                     <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div> 
                     <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
                     <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
