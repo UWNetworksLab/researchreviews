@@ -88,22 +88,22 @@ function uploadFile(files, comments) {
   window.freedom.emit('show-paper', key);
 }
 
-function downloadPaper(key) {
-  console.log("key " + key);
-  window.freedom.emit('download-paper', {paperkey: key});
+function downloadPaper() {
+  console.log("key " + currPaperKey);
+  window.freedom.emit('download-paper', currPaperKey);
 }
 
 
 window.freedom.on('got-paper', function(data){
   console.log("got paper "); //data is string
-  var ab = str2ab(data);
+  var ab = str2ab(data.string);
 
   var reader = new FileReader();
 
 
   var blob = new Blob([ab], {type:'application/pdf'});
   reader.readAsArrayBuffer(blob);
-saveAs(blob, "downloadstuff"); 
+  saveAs(blob, data.title); 
 });
 
 function deletePaper(){
@@ -113,7 +113,7 @@ function deletePaper(){
 
 
 function makeRow(title, date, key) {
-  return '<th onclick="freedom.emit(\'show-paper\',' + key + ')"><a onclick="downloadPaper(' + key + ')"">' + title + '</a> by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'show-paper\',' + key + ')">' + title + ' by John Doe on ' + date + '</th>'; 
 }
 
 window.freedom.on('display-papers', function(data) {

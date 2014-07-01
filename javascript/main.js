@@ -50,8 +50,11 @@ freedom.on('download-paper', function(data){
 
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
-      if (papers[i].key.toString() === data.paperkey.toString()){
-        freedom.emit('got-paper', papers[i].binaryString);
+      if (papers[i].key.toString() === data.toString()){
+        freedom.emit('got-paper', {
+          string: papers[i].binaryString, 
+          title: papers[i].title
+        });
         break;
       }
     }
