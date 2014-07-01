@@ -2,8 +2,8 @@
 var app = angular.module('researcher_app', ['ui.bootstrap']);
 var currPaperKey = -1; 
 
-/*app.controller('sort_controller', function($scope) {
-});*/ 
+app.controller('drop_controller', function($scope) {
+}); 
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
 
@@ -122,6 +122,7 @@ window.freedom.on('display-papers', function(data) {
         paper_table.deleteRow(i);
       }
     }
+    freedom.emit('show-paper', -1);
   }
   else if (data.paperAction == 1) {
     var p = document.createElement('tr'); 
@@ -142,9 +143,14 @@ window.freedom.on('display-paper-table', function(papers){
 });
 
 window.freedom.on('show-paper-view', function(data) {
+  var paper_view = document.getElementById("paper-view-container");
+  if(data == -1) {
+    paper_view.getElementsByTagName("h1")[0].innerHTML = ""; 
+    paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+    return; 
+  }
   currPaperKey = data.key; 
   console.log("show paper view " + data.title + " " + currPaperKey);
-  var paper_view = document.getElementById("paper-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = data.title;
   paper_view.getElementsByTagName("p")[0].innerHTML = data.comments; 
 });

@@ -234,7 +234,7 @@
           <div id="paper-view-container" class="landing-container">
             <h1></h1>
             <div id = "options-and-nav">
-              <div class="btn-group" dropdown is-open="status.isopen">
+              <div class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
                 <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
                   Options <span class="caret">
                 </button>
@@ -348,7 +348,7 @@
           <div class="landing-container">
             <h1>Peer Paper (Version 6/6)</h1>
             <div id = "options-and-nav">
-              <div class="btn-group" dropdown is-open="status.isopen">
+              <div class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
                 <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
                   Options <span class="caret">
                 </button>
@@ -405,7 +405,7 @@
 
         <h2> Browse Papers
           <!-- Sort by -->
-        <span class="btn-group" dropdown is-open="status.isopen">
+        <span class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
           <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
             Sort By <span class="caret"></span>
           </button>

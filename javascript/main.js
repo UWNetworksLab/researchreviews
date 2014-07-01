@@ -68,7 +68,11 @@ freedom.on('show-paper', function(key) {
   var promise = store.get('papers');
   promise.then(function(val) {
     var papers = JSON.parse(val);
- 
+  
+    if(papers.length == 0) {
+      freedom.emit('show-paper-view', -1);
+      return; 
+    }
     if(key == -1) {
       freedom.emit('show-paper-view', papers[0]); 
       return; 
