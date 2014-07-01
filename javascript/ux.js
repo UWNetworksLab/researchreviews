@@ -28,6 +28,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 }); 
 
+/* arraybuffer/string conversion */
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
@@ -52,7 +53,6 @@ var addPaperCtrl = function ($scope, $modalInstance) {
     }
 
     uploadFile(files, comments);
-
     $modalInstance.dismiss('cancel');
   };
 
