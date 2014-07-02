@@ -132,14 +132,14 @@ function deletePaper(){
 }
 
 function makeRow(title, date, key) {
-  return '<th onclick="freedom.emit(\'find-paper\', {key:' + key + '})">' + title + ' by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'get-paper-view\', {key:' + key + '})">' + title + ' by John Doe on ' + date + '</th>'; 
 }
 
 function updateTable(data, updateAction) {
   var paper_table = document.getElementById('paper-table');
   if(updateAction == 1) {
     var versionLen = data.versions.length-1; 
-    var p = document.createElement('tr'); 
+    var p = document.createElement('tr');
     p.setAttribute("id", data.key);
     p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
     paper_table.appendChild(p);
@@ -154,93 +154,68 @@ function updateTable(data, updateAction) {
   }
 }
 
-function updateView(version, updateAction) { //get newest version of uploaded paper/paper you were looking at 
+function updateView(version) { //get newest version of uploaded paper/paper you were looking at 
   var paper_view = document.getElementById("paper-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
 }
 
 window.freedom.on('display-delete-paper', function(key) {
-  currPaperKey = -1; 
-  currPaperVersion = -1; 
-
-  updateTable(key, -1); 
-//  updateView(paper.versions[0], 1); 
+  updateTable(key, -1);
+  window.freedom.emit('load-papers', 0);
 });
 
 window.freedom.on('display-new-paper', function(paper) {
   updateTable(paper, 1); 
   currPaperKey = paper.key; 
   currPaperVersion = 0; 
-  updateView(paper.versions[0], 1); 
+  updateView(paper.versions[0]); 
 });
 
 window.freedom.on('display-new-version', function(paper) {
   currPaperKey = paper.key; 
   currPaperVersion = paper.versions.length-1; 
-  updateView(paper.versions[paper.versions.length-1], 1); 
+  updateView(paper.versions[paper.versions.length-1]); 
 });
 
-
 function getVersion(offset) {
-  window.freedom.emit('find-paper', {
+  window.freedom.emit('get-paper-view', {
     key: currPaperKey, 
     vnum: currPaperVersion+offset 
   }); 
 }
 
-window.freedom.on("found-paper", function(version) {
+window.freedom.on("got-paper-view", function(version) {
   currPaperVersion = version.vnum; 
   currPaperKey = version.key; 
-  console.log("on found paper, curr paper key :" + currPaperKey);
+  console.log("on got-paper-view, curr paper key :" + currPaperKey);
   console.log("current version: " + currPaperVersion);
-  updateView(version, 1);  
+  updateView(version);  
 }); 
 
-/*window.freedom.on('display-papers', function(data) {
-  console.log('display papers ' + data.paperAction); 
-  var paper_table = document.getElementById('paper-table');
-
-  if (data.paperAction == -1){
-    for (var i = 0; i < paper_table.rows.length; i++){
-      if (data.key == paper_table.rows[i].getAttribute("id")){
-        paper_table.deleteRow(i);
-      }
-    }
-    freedom.emit('show-paper', -1);
-  }
-  else if (data.paperAction == 1) {
-    var p = document.createElement('tr'); 
-    p.setAttribute("id", data.key);
-    p.innerHTML = makeRow(data.value.title, data.value.date, data.key); 
-    paper_table.appendChild(p);
-  }
-}); */
-
-window.freedom.on('display-paper-table', function(papers){
+window.freedom.on('display-table-and-view', function(papers){
   var paper_table = document.getElementById('paper-table');
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
     p.setAttribute("id", papers[i].key);
     var len = papers[i].versions.length-1; 
     p.innerHTML = makeRow(papers[i].versions[len].title, papers[i].versions[len].date, papers[i].key); 
-    paper_table.appendChild(p);    
+    paper_table.appendChild(p);
   }
-});
-/*
-window.freedom.on('show-paper-view', function(data) {
-  var paper_view = document.getElementById("paper-view-container");
-  if(data == -1) {
-    paper_view.getElementsByTagName("h1")[0].innerHTML = ""; 
-    paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
-    return; 
-  }
-  currPaperKey = data.key; 
-  console.log("show paper view " + data.title + " " + currPaperKey);
-  paper_view.getElementsByTagName("h1")[0].innerHTML = data.title;
-  paper_view.getElementsByTagName("p")[0].innerHTML = data.comments; 
-});*/ 
 
+  var paper_view = document.getElementById("paper-view-container");
+  if (!papers.length) {
+    paper_view.getElementsByTagName("h1")[0].innerHTML = "";
+    paper_view.getElementsByTagName("p")[0].innerHTML = "";
+    return;
+  }
+
+  var firstVersion = papers[0].versions[papers[0].versions.length-1];
+  paper_view.getElementsByTagName("h1")[0].innerHTML = firstVersion.title + " v." + firstVersion.vnum;
+  paper_view.getElementsByTagName("p")[0].innerHTML = firstVersion.comments;
+  currPaperKey = papers[0].key;
+  currPaperVersion = papers[0].versions.length-1;
+});
 
 function login() {
   var username = document.getElementById("username").value;
@@ -265,12 +240,8 @@ function showPage(id) {
     for(var i = 0; i < pages.length; i++) 
         pages[i].style.display = 'none';
 
-    /*if(id === "papers-page" || id === "browse-page") {
-      window.freedom.emit('load-papers', 0);
-    }*/ 
-
     if(id === "papers-page") {
-      window.freedom.emit('get-paper-table', 0);
+      window.freedom.emit('load-papers', 0);
     }
 
     pg.style.display = 'block';
