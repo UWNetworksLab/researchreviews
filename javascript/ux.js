@@ -213,8 +213,6 @@ window.freedom.on("got-paper-view", function(data) {
 
 window.freedom.on('display-table-and-view', function(papers){
   console.log("display-table-and-view");
-  var action = 1;
-  if (papers.length == 1) action = 0;
   var paper_table = document.getElementById('paper-table');
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
@@ -230,6 +228,9 @@ window.freedom.on('display-table-and-view', function(papers){
     paper_view.getElementsByTagName("p")[0].innerHTML = "";
     return;
   }
+
+  var action = 1;
+  if (papers[0].versions.length == 1) action = 0;
 
   var firstVersion = papers[0].versions[papers[0].versions.length-1];
   updateView(firstVersion, action); 
