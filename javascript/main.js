@@ -91,11 +91,19 @@ freedom.on('get-paper-view', function(data) {
 
     for(var i = 0; i < papers.length; i++){
       if(papers[i].key == data.key) {
-        if(!data.vnum) {
+        console.log("DATA VNUM: " + data.vnum + " num of versions: " + papers[i].versions.length);
+        if(data.vnum == -1) { //from clicking paper table
+          console.log("if statement 1");
           freedom.emit("got-paper-view", papers[i].versions[papers[i].versions.length-1]);
         }
-        else if(data.vnum >= 0 || data.vnum < papers[i].versions.length) 
+        else if(data.vnum >= 0 && data.vnum < papers[i].versions.length) { //clicking prev and next, version exists
+          console.log("get-paper view...vnum: " + data.vnum + " num of versions: " + papers[i].versions.length);
           freedom.emit("got-paper-view", papers[i].versions[data.vnum]);
+        }
+        else if(data.vnum < 0)
+          freedom.emit("got-paper-view", -1);
+        else if(data.vnum >= papers[i].versions.length)
+          freedom.emit("got-paper-view", 1);
         break;
       }
     }

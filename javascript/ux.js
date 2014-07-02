@@ -132,7 +132,7 @@ function deletePaper(){
 }
 
 function makeRow(title, date, key) {
-  return '<th onclick="freedom.emit(\'get-paper-view\', {key:' + key + '})">' + title + ' by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'get-paper-view\', {key:' + key + ', vnum: -1' + '})">' + title + ' by John Doe on ' + date + '</th>'; 
 }
 
 function updateTable(data, updateAction) {
@@ -158,6 +158,9 @@ function updateView(version) { //get newest version of uploaded paper/paper you 
   var paper_view = document.getElementById("paper-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
+
+  currPaperKey = version.key;
+  currPaperVersion = version.vnum; 
 }
 
 window.freedom.on('display-delete-paper', function(key) {
@@ -167,18 +170,15 @@ window.freedom.on('display-delete-paper', function(key) {
 
 window.freedom.on('display-new-paper', function(paper) {
   updateTable(paper, 1); 
-  currPaperKey = paper.key; 
-  currPaperVersion = 0; 
   updateView(paper.versions[0]); 
 });
 
 window.freedom.on('display-new-version', function(paper) {
-  currPaperKey = paper.key; 
-  currPaperVersion = paper.versions.length-1; 
   updateView(paper.versions[paper.versions.length-1]); 
 });
 
 function getVersion(offset) {
+  console.log("try to go to version...key: " + currPaperKey + " vnum: " + (currPaperVersion+offset));
   window.freedom.emit('get-paper-view', {
     key: currPaperKey, 
     vnum: currPaperVersion+offset 
@@ -186,6 +186,18 @@ function getVersion(offset) {
 }
 
 window.freedom.on("got-paper-view", function(version) {
+  /*var btn_group = document.getElementById("v_btn_group"); 
+  btn_group.getElementsByTagName("button")[0].setAttribute('disabled', false); 
+  btn_group.getElementsByTagName("button")[1].setAttribute('disabled', false); 
+
+  if(version == 1) {
+    btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
+    return; 
+  }
+  if(version == -1) {
+    btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
+    return; 
+  } */ 
   currPaperVersion = version.vnum; 
   currPaperKey = version.key; 
   console.log("on got-paper-view, curr paper key :" + currPaperKey);
@@ -211,10 +223,7 @@ window.freedom.on('display-table-and-view', function(papers){
   }
 
   var firstVersion = papers[0].versions[papers[0].versions.length-1];
-  paper_view.getElementsByTagName("h1")[0].innerHTML = firstVersion.title + " v." + firstVersion.vnum;
-  paper_view.getElementsByTagName("p")[0].innerHTML = firstVersion.comments;
-  currPaperKey = papers[0].key;
-  currPaperVersion = papers[0].versions.length-1;
+  updateView(firstVersion); 
 });
 
 function login() {
