@@ -185,27 +185,33 @@ function getVersion(offset) {
   }); 
 }
 
-window.freedom.on("got-paper-view", function(version) {
-  /*var btn_group = document.getElementById("v_btn_group"); 
-  btn_group.getElementsByTagName("button")[0].setAttribute('disabled', false); 
-  btn_group.getElementsByTagName("button")[1].setAttribute('disabled', false); 
+window.freedom.on("got-paper-view", function(data) {
+  var btn_group = document.getElementById("v_btn_group"); 
+  btn_group.getElementsByTagName("button")[0].removeAttribute('disabled'); 
+  btn_group.getElementsByTagName("button")[1].removeAttribute('disabled'); 
 
-  if(version == 1) {
+  if(data.action == 1) {
     btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
-    return; 
   }
-  if(version == -1) {
+  else if(data.action == -1) {
     btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
-    return; 
-  } */ 
-  currPaperVersion = version.vnum; 
-  currPaperKey = version.key; 
+  } 
+  else if(data.action == 0) {
+    console.log("disable both");
+    btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
+    btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
+  }
+  currPaperVersion = data.version.vnum; 
+  currPaperKey = data.version.key; 
   console.log("on got-paper-view, curr paper key :" + currPaperKey);
   console.log("current version: " + currPaperVersion);
-  updateView(version);  
+  updateView(data.version);  
 }); 
 
+
+
 window.freedom.on('display-table-and-view', function(papers){
+  console.log("display-table-and-view");
   var paper_table = document.getElementById('paper-table');
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 

@@ -88,22 +88,27 @@ freedom.on('get-paper-view', function(data) {
       console.log("nothing in papers");
       papers = []; 
     }
-
-    for(var i = 0; i < papers.length; i++){
+   for(var i = 0; i < papers.length; i++){
       if(papers[i].key == data.key) {
         console.log("DATA VNUM: " + data.vnum + " num of versions: " + papers[i].versions.length);
         if(data.vnum == -1) { //from clicking paper table
           console.log("if statement 1");
-          freedom.emit("got-paper-view", papers[i].versions[papers[i].versions.length-1]);
+          var action = 1;
+          if (papers[i].versions.length == 1) action = 0;
+          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: action});
         }
-        else if(data.vnum >= 0 && data.vnum < papers[i].versions.length) { //clicking prev and next, version exists
+        else if(data.vnum > 0 && data.vnum < papers[i].versions.length-1) { //clicking prev and next, version exists
           console.log("get-paper view...vnum: " + data.vnum + " num of versions: " + papers[i].versions.length);
-          freedom.emit("got-paper-view", papers[i].versions[data.vnum]);
+          freedom.emit("got-paper-view", {version: papers[i].versions[data.vnum]});
         }
-        else if(data.vnum < 0)
-          freedom.emit("got-paper-view", -1);
-        else if(data.vnum >= papers[i].versions.length)
-          freedom.emit("got-paper-view", 1);
+        else if(data.vnum == 0) { //if number disable
+          console.log("got -1");
+          freedom.emit("got-paper-view", {version: papers[i].versions[0], action: -1});
+        }
+        else if(data.vnum >= papers[i].versions.length-1){
+          console.log("got 1");
+          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: 1});          
+        }
         break;
       }
     }
