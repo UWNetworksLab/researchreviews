@@ -126,11 +126,10 @@ window.freedom.on('got-paper', function(data){
   saveAs(blob, data.title); 
 });
 
-/*function deletePaper(){
+function deletePaper(){
   console.log("delete : "  + currPaperKey);
   window.freedom.emit('delete-paper', currPaperKey);
-}*/ 
-
+}
 
 function makeRow(title, date, key) {
   return '<th onclick="freedom.emit(\'find-paper\', {key:' + key + '})">' + title + ' by John Doe on ' + date + '</th>'; 
@@ -145,6 +144,14 @@ function updateTable(data, updateAction) {
     p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
     paper_table.appendChild(p);
   }
+
+  else if (updateAction == -1){
+    for (var i = 0; i < paper_table.rows.length; i++){
+      if (data == paper_table.rows[i].getAttribute("id")){
+        paper_table.deleteRow(i);
+      }
+    }
+  }
 }
 
 function updateView(version, updateAction) { //get newest version of uploaded paper/paper you were looking at 
@@ -153,9 +160,16 @@ function updateView(version, updateAction) { //get newest version of uploaded pa
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
 }
 
+window.freedom.on('display-delete-paper', function(key) {
+  currPaperKey = -1; 
+  currPaperVersion = -1; 
+
+  updateTable(key, -1); 
+//  updateView(paper.versions[0], 1); 
+});
+
 window.freedom.on('display-new-paper', function(paper) {
   updateTable(paper, 1); 
-
   currPaperKey = paper.key; 
   currPaperVersion = 0; 
   updateView(paper.versions[0], 1); 

@@ -179,13 +179,33 @@ freedom.on('get-paper-table', function(data) {
     freedom.emit('display-paper-table', papers); 
   }); 
 });
-/*
+
 freedom.on('delete-paper', function(key){
   console.log("on delete-paper");
-  processPapers(-1, key); 
+  var promise = store.get('papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    console.log("deleting papers");
+    for(var i = 0; i < papers.length; i++){
+      if(papers[i].key == key) {
+        papers.splice(i, 1);
+        break;
+      }
+    }
+    store.set('papers', JSON.stringify(papers)); 
+    freedom.emit('display-delete-paper', key);
+  }); 
 });
 
+
+
+
+/*
 freedom.on('load-papers', function(data) {
   console.log("on load papers"); 
   processPapers(0); 
-}); */ 
+}); */
