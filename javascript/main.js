@@ -1,10 +1,8 @@
 //backend
 
-// FreeDOM APIs
-//var core = freedom.core();
-//var social = freedom.socialprovider();
-//var storage = freedom.storageprovider();
 var store = freedom.localstorage();
+var social = freedom.socialprovider(); 
+var myClientState = null;
 
 //store.set('papers', []);
  
@@ -152,4 +150,23 @@ freedom.on('delete-paper', function(key){
     store.set('papers', JSON.stringify(papers)); 
     freedom.emit('display-delete-paper', key);
   }); 
+});
+
+social.login({
+  agent: 'rr',
+  version: '0.1',
+  url: '',
+  interactive: true,
+  rememberLogin: false
+}).then(function(ret) {
+  myClientState = ret;
+  console.log("state: " + JSON.stringify(myClientState));
+  if (ret.status == social.STATUS["ONLINE"]) {
+    freedom.emit('recv-uid', "jdoe");
+    freedom.emit('recv-status', "online");
+  } else {
+    freedom.emit('recv-status', "offline");
+  }
+}, function(err) {
+  freedom.emit("recv-err", err);
 });

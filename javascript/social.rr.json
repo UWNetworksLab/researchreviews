@@ -1,0 +1,20 @@
+{
+  "name": "Social Provider",
+  "description": "Social provider using the router.py WebSockets rendezvous",
+  "app": {
+    "script": "social.ws.js"
+  },
+  "provides": [
+    "social"
+  ],
+  "permissions": [
+    "core.view"
+  ],
+  "dependencies": {
+    "storageprovider": {
+      "url": "node_modules/freedom/providers/storage/isolated/storage.isolated.json",
+      "api": "storage"
+    }
+  }
+}
+

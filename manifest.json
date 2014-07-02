@@ -8,11 +8,7 @@
     "socialprovider": {
       "url": "node_modules/freedom/providers/social/websocket-server/social.ws.json",
       "api": "social"
-    },
-    "storageprovider": {
-      "url": "node_modules/freedom/providers/storage/isolated/storage.isolated.json",
-      "api": "storage"
-    },
+    }, 
     "transport": {
       "url": "node_modules/freedom/providers/transport/webrtc/transport.webrtc.json",
       "api": "transport"

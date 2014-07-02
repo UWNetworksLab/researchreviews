@@ -266,6 +266,16 @@ function showPage(id) {
     pg.style.display = 'block';
 }
 
+  // Display our own userId when we get it
+  window.freedom.on('recv-uid', function(data) {
+    console.log("Logged in as: " + data);
+  });
+
+  // Display the current status of our connection to the Social provider
+  window.freedom.on('recv-status', function(msg) {
+    console.log("status: " + msg);
+  });
+
 window.onload = function() {
   showPage("login-page");
 } 
