@@ -1,6 +1,7 @@
 //interactions
 var app = angular.module('researcher_app', ['ui.bootstrap']);
 var currPaperKey = -1; 
+var currPaperVersion = -1; 
 
 app.controller('drop_controller', function($scope) {
 }); 
@@ -22,7 +23,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
     var modalInstance = $modal.open({
       templateUrl: 'addVersionTemplate.html',
       windowClass:'normal',
-      controller: addPaperCtrl,
+      controller: addVersionCtrl,
       backdrop: 'static'
     });
   };
@@ -61,14 +62,37 @@ var addPaperCtrl = function ($scope, $modalInstance) {
   };
 };
 
-function uploadFile(files, comments) {
+var addVersionCtrl = function ($scope, $modalInstance) {
+  $scope.upload = function () {
+    var files = document.getElementById("addFile").files;
+    var comments = document.getElementById("add-version-comments").value;
+    
+    if (files.length < 1) {
+      alert("No files found.");
+      return;
+    }
+
+    uploadFile(files, comments, currPaperKey);
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+function uploadFile(files, comments, key) {
   var newPaper = files[0];
   var reader = new FileReader();
-  var key = Math.random() + "";
 
   reader.onload = function() {
     var arrayBuffer = reader.result;
     var today = new Date();  
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; 
+    var yyyy = today.getFullYear();
+    today = yyyy+'-'+mm+'-'+dd; 
+
 
     console.log("emit add paper");
     window.freedom.emit('add-paper', {
@@ -80,15 +104,15 @@ function uploadFile(files, comments) {
     });
   }
   reader.readAsArrayBuffer(newPaper);
-
-  window.freedom.emit('show-paper', key);
 }
 
-function downloadPaper() {
+function downloadVersion() {
   console.log("key " + currPaperKey);
-  window.freedom.emit('download-paper', currPaperKey);
+  window.freedom.emit('download-version', {
+    key: currPaperKey,
+    vnum: currPaperVersion 
+  });
 }
-
 
 window.freedom.on('got-paper', function(data){
   console.log("got paper "); //data is string
@@ -102,17 +126,64 @@ window.freedom.on('got-paper', function(data){
   saveAs(blob, data.title); 
 });
 
-function deletePaper(){
+/*function deletePaper(){
   console.log("delete : "  + currPaperKey);
   window.freedom.emit('delete-paper', currPaperKey);
-}
+}*/ 
 
 
 function makeRow(title, date, key) {
-  return '<th onclick="freedom.emit(\'show-paper\',' + key + ')">' + title + ' by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'find-paper\', {key:' + key + '})">' + title + ' by John Doe on ' + date + '</th>'; 
 }
 
-window.freedom.on('display-papers', function(data) {
+function updateTable(data, updateAction) {
+  var paper_table = document.getElementById('paper-table');
+  if(updateAction == 1) {
+    var versionLen = data.versions.length-1; 
+    var p = document.createElement('tr'); 
+    p.setAttribute("id", data.key);
+    p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
+    paper_table.appendChild(p);
+  }
+}
+
+function updateView(version, updateAction) { //get newest version of uploaded paper/paper you were looking at 
+  var paper_view = document.getElementById("paper-view-container");
+  paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
+  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
+}
+
+window.freedom.on('display-new-paper', function(paper) {
+  updateTable(paper, 1); 
+
+  currPaperKey = paper.key; 
+  currPaperVersion = 0; 
+  updateView(paper.versions[0], 1); 
+});
+
+window.freedom.on('display-new-version', function(paper) {
+  currPaperKey = paper.key; 
+  currPaperVersion = paper.versions.length-1; 
+  updateView(paper.versions[paper.versions.length-1], 1); 
+});
+
+
+function getVersion(offset) {
+  window.freedom.emit('find-paper', {
+    key: currPaperKey, 
+    vnum: currPaperVersion+offset 
+  }); 
+}
+
+window.freedom.on("found-paper", function(version) {
+  currPaperVersion = version.vnum; 
+  currPaperKey = version.key; 
+  console.log("on found paper, curr paper key :" + currPaperKey);
+  console.log("current version: " + currPaperVersion);
+  updateView(version, 1);  
+}); 
+
+/*window.freedom.on('display-papers', function(data) {
   console.log('display papers ' + data.paperAction); 
   var paper_table = document.getElementById('paper-table');
 
@@ -130,18 +201,19 @@ window.freedom.on('display-papers', function(data) {
     p.innerHTML = makeRow(data.value.title, data.value.date, data.key); 
     paper_table.appendChild(p);
   }
-}); 
+}); */
 
 window.freedom.on('display-paper-table', function(papers){
   var paper_table = document.getElementById('paper-table');
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
     p.setAttribute("id", papers[i].key);
-    p.innerHTML = makeRow(papers[i].title, papers[i].date, papers[i].key); 
+    var len = papers[i].versions.length-1; 
+    p.innerHTML = makeRow(papers[i].versions[len].title, papers[i].versions[len].date, papers[i].key); 
     paper_table.appendChild(p);    
   }
 });
-
+/*
 window.freedom.on('show-paper-view', function(data) {
   var paper_view = document.getElementById("paper-view-container");
   if(data == -1) {
@@ -153,7 +225,8 @@ window.freedom.on('show-paper-view', function(data) {
   console.log("show paper view " + data.title + " " + currPaperKey);
   paper_view.getElementsByTagName("h1")[0].innerHTML = data.title;
   paper_view.getElementsByTagName("p")[0].innerHTML = data.comments; 
-});
+});*/ 
+
 
 function login() {
   var username = document.getElementById("username").value;
@@ -161,7 +234,6 @@ function login() {
   console.log(username + " " + password);
 
   document.cookie = "username="+username; 
-  //window.location.href = "papers.html";
   showPage("papers-page");
 }
 
@@ -184,8 +256,7 @@ function showPage(id) {
     }*/ 
 
     if(id === "papers-page") {
-      window.freedom.emit('load-papers', 0);
-      window.freedom.emit('show-paper', -1); 
+      window.freedom.emit('get-paper-table', 0);
     }
 
     pg.style.display = 'block';
