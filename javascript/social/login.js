@@ -1,16 +1,45 @@
-window.addEventListener('load', function() {
+function toSignup() {
+  console.log("sign up page");
+  showPage("signup-page");
+}
+
+function signup() {
+  console.log("sign up");
+}
+
+function login() {
   var form = document.getElementsByTagName('form')[0];
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var credentials = {
+  var credentials = {
       user: form.user.value,
       password: form.password.value,
     };
     parent.postMessage(credentials, '*');
-    return false;
-  }, true);
-  
+}
+
+function showPage(id) {
+  console.log("show page: " + id);
+  var pg = document.getElementById(id);
+  if (!pg) {
+      alert("no such page");
+      return;
+  }
+
+  // get all pages, loop through them and hide them
+  var pages = document.getElementsByClassName('page');
+  for(var i = 0; i < pages.length; i++) 
+      pages[i].style.display = 'none';
+
+  if(id === "papers-page") {
+    window.freedom.emit('load-papers', 0);
+  }
+
+  pg.style.display = 'block';
+}
+
+window.onload = function() {
+  showPage("login-page");
+
   window.addEventListener('message', function(m) {
     document.getElementById('status').innerText = m.data;
   }, true);
-}, true);
+} 

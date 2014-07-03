@@ -1,14 +1,43 @@
 <html>
   <head>
+    <link rel='stylesheet' type='text/css' href='../../css/bootstrap.min.css'/> 
+    <link rel='stylesheet' type='text/css' href='../../css/rrstyle.css' />
+
     <script type='text/javascript' src='login.js'></script>
+    <script src="../../node_modules/angular/lib/angular.min.js" type="text/javascript"></script>
+    <script src="../../node_modules/jquery/dist/cdn/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="../ui-bootstrap-tpls-0.11.0.min.js" type="text/javascript"></script>
   </head>
   <body>
-    <header>
-      <h1>Please Log In:</h1>
-    </header>
-    <section>
-      <span id='status'></span>
-    </section>
+  <div id="login-page" class="page" style=""> 
+    <div id="sign-up"> 
+      <button class = "btn btn-primary btn-lg" onclick="toSignup()">sign up</button>
+    </div>
+    <div id="login-container">
+      <header>
+        <img src="../../logo.png"/>
+      </header>
+      <section>
+        <span id='status'></span>
+      </section>
+      <section>
+        <form>
+          <!-- TODO: Make Login UX decent -->
+          <label for='userId'>User Name:</label>
+          <input type='text' name='user' placeholder='User Name' /><br />
+          <label for='password'>Password:</label>
+          <input type='password' name='password' placeholder='Password' /><br />
+          <input type='submit' onclick='login()' value='log in' />
+        </form>
+      </section>
+    </div>
+  </div> 
+
+  <div id="signup-page" class="page" style="">
+    <div id="login-container">
+       <header>
+        <h1> sign up </h1>
+      </header>
     <section>
       <form>
         <!-- TODO: Make Login UX decent -->
@@ -16,8 +45,9 @@
         <input type='text' name='user' placeholder='User Name' /><br />
         <label for='password'>Password:</label>
         <input type='password' name='password' placeholder='Password' /><br />
-        <input type='submit' value='log in' />
+        <input type='submit' onclick="signup()" value='sign up'/>
       </form>
-    </section>
+    </section>  
+    </div>
   </body>
 </html>
