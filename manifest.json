@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "socialprovider": {
-      "url": "node_modules/freedom/providers/social/websocket-server/social.ws.json",
+      "url": "javascript/social/social.rr.json",
       "api": "social"
     }, 
     "transport": {

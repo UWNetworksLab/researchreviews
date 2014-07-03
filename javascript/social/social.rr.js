@@ -37,6 +37,7 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
 };
 
 RRSocialProvider.prototype.onCredentials = function(finish, credentials) {
+  console.log("here");
   this.storage.get(credentials.user).then(function(state) {
     if (state.password === credentials.password) {
       this.user = state;
@@ -48,6 +49,7 @@ RRSocialProvider.prototype.onCredentials = function(finish, credentials) {
 };
 
 RRSocialProvider.prototype.getUsers = function(continuation) {
+  console.log("here");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
@@ -56,6 +58,7 @@ RRSocialProvider.prototype.getUsers = function(continuation) {
 };
 
 RRSocialProvider.prototype.getClients = function(continuation) {
+  console.log("here");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
@@ -64,6 +67,7 @@ RRSocialProvider.prototype.getClients = function(continuation) {
 };
 
 RRSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
+  console.log("here");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
