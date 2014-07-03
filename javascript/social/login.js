@@ -4,6 +4,13 @@ function toSignup() {
 }
 
 function signup() {
+  var form = document.getElementsByTagName('form')[0];
+  var newUser = {
+    user: form.user.value,
+    password: form.password.value,
+    action: "signup"
+  };
+  parent.postMessage(newUser, '*');
   console.log("sign up");
 }
 
@@ -12,6 +19,7 @@ function login() {
   var credentials = {
       user: form.user.value,
       password: form.password.value,
+      action: 'login'
     };
     parent.postMessage(credentials, '*');
 }
@@ -20,8 +28,8 @@ function showPage(id) {
   console.log("show page: " + id);
   var pg = document.getElementById(id);
   if (!pg) {
-      alert("no such page");
-      return;
+    alert("no such page");
+    return;
   }
 
   // get all pages, loop through them and hide them

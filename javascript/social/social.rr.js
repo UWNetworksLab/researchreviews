@@ -12,13 +12,6 @@ function RRSocialProvider(dispatchEvent, webSocket) {
 	this.user = null;
 	this.friends = {}; 
 	this.clients = {}; 
-
-  var me = {
-    user: 'bonnie',
-    password: 'pan'
-  };
-  this.storage.set('bonnie', JSON.stringify(me));
-
 }
 
 RRSocialProvider.prototype.login = function(loginOpts, continuation) {
@@ -39,35 +32,45 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
     return;
   }
 
-  this.view.once('message', this.onCredentials.bind(this, finishLogin));
+  this.view.on('message', this.onmessage.bind(this, finishLogin));
   this.view.open('login', {file: 'login.html'}).then(this.view.show.bind(this.view));
 };
 
-RRSocialProvider.prototype.onCredentials = function(finish, credentials) {
+RRSocialProvider.prototype.onmessage = function(finish, msg) {
   console.log("here");
-  this.storage.get(credentials.user).then(function(state) {
-    var got = JSON.parse(state);
+  if (msg.action == "login"){
+    this.storage.get(msg.user).then(function(state) {
+      var got = JSON.parse(state);
 
-    console.log("credentials: " + credentials.user + credentials.password);
-    console.log("state: " +got.user + got.password);
+      console.log("credentials: " + msg.user + msg.password);
+      console.log("state: " +got.user + got.password);
 
-    if (state && got.password === credentials.password) {
-      this.user = got;
-      console.log("we did it");
-      this.view.close();
+      if (state && got.password === msg.password) {
+        this.user = got;
+        console.log("we did it");
+        this.view.close();
 
-     var ret = {
-        'userId' : got.user,
-        'clientId' : got.user,
-        'status': 'ONLINE',
-        'timestamp': '1'
-      };
+       var ret = {
+          'userId' : got.user,
+          'clientId' : got.user,
+          'status': 'ONLINE',
+          'timestamp': '1'
+        };
 
-      finish.finish(ret);
-    } else {
-      this.view.postMessage('Invalid Credentials!');
-    }
-  }.bind(this));
+        finish.finish(ret);
+      } else {
+        this.view.postMessage('Invalid Credentials!');
+      }
+    }.bind(this));
+  }
+
+  else if (msg.action == "signup"){
+    var newUser = {
+      user: msg.user,
+      password: msg.password
+    };
+    this.storage.set(msg.user, JSON.stringify(newUser));
+  }
 };
 
 RRSocialProvider.prototype.getUsers = function(continuation) {

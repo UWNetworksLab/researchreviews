@@ -152,8 +152,12 @@ freedom.on('delete-paper', function(key){
   }); 
 });
 
+freedom.on('new-user', function(user){
+  console.log("reached here");
+});
+
 social.login({
-  agent: 'rr',
+  agent: 'rr',.then
   version: '0.1',
   url: '',
   interactive: true,
@@ -164,7 +168,7 @@ social.login({
   if (ret.status == social.STATUS["ONLINE"]) {
     freedom.emit('recv-uid', ret.userId);
     freedom.emit('recv-status', "online");
-    
+
   } else {
     freedom.emit('recv-status', "offline");
   }
