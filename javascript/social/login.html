@@ -21,13 +21,24 @@
         <span id='status'></span>
       </section>
       <section>
-        <form>
-          <!-- TODO: Make Login UX decent -->
-          <label for='userId'>User Name:</label>
-          <input type='text' name='user' placeholder='User Name' /><br />
-          <label for='password'>Password:</label>
-          <input type='password' name='password' placeholder='Password' /><br />
-          <input type='submit' onclick='login()' value='log in' />
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for='userId'>User Name:</label>
+            <div class="col-sm-5">
+              <input type='text' class="form-control" name='user' placeholder='User Name'/>
+            </div> 
+            <div class="col-sm-3"></div>
+          </div> 
+
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for='password'>Password:</label>
+            <div class="col-sm-5"> 
+              <input type='password' class="form-control" name='password' placeholder='Password' />
+            </div> 
+            <div class="col-sm-3"></div>
+          </div>
+
+          <button type='submit' class="btn btn-default" onclick='login()'>Log In</button> 
         </form>
       </section>
     </div>
@@ -39,14 +50,25 @@
         <h1> sign up </h1>
       </header>
     <section>
-      <form>
-        <!-- TODO: Make Login UX decent -->
-        <label for='userId'>User Name:</label>
-        <input type='text' name='user' placeholder='User Name' /><br />
-        <label for='password'>Password:</label>
-        <input type='password' name='password' placeholder='Password' /><br />
-        <input type='submit' onclick="signup()" value='sign up'/>
-      </form>
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for='userId'>User Name:</label>
+            <div class="col-sm-5">
+              <input type='text' class="form-control" name='user' placeholder='User Name'/>
+            </div> 
+            <div class="col-sm-3"></div>
+          </div> 
+
+          <div class="form-group">
+            <label class="col-sm-4 control-label" for='password'>Password:</label>
+            <div class="col-sm-5"> 
+              <input type='password' class="form-control" name='password' placeholder='Password' />
+            </div> 
+            <div class="col-sm-3"></div>
+          </div>
+
+          <button type='submit' class="btn btn-default" onclick='signup()'>Sign Up</button> 
+        </form>
     </section>  
     </div>
   </body>

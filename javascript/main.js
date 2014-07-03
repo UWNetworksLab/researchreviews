@@ -152,12 +152,8 @@ freedom.on('delete-paper', function(key){
   }); 
 });
 
-freedom.on('new-user', function(user){
-  console.log("reached here");
-});
-
 social.login({
-  agent: 'rr',.then
+  agent: 'rr', 
   version: '0.1',
   url: '',
   interactive: true,

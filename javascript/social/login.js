@@ -4,14 +4,15 @@ function toSignup() {
 }
 
 function signup() {
-  var form = document.getElementsByTagName('form')[0];
+  var form = document.getElementsByTagName('form')[1];
   var newUser = {
     user: form.user.value,
     password: form.password.value,
     action: "signup"
   };
+  console.log("newUser " + form.user.value + " " + form.password.value); 
   parent.postMessage(newUser, '*');
-  console.log("sign up");
+  console.log("sign up");  
 }
 
 function login() {
@@ -20,8 +21,8 @@ function login() {
       user: form.user.value,
       password: form.password.value,
       action: 'login'
-    };
-    parent.postMessage(credentials, '*');
+  };
+  parent.postMessage(credentials, '*');
 }
 
 function showPage(id) {

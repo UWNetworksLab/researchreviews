@@ -38,7 +38,8 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
 
 RRSocialProvider.prototype.onmessage = function(finish, msg) {
   console.log("here");
-  if (msg.action == "login"){
+  if (msg.action === "login"){
+    console.log("in login msg");
     this.storage.get(msg.user).then(function(state) {
       var got = JSON.parse(state);
 
@@ -59,18 +60,19 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
 
         finish.finish(ret);
       } else {
+        console.log("wrong credentials");
         this.view.postMessage('Invalid Credentials!');
       }
     }.bind(this));
   }
-
-  else if (msg.action == "signup"){
+  else if (msg.action === "signup"){
+    console.log("in signup msg " + msg.user + " " + msg.password);
     var newUser = {
       user: msg.user,
       password: msg.password
     };
     this.storage.set(msg.user, JSON.stringify(newUser));
-  }
+  } 
 };
 
 RRSocialProvider.prototype.getUsers = function(continuation) {
