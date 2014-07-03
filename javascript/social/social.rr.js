@@ -2,14 +2,14 @@
 
 function RRSocialProvider(dispatchEvent, webSocket) {
 	this.dispatchEvent = dispatchEvent; //??
-
 	this.social = freedom.social(); 
   this.view = freedom['core.view']();
   this.storage = freedom.storageprovider();
 	this.conn = null;
 	this.id = null;
-
-	this.user = null;
+  
+  //this.storage.clear(); 
+	this.users = {};
 	this.friends = {}; 
 	this.clients = {}; 
 }
@@ -72,15 +72,41 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
       password: msg.password
     };
     this.storage.set(msg.user, JSON.stringify(newUser));
+    this.changeRoster(msg.user, true);
   } 
 };
 
+RRSocialProvider.prototype.changeRoster = function(id, stat) {
+  var newStatus, result = {
+    userId: id,
+    clientId: id,
+    timestamp: (new Date()).getTime()
+  };
+  if (stat) {
+    newStatus = "ONLINE";
+  } else {
+    newStatus = "OFFLINE";
+  }
+  result.status = newStatus;
+
+  if (stat) {
+    console.log("change roster: " + result.userId + " " + result.timestamp);
+    this.users[id] = result;
+    this.dispatchEvent('onUserProfile', this.users[id]);
+  } else {
+    delete this.users[id];
+    delete this.clients[id];
+  }
+  return result;
+};
+
 RRSocialProvider.prototype.getUsers = function(continuation) {
-  console.log("here");
+  console.log("GET USERS");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
   }
+  console.log(this.friends);
   continuation(this.friends);
 };
 

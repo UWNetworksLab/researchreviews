@@ -4,7 +4,19 @@ var store = freedom.localstorage();
 var social = freedom.socialprovider(); 
 var myClientState = null;
 
+var userList = {}; 
+
 //store.set('papers', []);
+
+console.log(JSON.stringify(userList));
+console.log("num of users: " + userList.length);
+
+social.on('onUserProfile', function(data) {
+  //Just save it for now
+  console.log("data.userId: " + data.userId);
+  userList[data.userId] = data;
+  //console.log("ON USER PROFILE" + JSON.stringify(data));
+});
  
 freedom.on('download-version', function(data){
   console.log("download version");
