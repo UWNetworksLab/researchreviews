@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "storageprovider": {
-      "url": "../node_modules/freedom/providers/storage/isolated/storage.isolated.json",
+      "url": "../../node_modules/freedom/providers/storage/isolated/storage.isolated.json",
       "api": "storage"
     }
   },

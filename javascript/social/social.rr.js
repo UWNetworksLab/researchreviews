@@ -39,7 +39,7 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
 RRSocialProvider.prototype.onCredentials = function(finish, credentials) {
   console.log("here");
   this.storage.get(credentials.user).then(function(state) {
-    if (state.password === credentials.password) {
+    if (state && state.password === credentials.password) {
       this.user = state;
       finish();
     } else {

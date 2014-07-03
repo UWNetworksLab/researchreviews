@@ -11,6 +11,6 @@ window.addEventListener('load', function() {
   }, true);
   
   window.addEventListener('message', function(m) {
-    document.getElementById('status').innerText = m;
+    document.getElementById('status').innerText = m.data;
   }, true);
 }, true);
