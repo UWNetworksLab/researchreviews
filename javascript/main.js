@@ -162,8 +162,9 @@ social.login({
   myClientState = ret;
   console.log("state: " + JSON.stringify(myClientState));
   if (ret.status == social.STATUS["ONLINE"]) {
-    freedom.emit('recv-uid', "jdoe");
+    freedom.emit('recv-uid', ret.userId);
     freedom.emit('recv-status', "online");
+    
   } else {
     freedom.emit('recv-status', "offline");
   }

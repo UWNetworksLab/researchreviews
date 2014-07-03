@@ -268,7 +268,7 @@ function showPage(id) {
 
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    console.log("Logged in as: " + data);
+    showPage('profile-page');
   });
 
   // Display the current status of our connection to the Social provider

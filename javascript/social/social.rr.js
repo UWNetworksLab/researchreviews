@@ -12,6 +12,13 @@ function RRSocialProvider(dispatchEvent, webSocket) {
 	this.user = null;
 	this.friends = {}; 
 	this.clients = {}; 
+
+  var me = {
+    user: 'bonnie',
+    password: 'pan'
+  };
+  this.storage.set('bonnie', JSON.stringify(me));
+
 }
 
 RRSocialProvider.prototype.login = function(loginOpts, continuation) {
@@ -39,9 +46,24 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
 RRSocialProvider.prototype.onCredentials = function(finish, credentials) {
   console.log("here");
   this.storage.get(credentials.user).then(function(state) {
-    if (state && state.password === credentials.password) {
-      this.user = state;
-      finish();
+    var got = JSON.parse(state);
+
+    console.log("credentials: " + credentials.user + credentials.password);
+    console.log("state: " +got.user + got.password);
+
+    if (state && got.password === credentials.password) {
+      this.user = got;
+      console.log("we did it");
+      this.view.close();
+
+     var ret = {
+        'userId' : got.user,
+        'clientId' : got.user,
+        'status': 'ONLINE',
+        'timestamp': '1'
+      };
+
+      finish.finish(ret);
     } else {
       this.view.postMessage('Invalid Credentials!');
     }
