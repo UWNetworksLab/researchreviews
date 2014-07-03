@@ -249,10 +249,6 @@ function login() {
 function showPage(id) {
   console.log("show page: " + id);
     var pg = document.getElementById(id);
-    if (!pg) {
-        alert("no such page");
-        return;
-    }
 
     // get all pages, loop through them and hide them
     var pages = document.getElementsByClassName('page');
@@ -263,7 +259,7 @@ function showPage(id) {
       window.freedom.emit('load-papers', 0);
     }
 
-    pg.style.display = 'block';
+    if (id) pg.style.display = 'block';
 }
 
   // Display our own userId when we get it
@@ -277,5 +273,5 @@ function showPage(id) {
   });
 
 window.onload = function() {
-  showPage("login-page");
+  showPage();
 } 

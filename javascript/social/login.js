@@ -8,7 +8,7 @@ function signup() {
   var newUser = {
     user: form.user.value,
     password: form.password.value,
-    action: "signup"
+    action: 'signup'
   };
   console.log("newUser " + form.user.value + " " + form.password.value); 
   parent.postMessage(newUser, '*');
