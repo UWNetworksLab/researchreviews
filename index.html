@@ -242,8 +242,32 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li><a onclick="downloadVersion()">Download This Version</a></li>
-                  <li><a href="#">Invite Reviewers</a></li>
+                  <li><a ng-click="inviteReviewers()">Invite Reviewers</a></li>
                   <li><a ng-click="addVersion()">Add New Version</a></li>
+
+
+
+
+                  <script type='text/ng-template' id="inviteReviewersTemplate.html">
+                    <div class='modal-container'> 
+                      <h3>Invite Reviewers</h3>    
+                      <div><textarea id="invite-reviewers-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
+                      <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
+
+                        <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+                        <button class="btn btn-danger" ng-click="cancel()">cancel</button> 
+                        <br>
+
+
+
+                    </div> 
+
+                  </script> 
+
+
+
+
+
 
                   <script type='text/ng-template' id="addVersionTemplate.html">
                     <div class='modal-container'> 
@@ -273,6 +297,9 @@
                       </div>
                     </div> 
                   </script> 
+
+
+
 
                   <li><a href="#" onclick="deletePaper()">Delete paper</a></li>
                   <li><a href="#">Edit Privacy Settings</a></li>

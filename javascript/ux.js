@@ -27,6 +27,17 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       backdrop: 'static'
     });
   };
+
+  $scope.inviteReviewers = function() {
+    console.log("add reviewers button");
+    var modalInstance = $modal.open({
+      templateUrl: 'inviteReviewersTemplate.html',
+      windowClass:'normal',
+      controller: inviteReviewersCtrl,
+      backdrop: 'static'
+    });
+  };
+
 }); 
 
 /* arraybuffer/string conversion */
@@ -80,6 +91,18 @@ var addVersionCtrl = function ($scope, $modalInstance) {
     $modalInstance.dismiss('cancel');
   };
 };
+
+var inviteReviewersCtrl = function ($scope, $modalInstance) {
+  $scope.invite = function () {
+    //invite reviewers
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
 
 function uploadFile(files, comments, key) {
   var newPaper = files[0];
