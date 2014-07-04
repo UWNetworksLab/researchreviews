@@ -2,34 +2,8 @@ function toSignup() {
   showPage("signup-page");
 }
 
-function signup() {
-  var form = document.getElementsByTagName('form')[1];
-  form.addEventListener('submit', function(e) {
-    console.log("event listener");
-    e.preventDefault();
-    var newUser = {
-      user: form.user.value,
-      password: form.password.value,
-      action: 'signup'
-    };
-    parent.postMessage(newUser, '*');
-    showPage("login-page");      
-    document.getElementById('status').innerText = "successfully signed up";
-    return false;
-  }, true);
-}
-
-/*function login() {
-  var form = document.getElementsByTagName('form')[0];
-  var credentials = {
-      user: form.user.value,
-      password: form.password.value,
-      action: 'login'
-  };
-  parent.postMessage(credentials, '*');
-}*/ 
-
 function login() {
+  console.log("log in");
   var form = document.getElementsByTagName('form')[0];
   form.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -56,15 +30,27 @@ function showPage(id) {
   for(var i = 0; i < pages.length; i++) 
       pages[i].style.display = 'none';
 
-  if(id === "papers-page") {
-    window.freedom.emit('load-papers', 0);
-  }
-
   pg.style.display = 'block';
 }
 
 window.onload = function() {
   showPage("login-page");
+
+  var form = document.getElementsByTagName('form')[1];
+  form.addEventListener('submit', function(e) {
+    console.log("event listener");
+    e.preventDefault();
+    var newUser = {
+      user: form.user.value,
+      password: form.password.value,
+      action: 'signup'
+    };
+    parent.postMessage(newUser, '*');
+    showPage("login-page");      
+    document.getElementById('status').innerText = "successfully signed up";
+    return false;
+  }, true);
+
 
   window.addEventListener('message', function(m) {
     console.log("got here :(");
