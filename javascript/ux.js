@@ -30,14 +30,22 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
 
   $scope.inviteReviewers = function() {
     console.log("add reviewers button");
+    window.freedom.emit('get-users', 0);
+  };
+
+  window.freedom.on('send-users', function(userList) {
     var modalInstance = $modal.open({
       templateUrl: 'inviteReviewersTemplate.html',
       windowClass:'normal',
       controller: inviteReviewersCtrl,
-      backdrop: 'static'
+      backdrop: 'static', 
+      resolve: {
+        userList: function () {
+          return userList;
+        }
+      }
     });
-  };
-
+  }); 
 }); 
 
 /* arraybuffer/string conversion */
@@ -92,7 +100,9 @@ var addVersionCtrl = function ($scope, $modalInstance) {
   };
 };
 
-var inviteReviewersCtrl = function ($scope, $modalInstance) {
+var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
+  $scope.states = userList; 
+
   $scope.invite = function () {
     //invite reviewers
     $modalInstance.dismiss('cancel');

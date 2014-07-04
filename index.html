@@ -246,26 +246,18 @@
                   <li><a ng-click="addVersion()">Add New Version</a></li>
 
 
-
-
                   <script type='text/ng-template' id="inviteReviewersTemplate.html">
                     <div class='modal-container'> 
                       <h3>Invite Reviewers</h3>    
                       <div><textarea id="invite-reviewers-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-                      <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
 
-                        <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
-                        <button class="btn btn-danger" ng-click="cancel()">cancel</button> 
-                        <br>
+                      <div class='container-fluid'>
+                        <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+                      </div> 
 
-
-
-                    </div> 
-
+                      <button type="button" class="btn btn-success" ng-click="invite()">invite</button>
+                      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
                   </script> 
-
-
-
 
 
 

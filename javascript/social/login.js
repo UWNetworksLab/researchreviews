@@ -1,22 +1,20 @@
 function toSignup() {
-  console.log("sign up page");
   showPage("signup-page");
 }
 
 function signup() {
   var form = document.getElementsByTagName('form')[1];
   form.addEventListener('submit', function(e) {
+    console.log("event listener");
     e.preventDefault();
     var newUser = {
       user: form.user.value,
       password: form.password.value,
       action: 'signup'
     };
-    console.log("newUser " + form.user.value + " " + form.password.value); 
     parent.postMessage(newUser, '*');
-    console.log("sign up"); 
     showPage("login-page");      
-    document.getElementById('status').innerText = "successfully signed up!";
+    document.getElementById('status').innerText = "successfully signed up";
     return false;
   }, true);
 }

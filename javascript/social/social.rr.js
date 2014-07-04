@@ -7,7 +7,7 @@ function RRSocialProvider(dispatchEvent, webSocket) {
   this.storage = freedom.storageprovider();
 	this.conn = null;
 	this.id = null;
-  
+
   //this.storage.clear(); 
 	this.users = {};
 	this.friends = {}; 
@@ -37,18 +37,12 @@ RRSocialProvider.prototype.login = function(loginOpts, continuation) {
 };
 
 RRSocialProvider.prototype.onmessage = function(finish, msg) {
-  console.log("here");
   if (msg.action === "login"){
-    console.log("in login msg");
     this.storage.get(msg.user).then(function(state) {
       var got = JSON.parse(state);
 
-      console.log("credentials: " + msg.user + msg.password);
-      console.log("state: " +got.user + got.password);
-
       if (state && got.password === msg.password) {
         this.user = got;
-        console.log("we did it");
         this.view.close();
 
        var ret = {
@@ -66,7 +60,6 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
     }.bind(this));
   }
   else if (msg.action === "signup"){
-    console.log("in signup msg " + msg.user + " " + msg.password);
     var newUser = {
       user: msg.user,
       password: msg.password
@@ -90,7 +83,6 @@ RRSocialProvider.prototype.changeRoster = function(id, stat) {
   result.status = newStatus;
 
   if (stat) {
-    console.log("change roster: " + result.userId + " " + result.timestamp);
     this.users[id] = result;
     this.dispatchEvent('onUserProfile', this.users[id]);
   } else {
