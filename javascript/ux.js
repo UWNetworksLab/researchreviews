@@ -2,6 +2,7 @@
 var app = angular.module('researcher_app', ['ui.bootstrap']);
 var currPaperKey = -1; 
 var currPaperVersion = -1; 
+var username; 
 
 app.controller('drop_controller', function($scope) {
 }); 
@@ -13,6 +14,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   window.freedom.on('recv-uid', function(data) {
     console.log("data.userId: " + data);
     $scope.username = data; 
+    username = data; 
     console.log("username here.....: " + $scope.username);
     $scope.$apply();
     showPage('profile-page');
@@ -175,7 +177,7 @@ function deletePaper(){
 }
 
 function makeRow(title, date, key) {
-  return '<th onclick="freedom.emit(\'get-paper-view\', {key:' + key + ', vnum: -1' + '})">' + title + ' by John Doe on ' + date + '</th>'; 
+  return '<th onclick="freedom.emit(\'get-paper-view\', {key:' + key + ', vnum: -1' + '})">' + title + ' by ' + username + ' on ' + date + '</th>'; 
 }
 
 function updateTable(data, updateAction) {
@@ -201,6 +203,10 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
   var btn_group = document.getElementById("v_btn_group"); 
   btn_group.getElementsByTagName("button")[0].removeAttribute('disabled'); 
   btn_group.getElementsByTagName("button")[1].removeAttribute('disabled'); 
+
+  if(version && typeof version === "object") {
+    document.getElementById('options-butt').removeAttribute('disabled');
+  }
 
   if(action == 1) {
     btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
@@ -252,10 +258,18 @@ window.freedom.on("got-paper-view", function(data) {
   updateView(data.version, data.action);
 }); 
 
-
-
 window.freedom.on('display-table-and-view', function(papers){
   console.log("display-table-and-view");
+  var btn_group = document.getElementById("v_btn_group"); 
+  if(papers.length == 0)  {
+    document.getElementById('options-butt').setAttribute('disabled', true); 
+    btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
+    btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
+  }
+  else {
+    document.getElementById('options-butt').removeAttribute('disabled');
+  } 
+
   var paper_table = document.getElementById('paper-table');
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
