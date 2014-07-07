@@ -5,7 +5,6 @@ var social = freedom.socialprovider();
 var myClientState = null;
 
 var userList = []; 
-var username = "";
 
 //store.set('papers', []);
 

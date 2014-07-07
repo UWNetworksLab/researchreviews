@@ -7,18 +7,14 @@ app.controller('drop_controller', function($scope) {
 }); 
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
-  $scope.username; 
-
-  $scope.setUsername = function(data) {
-    $scope.username = data; 
-  }
+  $scope.username = "testing"; 
 
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
     console.log("data.userId: " + data);
     $scope.username = data; 
-    console.log("username: " + $scope.username);
-    $scope.setUsername(data); 
+    console.log("username here.....: " + $scope.username);
+    $scope.$apply();
     showPage('profile-page');
   });
 
