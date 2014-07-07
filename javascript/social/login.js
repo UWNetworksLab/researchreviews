@@ -3,7 +3,6 @@ function toSignup() {
 }
 
 function login() {
-  console.log("log in");
   var form = document.getElementsByTagName('form')[0];
   form.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -38,7 +37,6 @@ window.onload = function() {
 
   var form = document.getElementsByTagName('form')[1];
   form.addEventListener('submit', function(e) {
-    console.log("event listener");
     e.preventDefault();
     var newUser = {
       user: form.user.value,
@@ -53,7 +51,6 @@ window.onload = function() {
 
 
   window.addEventListener('message', function(m) {
-    console.log("got here :(");
     document.getElementById('status').innerText = m.data;
   }, true);
 } 

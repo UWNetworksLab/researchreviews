@@ -7,6 +7,20 @@ app.controller('drop_controller', function($scope) {
 }); 
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
+  $scope.username; 
+
+  $scope.setUsername = function(data) {
+    $scope.username = data; 
+  }
+
+  // Display our own userId when we get it
+  window.freedom.on('recv-uid', function(data) {
+    console.log("data.userId: " + data);
+    $scope.username = data; 
+    console.log("username: " + $scope.username);
+    $scope.setUsername(data); 
+    showPage('profile-page');
+  });
 
   $scope.addPaper = function() {
     console.log("add Paper button");
@@ -295,15 +309,10 @@ function showPage(id) {
     if (id) pg.style.display = 'block';
 }
 
-  // Display our own userId when we get it
-  window.freedom.on('recv-uid', function(data) {
-    showPage('profile-page');
-  });
-
   // Display the current status of our connection to the Social provider
-  window.freedom.on('recv-status', function(msg) {
-    console.log("status: " + msg);
-  });
+window.freedom.on('recv-status', function(msg) {
+  console.log("status: " + msg);
+});
 
 window.onload = function() {
   showPage();

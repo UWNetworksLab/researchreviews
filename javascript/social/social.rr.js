@@ -1,7 +1,5 @@
-//basically, ws right now. 
-
 function RRSocialProvider(dispatchEvent, webSocket) {
-	this.dispatchEvent = dispatchEvent; //??
+	this.dispatchEvent = dispatchEvent; 
 	this.social = freedom.social(); 
   this.view = freedom['core.view']();
   this.storage = freedom.storageprovider();
@@ -45,13 +43,22 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
         this.user = got;
         this.view.close();
 
+        console.log(JSON.stringify(got)); 
+
        var ret = {
           'userId' : got.user,
           'clientId' : got.user,
           'status': 'ONLINE',
-          'timestamp': '1'
+          'timestamp': '2'
         };
 
+        var obj = {
+          users: this.users, 
+          a: 'blizi'
+        };
+
+        console.log("trying to dispatch: " + JSON.stringify(obj.users));
+        this.dispatchEvent('onUserProfile', "obj");
         finish.finish(ret);
       } else {
         console.log("wrong credentials");
@@ -64,6 +71,7 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
       user: msg.user,
       password: msg.password
     };
+
     this.storage.set(msg.user, JSON.stringify(newUser));
     this.changeRoster(msg.user, true);
   } 
@@ -83,8 +91,21 @@ RRSocialProvider.prototype.changeRoster = function(id, stat) {
   result.status = newStatus;
 
   if (stat) {
-    this.users[id] = result;
-    this.dispatchEvent('onUserProfile', this.users[id]);
+    this.storage.get('users').then(function(val) {
+      var buddies; 
+      try {
+        buddies = JSON.parse(val);
+      } catch(e) {}
+
+      if(!buddies || typeof buddies !== "object") {
+        console.log("nothing in buddies");
+        buddies = []; 
+      }
+
+      buddies.push(id); 
+      this.users = buddies; 
+      this.storage.set('users', JSON.stringify(buddies)); 
+    }.bind(this));
   } else {
     delete this.users[id];
     delete this.clients[id];
@@ -93,7 +114,6 @@ RRSocialProvider.prototype.changeRoster = function(id, stat) {
 };
 
 RRSocialProvider.prototype.getUsers = function(continuation) {
-  console.log("GET USERS");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
@@ -103,7 +123,6 @@ RRSocialProvider.prototype.getUsers = function(continuation) {
 };
 
 RRSocialProvider.prototype.getClients = function(continuation) {
-  console.log("here");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;
@@ -112,7 +131,6 @@ RRSocialProvider.prototype.getClients = function(continuation) {
 };
 
 RRSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
-  console.log("here");
   if (this.user === null) {
     continuation(undefined, this.err("OFFLINE"));
     return;

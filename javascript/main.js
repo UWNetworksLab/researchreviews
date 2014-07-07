@@ -9,8 +9,7 @@ var userList = [];
 //store.set('papers', []);
 
 social.on('onUserProfile', function(data) {
-  console.log("push to Userlist: " + data.userId);
-  userList.push(data.userId);
+  console.log("onUserProfile: " + JSON.stringify(data));
 });
  
 freedom.on('get-users', function(data) {
@@ -175,7 +174,7 @@ social.login({
   if (ret.status == social.STATUS["ONLINE"]) {
     freedom.emit('recv-uid', ret.userId);
     freedom.emit('recv-status', "online");
-
+       
   } else {
     freedom.emit('recv-status', "offline");
   }
