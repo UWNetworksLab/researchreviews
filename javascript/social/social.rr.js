@@ -50,10 +50,6 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
           'timestamp': '2'
         };
 
-        this.dispatchEvent('onUserProfile', {
-          users: this.users
-        });
-
         for(var i = 0; i < this.users.length; i++)
           this.dispatchEvent('onUserProfile', {
             'userId': this.users[i]

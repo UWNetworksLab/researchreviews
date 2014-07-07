@@ -9,7 +9,7 @@ var userList = [];
 //store.set('papers', []);
 
 social.on('onUserProfile', function(data) {
-  //console.log("onUserProfile: " + JSON.stringify(data.userId));
+  console.log("onUserProfile: " + JSON.stringify(data.userId));
   userList.push(data.userId); 
 });
  
