@@ -50,10 +50,26 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
           'timestamp': '2'
         };
 
-        for(var i = 0; i < this.users.length; i++)
-          this.dispatchEvent('onUserProfile', {
-            'userId': this.users[i]
-          }); 
+        this.storage.get('users').then(function(val) {
+          var buddies; 
+          try {
+            buddies = JSON.parse(val);
+          } catch(e) {}
+
+          if(!buddies || typeof buddies !== "object") {
+            console.log("nothing in buddies");
+            buddies = []; 
+          }
+
+          this.users = buddies; 
+
+          for(var i = 0; i < this.users.length; i++) {
+            console.log("dispatchEvent: " + this.users[i]);
+            this.dispatchEvent('onUserProfile', {
+              'userId': this.users[i]
+            }); 
+          }
+        }.bind(this));
 
         finish.finish(ret);
       } else {
