@@ -5,6 +5,7 @@ var social = freedom.socialprovider();
 var myClientState = null;
 
 var userList = []; 
+var username = "";
 
 //store.set('papers', []);
 
@@ -19,7 +20,7 @@ freedom.on('get-users', function(data) {
 
 freedom.on('download-version', function(data){
   console.log("download version");
-  var promise = store.get('papers');
+  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
@@ -36,7 +37,7 @@ freedom.on('download-version', function(data){
 });
 
 freedom.on('add-paper', function(data) {
-  var promise = store.get('papers');
+  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     console.log("in promise");
     var papers; 
@@ -59,7 +60,7 @@ freedom.on('add-paper', function(data) {
           break;
         }
 
-      store.set('papers', JSON.stringify(papers)); 
+      store.set(username + 'papers', JSON.stringify(papers)); 
       freedom.emit("display-new-version", papers[i]);
     }
     else { //add new paper
@@ -76,7 +77,7 @@ freedom.on('add-paper', function(data) {
 
       papers.push(newPaper); 
 
-      store.set('papers', JSON.stringify(papers)); 
+      store.set(username+'papers', JSON.stringify(papers)); 
       freedom.emit('display-new-paper', newPaper);
     }
   }); 
@@ -85,7 +86,7 @@ freedom.on('add-paper', function(data) {
 freedom.on('get-paper-view', function(data) {
   console.log("find paper: " + data.key);
 
-  var promise = store.get('papers');
+  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     console.log("in promise");
     var papers; 
@@ -125,7 +126,8 @@ freedom.on('get-paper-view', function(data) {
 });
 
 freedom.on('load-papers', function(data) {
-  var promise = store.get('papers');
+  console.log("username papers: " + username);
+  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     console.log("in promise");
     var papers; 
@@ -144,7 +146,7 @@ freedom.on('load-papers', function(data) {
 
 freedom.on('delete-paper', function(key){
   console.log("on delete-paper");
-  var promise = store.get('papers');
+  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
     try {
@@ -158,7 +160,7 @@ freedom.on('delete-paper', function(key){
         break;
       }
     }
-    store.set('papers', JSON.stringify(papers)); 
+    store.set(username+'papers', JSON.stringify(papers)); 
     freedom.emit('display-delete-paper', key);
   }); 
 });
@@ -172,6 +174,9 @@ social.login({
 }).then(function(ret) {
   myClientState = ret;
   console.log("state: " + JSON.stringify(myClientState));
+  username = ret.userId;
+
+
   if (ret.status == social.STATUS["ONLINE"]) {
     freedom.emit('recv-uid', ret.userId);
     freedom.emit('recv-status', "online");
