@@ -43,8 +43,6 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
         this.user = got;
         this.view.close();
 
-        console.log(JSON.stringify(got)); 
-
        var ret = {
           'userId' : got.user,
           'clientId' : got.user,
@@ -52,13 +50,15 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
           'timestamp': '2'
         };
 
-        var obj = {
-          users: this.users, 
-          a: 'blizi'
-        };
+        this.dispatchEvent('onUserProfile', {
+          users: this.users
+        });
 
-        console.log("trying to dispatch: " + JSON.stringify(obj.users));
-        this.dispatchEvent('onUserProfile', "obj");
+        for(var i = 0; i < this.users.length; i++)
+          this.dispatchEvent('onUserProfile', {
+            'userId': this.users[i]
+          }); 
+
         finish.finish(ret);
       } else {
         console.log("wrong credentials");

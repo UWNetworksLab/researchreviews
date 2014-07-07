@@ -9,7 +9,8 @@ var userList = [];
 //store.set('papers', []);
 
 social.on('onUserProfile', function(data) {
-  console.log("onUserProfile: " + JSON.stringify(data));
+  //console.log("onUserProfile: " + JSON.stringify(data.userId));
+  userList.push(data.userId); 
 });
  
 freedom.on('get-users', function(data) {
