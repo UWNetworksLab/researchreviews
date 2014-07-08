@@ -57,14 +57,12 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
           } catch(e) {}
 
           if(!buddies || typeof buddies !== "object") {
-            console.log("nothing in buddies");
             buddies = []; 
           }
 
           this.users = buddies; 
 
           for(var i = 0; i < this.users.length; i++) {
-            console.log("dispatchEvent: " + this.users[i]);
             this.dispatchEvent('onUserProfile', {
               'userId': this.users[i]
             }); 
@@ -73,7 +71,6 @@ RRSocialProvider.prototype.onmessage = function(finish, msg) {
 
         finish.finish(ret);
       } else {
-        console.log("wrong credentials");
         this.view.postMessage('Invalid Credentials!');
       }
     }.bind(this));
@@ -110,7 +107,6 @@ RRSocialProvider.prototype.changeRoster = function(id, stat) {
       } catch(e) {}
 
       if(!buddies || typeof buddies !== "object") {
-        console.log("nothing in buddies");
         buddies = []; 
       }
 
@@ -130,7 +126,6 @@ RRSocialProvider.prototype.getUsers = function(continuation) {
     continuation(undefined, this.err("OFFLINE"));
     return;
   }
-  console.log(this.friends);
   continuation(this.friends);
 };
 
@@ -144,7 +139,6 @@ RRSocialProvider.prototype.getClients = function(continuation) {
 
 RRSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
   if (this.user === null) {
-  console.log("got here");
     continuation(undefined, this.err("OFFLINE"));
     return;
   }/* else if (!this.clients.hasOwnProperty(to) && !this.users.hasOwnProperty(to)) {
@@ -153,7 +147,6 @@ RRSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
     return;
   }*/
 
-  console.log("got here");
   this.user.send({text: JSON.stringify({to: to, msg: msg})});//what does this do?
   //TODO: send message
   continuation();

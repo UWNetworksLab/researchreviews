@@ -12,16 +12,13 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
 
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    console.log("data.userId: " + data);
     $scope.username = data; 
     username = data; 
-    console.log("username here.....: " + $scope.username);
     $scope.$apply();
     showPage('profile-page');
   });
 
   $scope.addPaper = function() {
-    console.log("add Paper button");
     var modalInstance = $modal.open({
       templateUrl: 'addPaperTemplate.html',
       windowClass:'normal',
@@ -31,7 +28,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 
   $scope.addVersion = function() {
-    console.log("add Version button");
     var modalInstance = $modal.open({
       templateUrl: 'addVersionTemplate.html',
       windowClass:'normal',
@@ -41,7 +37,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 
   $scope.inviteReviewers = function() {
-    console.log("add reviewers button");
     window.freedom.emit('get-users', 0);
   };
 
@@ -142,8 +137,6 @@ function uploadFile(files, comments, key) {
     var yyyy = today.getFullYear();
     today = yyyy+'-'+mm+'-'+dd; 
 
-
-    console.log("emit add paper");
     window.freedom.emit('add-paper', {
       title: newPaper.name,
       date: today,
@@ -156,7 +149,6 @@ function uploadFile(files, comments, key) {
 }
 
 function downloadVersion() {
-  console.log("key " + currPaperKey);
   window.freedom.emit('download-version', {
     key: currPaperKey,
     vnum: currPaperVersion 
@@ -164,7 +156,6 @@ function downloadVersion() {
 }
 
 window.freedom.on('got-paper', function(data){
-  console.log("got paper "); //data is string
   var ab = str2ab(data.string);
 
   var reader = new FileReader();
@@ -176,7 +167,6 @@ window.freedom.on('got-paper', function(data){
 });
 
 function deletePaper(){
-  console.log("delete : "  + currPaperKey);
   window.freedom.emit('delete-paper', currPaperKey);
 }
 
@@ -219,7 +209,6 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
     btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
   } 
   else if(action == 0) {
-    console.log("disable both");
     btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
     btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
   }
@@ -247,7 +236,6 @@ window.freedom.on('display-new-version', function(paper) {
 });
 
 function getVersion(offset) {
-  console.log("try to go to version...key: " + currPaperKey + " vnum: " + (currPaperVersion+offset));
   window.freedom.emit('get-paper-view', {
     key: currPaperKey, 
     vnum: currPaperVersion+offset 
@@ -257,13 +245,10 @@ function getVersion(offset) {
 window.freedom.on("got-paper-view", function(data) {
   currPaperVersion = data.version.vnum; 
   currPaperKey = data.version.key; 
-  console.log("on got-paper-view, curr paper key :" + currPaperKey);
-  console.log("current version: " + currPaperVersion);
   updateView(data.version, data.action);
 }); 
 
 window.freedom.on('display-table-and-view', function(papers){
-  console.log("display-table-and-view");
   var btn_group = document.getElementById("v_btn_group"); 
   if(papers.length == 0)  {
     document.getElementById('options-butt').setAttribute('disabled', true); 
@@ -296,15 +281,6 @@ window.freedom.on('display-table-and-view', function(papers){
   var firstVersion = papers[0].versions[papers[0].versions.length-1];
   updateView(firstVersion, action); 
 });
-
-function login() {
-  var username = document.getElementById("username").value;
-  var password = document.getElementById("password").value;
-  console.log(username + " " + password);
-
-  document.cookie = "username="+username; 
-  showPage("papers-page");
-}
 
 // show the given page, hide the rest
 function showPage(id) {
