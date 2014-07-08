@@ -14,7 +14,6 @@ h1,h2,h3,h4,h5{
     display : none;
 }
 #login-body {
-    background-color: lightgrey;
     height:100%;
     min-height: 100%;
     vertical-align: center;

@@ -6,7 +6,8 @@
   },
   "dependencies": {
     "socialprovider": {
-      "url": "javascript/social/social.rr.json",
+      "url_": "javascript/social/social.rr.json",
+      "url": "socialmailbox/provider/social.mb.json",
       "api": "social"
     }, 
     "transport": {
