@@ -3,12 +3,12 @@ function RRSocialProvider(dispatchEvent, webSocket) {
 	this.social = freedom.social(); 
   this.view = freedom['core.view']();
   this.storage = freedom.storageprovider();
-	this.conn = null;
 	this.id = null;
+
+  this.user = null;
 
   //this.storage.clear(); 
 	this.users = {};
-	this.friends = {}; 
 	this.clients = {}; 
 }
 
@@ -144,13 +144,17 @@ RRSocialProvider.prototype.getClients = function(continuation) {
 
 RRSocialProvider.prototype.sendMessage = function(to, msg, continuation) {
   if (this.user === null) {
+  console.log("got here");
     continuation(undefined, this.err("OFFLINE"));
     return;
-  } else if (!this.clients.hasOwnProperty(to) && !this.users.hasOwnProperty(to)) {
+  }/* else if (!this.clients.hasOwnProperty(to) && !this.users.hasOwnProperty(to)) {
+  console.log("got here");
     continuation(undefined, this.err("SEND_INVALIDDESTINATION"));
     return;
-  }
+  }*/
 
+  console.log("got here");
+  this.user.send({text: JSON.stringify({to: to, msg: msg})});//what does this do?
   //TODO: send message
   continuation();
 };

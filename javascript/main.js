@@ -8,8 +8,19 @@ var userList = [];
 
 //store.set('papers', []);
 
+social.on('onMessage', function(data) {
+  freedom.emit('recv-message', data);
+});
+
+freedom.on('send-message', function(val) {
+  social.sendMessage(val.to, val.message).then(function(ret) {
+    //Fulfill - sendMessage succeeded
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
+
 social.on('onUserProfile', function(data) {
-  console.log("onUserProfile: " + JSON.stringify(data.userId));
   userList.push(data.userId); 
 });
  

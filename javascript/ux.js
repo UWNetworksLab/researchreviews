@@ -117,6 +117,11 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
 
   $scope.invite = function () {
     //invite reviewers
+    freedom.emit('send-message', {
+      to: 'a',
+      message: 'hi'
+    });
+    
     $modalInstance.dismiss('cancel');
   };
 
@@ -124,7 +129,6 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
     $modalInstance.dismiss('cancel');
   };
 };
-
 
 function uploadFile(files, comments, key) {
   var newPaper = files[0];
