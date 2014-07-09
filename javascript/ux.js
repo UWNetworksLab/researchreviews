@@ -305,6 +305,10 @@ window.freedom.on('recv-status', function(msg) {
   console.log("status: " + msg);
 });
 
+window.freedom.on('recv-message', function(msg) {
+  console.log("msg: " + msg.message);
+});
+
 window.onload = function() {
   showPage();
 } 

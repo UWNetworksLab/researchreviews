@@ -8,7 +8,7 @@ var userList = [];
 
 //store.set('papers', []);
 
-social.on('onMessage', function(data) {
+social.on('onMessage', function(data) { //from social.mb.js, onmessage
   freedom.emit('recv-message', data);
 });
 
@@ -19,10 +19,6 @@ freedom.on('send-message', function(val) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
-});
-//??
-social.on('onMessage', function(data){
-  //alert('you have a message');
 });
 
 social.on('onUserProfile', function(data) {
