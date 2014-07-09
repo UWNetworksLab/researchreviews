@@ -113,8 +113,9 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
   $scope.invite = function () {
     //invite reviewers
     freedom.emit('send-message', {
-      to: 'a',
-      message: 'hi'
+      to: 'aaaa',
+      msg: '=========================================================',
+      from: username
     });
     
     $modalInstance.dismiss('cancel');

@@ -13,11 +13,16 @@ social.on('onMessage', function(data) {
 });
 
 freedom.on('send-message', function(val) {
-  social.sendMessage(val.to, val.message).then(function(ret) {
+  social.sendMessage(val.to, val.msg).then(function(ret) {
+    console.log(val.to + val.from + val.msg);
     //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
   });
+});
+//??
+social.on('onMessage', function(data){
+  //alert('you have a message');
 });
 
 social.on('onUserProfile', function(data) {
@@ -50,6 +55,7 @@ freedom.on('add-paper', function(data) {
     var papers; 
     try {
       papers = JSON.parse(val);
+      console.log("papers length before adding new paper: " + papers.length);
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
@@ -78,6 +84,21 @@ freedom.on('add-paper', function(data) {
       };
 
       papers.push(newPaper); 
+      console.log('papers length after: ' + papers.length);
+
+
+        var promise = store.get(username + 'papers');
+          promise.then(function(val) {
+            var gotpapers; 
+            try {
+              gotpapers = JSON.parse(val);
+            } catch(e) {}
+
+            console.log("in promise papers.length: " + papers.length);
+
+          }); 
+
+
 
       store.set(username+'papers', JSON.stringify(papers)); 
       freedom.emit('display-new-paper', newPaper);
@@ -121,6 +142,8 @@ freedom.on('get-paper-view', function(data) {
 });
 
 freedom.on('load-papers', function(data) {
+  console.log('loading papers for ' + username);
+
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -130,6 +153,7 @@ freedom.on('load-papers', function(data) {
 
     if(!papers || typeof papers !== "object") {
       papers = []; 
+      console.log("nothing");
     }
 
     freedom.emit('display-table-and-view', papers); 
