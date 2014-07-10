@@ -1,0 +1,14 @@
+{
+  "name": "Public Storage",
+  "description": "access to public data",
+  "app": {
+    "script": "publicstorage.js"
+  },
+  "dependencies": {
+    "socialprovider": {
+      "url_": "javascript/social/social.rr.json",
+      "url": "../socialmailbox/provider/social.mb.json",
+      "api": "social"
+    }
+  }
+}

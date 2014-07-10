@@ -83,20 +83,25 @@ freedom.on('add-paper', function(data) {
       console.log('papers length after: ' + papers.length);
 
 
-        var promise = store.get(username + 'papers');
-          promise.then(function(val) {
-            var gotpapers; 
-            try {
-              gotpapers = JSON.parse(val);
-            } catch(e) {}
+      var promise = store.get(username + 'papers');
+      promise.then(function(val) {
+        var gotpapers; 
+        try {
+          gotpapers = JSON.parse(val);
+        } catch(e) {}
 
-            console.log("in promise papers.length: " + papers.length);
+        console.log("in promise papers.length: " + papers.length);
 
-          }); 
+      }); 
 
-
+      social.sendMessage("publicstorage", username + newPaper.versions[0].title).then(function(ret) {
+        //Fulfill - sendMessage succeeded
+      }, function(err) {
+        freedom.emit("recv-err", err);
+      });
 
       store.set(username+'papers', JSON.stringify(papers)); 
+
       freedom.emit('display-new-paper', newPaper);
     }
   }); 
