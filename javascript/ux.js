@@ -111,10 +111,17 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
   $scope.states = userList; 
 
   $scope.invite = function () {
-    //invite reviewers
+    //invite reviewers 
+    var reviewer_input = document.getElementById("reviewer-input").value; 
+
+    var msg = {
+      title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
+      action: 'invite-reviewer'
+    };
+
     freedom.emit('send-message', {
-      to: 'aaaa',
-      msg: '=========================================================',
+      to: reviewer_input,
+      msg: JSON.stringify(msg),
       from: username
     });
     
@@ -309,20 +316,27 @@ window.freedom.on('recv-status', function(msg) {
 });
 
 window.freedom.on('recv-message', function(msg) {
-  document.getElementById('paper-table');
-  console.log("msg: " + msg.message);
-  var parse = JSON.parse(msg.message);
+  console.log("msg: " + msg);
+  var parse = JSON.parse(msg);
 
-  var paper_table = document.getElementById('browse-paper-table');
-  var newBody = document.createElement('tbody');
-
-  for (var i = 0; i < parse.length; i++){
-    var p = document.createElement('tr');
-    //p.setAttribute("id", data.key);
-    p.innerHTML = "<th>" + parse[i] + "</th>";
-    newBody.appendChild(p);
+  if(parse.action === 'invite-reviewer') {
+    var badges = document.getElementsByClassName("badge"); 
+    for(var i = 0; i < badges.length; i++) {
+      badges[i].innerHTML = parse.num_msg;  
+    }
   }
-  paper_table.replaceChild(newBody, paper_table.childNodes[0]);
+  else {
+    var paper_table = document.getElementById('browse-paper-table');
+    var newBody = document.createElement('tbody');
+
+    for (var i = 0; i < parse.length; i++){
+      var p = document.createElement('tr');
+      //p.setAttribute("id", data.key);
+      p.innerHTML = "<th>" + parse[i] + "</th>";
+      newBody.appendChild(p);
+    }
+    paper_table.replaceChild(newBody, paper_table.childNodes[0]);
+  }
 
 });
 

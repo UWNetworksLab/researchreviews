@@ -5,11 +5,15 @@ var social = freedom.socialprovider();
 var myClientState = null;
 
 var userList = []; 
+var messageList = []; 
 
 //store.set('papers', []);
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  freedom.emit('recv-message', data);
+  var parse = JSON.parse(data.message);
+  messageList.push(parse); 
+  parse.num_msg = messageList.length; 
+  freedom.emit('recv-message', JSON.stringify(parse));
 });
 
 freedom.on('send-message', function(val) {

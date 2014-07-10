@@ -43,7 +43,7 @@
           <ul class="nav navbar-nav"> 
             <li><a href="#" onclick="showPage('papers-page')">My Papers</a></li>
             <li><a href="#" onclick="showPage('reviews-page')"> My Reviews</a></li>
-            <li><a href="#">Alerts <span class="badge">2</span></a></li>
+            <li><a href="#" onclick="showPage('alerts-page')">Alerts <span class="badge">2</span></a></li>
             <li><a href="#" onclick="showPage('browse-page')">Browse</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -165,7 +165,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#" onclick="showPage('papers-page')">My Papers</a></li>
             <li><a href="#" onclick="showPage('reviews-page')">My Reviews</a></li>
-            <li><a href="#">Alerts <span class="badge">2</span></a></li>
+            <li><a href="#" onclick="showPage('alerts-page')">Alerts <span class="badge">2</span></a></li>
             <li><a href="#" onclick="showPage('browse-page')">Browse</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -240,12 +240,12 @@
                       <h3>Invite Reviewers</h3>    
                       <div><textarea id="invite-reviewers-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
 
-                      <div class='container-fluid'>
-                        <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
-                      </div> 
-
-                      <button type="button" class="btn btn-success" ng-click="invite()">invite</button>
-                      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+                        <input type="text" id="reviewer-input" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+                       
+                      <div> 
+                        <button type="button" class="btn btn-success" ng-click="invite()">invite</button>
+                        <button class="btn btn-danger" ng-click="cancel()">cancel</button> 
+                      </div>  
                   </script> 
 
 
@@ -314,7 +314,7 @@
           <ul class="nav navbar-nav">
             <li><a href="#" onclick="showPage('papers-page')">My Papers</a></li>
             <li class="active"><a href="#" onclick="showPage('reviews-page')">My Reviews</a></li>
-            <li><a href="#">Alerts <span class="badge">2</span></a></li>
+            <li><a href="#" onclick="showPage('alerts-page')">Alerts <span class="badge">2</span></a></li>
             <li><a href="#" onclick="showPage('browse-page')">Browse</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -384,6 +384,38 @@
     </div>
   </div> 
 
+
+  <div id="alerts-page" class="page" style="">
+    <!--NAV BAR-->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand"><span class="glyphicon glyphicon-pencil"></span></a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#" onclick="showPage('papers-page')">My Papers</a></li>
+            <li><a href="#" onclick="showPage('reviews-page')">My Reviews</a></li>
+            <li class="active"><a href="#" onclick="showPage('alerts-page')">Alerts <span class="badge">2</span></a></li>
+            <li><a href="#" onclick="showPage('reviews-page')">Browse</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" onclick="showPage('profile-page')">{{ username }}</a></li>
+          </ul>
+        </div>
+      </div> 
+    </nav> <!--navbar-->
+
+    <!--alerts-->
+    <div class="view-container">
+        <table id="alerts-table" class="table table-hover">
+          <tbody></tbody>
+        </table> 
+    </div> <!--alerts-container-->
+</div>  
+
+
   <div id="browse-page" class="page" style="">
     <!--NAV BAR-->
     <nav class="navbar navbar-default navbar-static-top" role="navigation">
@@ -396,7 +428,7 @@
           <ul class="nav navbar-nav">
             <li><a href="#" onclick="showPage('papers-page')">My Papers</a></li>
             <li><a href="#" onclick="showPage('reviews-page')">My Reviews</a></li>
-            <li><a href="#">Alerts <span class="badge">2</span></a></li>
+            <li><a href="#" onclick="showPage('alerts-page')">Alerts <span class="badge">2</span></a></li>
             <li class="active"><a href="#" onclick="showPage('reviews-page')">Browse</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
