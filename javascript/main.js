@@ -9,11 +9,21 @@ var messageList = [];
 
 //store.set('papers', []);
 
+freedom.on('load-alerts', function(data){
+  console.log("load alerts");
+  freedom.emit('got-alerts', JSON.stringify(messageList));
+});
+
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
-  messageList.push(parse); 
-  parse.num_msg = messageList.length; 
-  freedom.emit('recv-message', JSON.stringify(parse));
+  if (parse.action === "invite-reviewer"){
+    messageList.push(parse); 
+    parse.num_msg = messageList.length;     
+  }
+//  else if (parse.action ===){
+  //}
+  freedom.emit('recv-message', JSON.stringify(parse));    
+
 });
 
 freedom.on('send-message', function(val) {

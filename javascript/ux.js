@@ -116,7 +116,8 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
 
     var msg = {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
-      action: 'invite-reviewer'
+      action: 'invite-reviewer',
+      author: username
     };
 
     freedom.emit('send-message', {
@@ -306,6 +307,9 @@ function showPage(id) {
     if(id === "browse-page") {
       window.freedom.emit('load-public-storage', 0);
     }
+    if(id === "alerts-page") {
+      window.freedom.emit('load-alerts', 0);
+    }
 
     if (id) pg.style.display = 'block';
 }
@@ -338,6 +342,24 @@ window.freedom.on('recv-message', function(msg) {
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
   }
 
+});
+
+window.freedom.on('got-alerts', function(alerts){
+  console.log("got-alerts");
+
+  var parse = JSON.parse(alerts);
+  var alerts_table = document.getElementById('alerts-table');
+  var newBody = document.createElement('tbody');
+
+  for (var i = 0; i < parse.length; i++){
+    var p = document.createElement('tr');
+
+    if (parse[i].action === "invite-reviewer"){
+      p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + "</th>";
+    }
+    newBody.appendChild(p);
+  }
+  alerts_table.replaceChild(newBody, alerts_table.childNodes[0]);
 });
 
 window.onload = function() {
