@@ -296,6 +296,9 @@ function showPage(id) {
     if(id === "papers-page") {
       window.freedom.emit('load-papers', 0);
     }
+    if(id === "browse-page") {
+      window.freedom.emit('load-public-storage', 0);
+    }
 
     if (id) pg.style.display = 'block';
 }
@@ -306,7 +309,21 @@ window.freedom.on('recv-status', function(msg) {
 });
 
 window.freedom.on('recv-message', function(msg) {
+  document.getElementById('paper-table');
   console.log("msg: " + msg.message);
+  var parse = JSON.parse(msg.message);
+
+  var paper_table = document.getElementById('browse-paper-table');
+  var newBody = document.createElement('tbody');
+
+  for (var i = 0; i < parse.length; i++){
+    var p = document.createElement('tr');
+    //p.setAttribute("id", data.key);
+    p.innerHTML = "<th>" + parse[i] + "</th>";
+    newBody.appendChild(p);
+  }
+  paper_table.replaceChild(newBody, paper_table.childNodes[0]);
+
 });
 
 window.onload = function() {

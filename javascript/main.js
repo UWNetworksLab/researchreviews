@@ -94,7 +94,13 @@ freedom.on('add-paper', function(data) {
 
       }); 
 
-      social.sendMessage("publicstorage", username + " " + newPaper.versions[0].title).then(function(ret) {
+      var paper ={
+        title: newPaper.versions[0].title,
+        author: username,
+        action: 'add-paper'
+      };
+
+      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
       }, function(err) {
         freedom.emit("recv-err", err);
       });
@@ -139,6 +145,17 @@ freedom.on('get-paper-view', function(data) {
       }
     }
   });  
+});
+
+freedom.on('load-public-storage', function(data){
+  var message = {
+    username: username,
+    action: 'get-public-papers'
+  };
+  social.sendMessage("publicstorage", JSON.stringify(message)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
 });
 
 freedom.on('load-papers', function(data) {

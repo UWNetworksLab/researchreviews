@@ -9,6 +9,10 @@
       "url_": "javascript/social/social.rr.json",
       "url": "../socialmailbox/provider/social.mb.json",
       "api": "social"
+    },
+    "localstorage": {
+      "url": "../../node_modules/freedom/providers/storage/shared/storage.shared.json",
+      "api": "storage"
     }
   }
 }

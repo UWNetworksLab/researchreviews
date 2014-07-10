@@ -1,7 +1,51 @@
 var social = freedom.socialprovider(); 
+var store = freedom.localstorage();
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
+  var parse = JSON.parse(data.message);
+  console.log("data.message" + parse.action);
+
+  if (parse.action === 'get-public-papers'){
+    console.log('get-public-papers');
+
+    var promise = store.get('public-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+      if(!papers || typeof papers !== "object") {
+        console.log("nothing in papers");
+        papers = []; 
+      }
+
+      social.sendMessage(parse.username, JSON.stringify(papers)).then(function(ret) {
+        console.log('sent message back to ' + parse.username + JSON.stringify(papers));
+        //Fulfill - sendMessage succeeded
+      }, function(err) {
+        freedom.emit("recv-err", err);
+      });
+    });
+  }
+
+  else if (parse.action === 'add-paper'){
+    console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
+    var promise = store.get('public-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+     if(!papers || typeof papers !== "object") {
+        console.log("nothing in papers");
+        papers = []; 
+      }
+      papers.push(parse.title);
+      store.set('public-papers', JSON.stringify(papers)); 
+      });
+  }
 });
 
 /*social.sendMessage(val.to, val.msg).then(function(ret) {
