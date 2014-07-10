@@ -94,8 +94,7 @@ freedom.on('add-paper', function(data) {
 
       }); 
 
-      social.sendMessage("publicstorage", username + newPaper.versions[0].title).then(function(ret) {
-        //Fulfill - sendMessage succeeded
+      social.sendMessage("publicstorage", username + " " + newPaper.versions[0].title).then(function(ret) {
       }, function(err) {
         freedom.emit("recv-err", err);
       });

@@ -1,7 +1,5 @@
 var social = freedom.socialprovider(); 
 
-console.log("PUBLIC STORAGE.JS");
-
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
 });
@@ -20,7 +18,7 @@ social.login({
   interactive: false,
   rememberLogin: false
 }).then(function(ret) {
-  console.log("logged in as public storage: " + JSON.stringify(ret));
+
 }, function(err) {
   freedom.emit("recv-err", err);
 });
