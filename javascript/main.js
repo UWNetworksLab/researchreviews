@@ -10,7 +10,7 @@ var messageList = [];
 //store.set('papers', []);
 
 freedom.on('load-alerts', function(data){
-  console.log("load alerts");
+  console.log("load alerts messagelist "+ JSON.stringify(messageList));
   freedom.emit('got-alerts', JSON.stringify(messageList));
 });
 
@@ -18,7 +18,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
     messageList.push(parse); 
-    parse.num_msg = messageList.length;     
+//    parse.num_msg = messageList.length;
   }
   console.log("data in main " + data.message);
   freedom.emit('recv-message', JSON.stringify(parse));    

@@ -3,6 +3,7 @@ var app = angular.module('researcher_app', ['ui.bootstrap']);
 var currPaperKey = -1; 
 var currPaperVersion = -1; 
 var username; 
+var alertNum = 0;
 
 app.controller('drop_controller', function($scope) {
 }); 
@@ -343,8 +344,9 @@ window.freedom.on('recv-message', function(msg) {
 
   if(parse.action === 'invite-reviewer') {
     var badges = document.getElementsByClassName("badge"); 
+    alertNum++;
     for(var i = 0; i < badges.length; i++) {
-      badges[i].innerHTML = parse.num_msg;  
+      badges[i].innerHTML = alertNum;  
     }
   }
   else if (parse.action === "get-public-papers"){
@@ -365,6 +367,10 @@ window.freedom.on('recv-message', function(msg) {
 
 window.freedom.on('got-alerts', function(alerts){
   console.log("got-alerts");
+  var badges = document.getElementsByClassName("badge"); 
+  for(var i = 0; i < badges.length; i++) {
+    badges[i].innerHTML = "";  
+  }
 
   var parse = JSON.parse(alerts);
   var alerts_table = document.getElementById('alerts-table');
@@ -372,15 +378,18 @@ window.freedom.on('got-alerts', function(alerts){
 
   for (var i = 0; i < parse.length; i++){
     var p = document.createElement('tr');
-
     if (parse[i].action === "invite-reviewer"){
       p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + "</th>";
     }
+
+    if (i < alertNum) p.style.color = "#3CB371";
     newBody.appendChild(p);
   }
   alerts_table.replaceChild(newBody, alerts_table.childNodes[0]);
-  if (parse.length === 0) alerts_table.innerHTML = "You have no new alerts.";
+  console.log(JSON.stringify(parse));
+  alertNum = 0;
 
+  if (parse.length === 0) alerts_table.innerHTML = "You have no new alerts.";
 });
 
 window.onload = function() {
