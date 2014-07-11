@@ -107,7 +107,8 @@ freedom.on('send-message', function(val) {
 });
 
 social.on('onUserProfile', function(data) {
-  userList.push(data.userId); 
+  if(data.userId !== 'publicstorage' && data.userId !== username) 
+    userList.push(data.userId); 
 });
  
 freedom.on('get-users', function(data) {
