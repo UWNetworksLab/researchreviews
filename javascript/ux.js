@@ -291,6 +291,24 @@ window.freedom.on('display-table-and-view', function(papers){
   updateView(firstVersion, action); 
 });
 
+//display papers that user already interviewed
+function getPastReviews() {
+  var past_btn = document.getElementById("review-btns").getElementsByTagName("button")[0]; 
+  var pending_btn = document.getElementById("review-btns").getElementsByTagName("button")[1]; 
+  
+  past_btn.className = "btn btn-default active"; 
+  pending_btn.className = "btn btn-default"; 
+}
+
+//display papers that user was invited to review
+function getPendingReviews() {
+  var past_btn = document.getElementById("review-btns").getElementsByTagName("button")[0]; 
+  var pending_btn = document.getElementById("review-btns").getElementsByTagName("button")[1]; 
+  
+  past_btn.className = "btn btn-default"; 
+  pending_btn.className = "btn btn-default active"; 
+}
+
 // show the given page, hide the rest
 function showPage(id) {
   console.log("show page: " + id);
