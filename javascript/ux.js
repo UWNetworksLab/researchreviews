@@ -119,13 +119,13 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
       action: 'invite-reviewer',
       key: currPaperKey,
-      author: username
+      author: username,
+      vnum: currPaperVersion
     };
 
     freedom.emit('send-message', {
       to: reviewer_input,
-      msg: JSON.stringify(msg),
-      from: username
+      msg: JSON.stringify(msg)
     });
     
     $modalInstance.dismiss('cancel');
@@ -204,6 +204,17 @@ function updateTable(data, updateAction) {
   }
 }
 
+
+function updateReviewView(version){
+  console.log("VERSION " + JSON.stringify(version));
+  var paper_view = document.getElementById("review-view-container");
+  paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
+  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
+
+/*  currPaperKey = version.key;
+  currPaperVersion = version.vnum; */
+}
+
 function updateView(version, action) { //get newest version of uploaded paper/paper you were looking at 
   var btn_group = document.getElementById("v_btn_group"); 
   btn_group.getElementsByTagName("button")[0].removeAttribute('disabled'); 
@@ -263,7 +274,10 @@ window.freedom.on('display-pending-reviews', function(papers) {
   var paper_table = document.getElementById('pending-r-table'); 
   for (var i = paper_table.rows.length; i < papers.length; i++){
     var p = document.createElement('tr'); 
-    p.innerHTML = "<th>" + papers[i].title + " by " + papers[i].author + "</th>";
+
+    p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
+      '{key:' + papers[i].key + ', vnum : ' + papers[i].vnum + ', username: \'' + 
+      papers[i].author +'\'})">' + papers[i].title + ' by ' + papers[i].author + "</th>";
     paper_table.appendChild(p);
   }
 }); 
@@ -373,6 +387,10 @@ window.freedom.on('recv-message', function(msg) {
       newBody.appendChild(p);
     }
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
+  }
+  else if (parse.action === "send-r-paper"){
+    console.log("got to send r paper ux");
+    updateReviewView(parse.version);
   }
 
 });

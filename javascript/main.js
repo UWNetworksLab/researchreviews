@@ -26,6 +26,23 @@ freedom.on('get-r-papers', function(data) {
   }); 
 }); 
 
+freedom.on('get-pending-r-view', function(data){
+  console.log("Get pending r view data " + JSON.stringify(data));
+  var msg = {
+    action: 'get-r-paper',
+    key: data.key,
+    vnum: data.vnum,
+    from: username
+  };
+
+  social.sendMessage(data.username, JSON.stringify(msg)).then(function(ret) {
+    console.log(JSON.stringify(msg));
+    //Fulfill - sendMessage succeeded
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
+
 freedom.on('load-alerts', function(data){
   console.log("load alerts messagelist "+ JSON.stringify(messageList));
   freedom.emit('got-alerts', JSON.stringify(messageList));
@@ -51,13 +68,38 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
   }
+//get our own papers to send back
+  else if (parse.action === 'get-r-paper'){
+    var promise = store.get(username + 'papers');
+    promise.then(function(val) {
+      var papers = JSON.parse(val);
+      for(var i = 0; i < papers.length; i++){
+        if (papers[i].key.toString() === parse.key.toString()){
+          for (var j = 0; j < papers[i].versions.length; j++){
+            var msg = {
+              version: papers[i].versions[j],
+              action: 'send-r-paper'
+            };
+            social.sendMessage(parse.from, JSON.stringify(msg));
+            break;
+          }
+          break;
+        }
+      }
+    });
+  }
+
+  //received paper to review
+  else if (parse.action === 'send-r-paper'){
+    console.log("PARSE IN MAIN " + JSON.stringify(parse));
+  }
 
   freedom.emit('recv-message', JSON.stringify(parse));    
 });
 
 freedom.on('send-message', function(val) {
   social.sendMessage(val.to, val.msg).then(function(ret) {
-    console.log(val.to + val.from + val.msg);
+    console.log(val.to + val.msg.from + val.msg);
     //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
