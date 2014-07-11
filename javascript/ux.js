@@ -329,14 +329,15 @@ window.freedom.on('recv-message', function(msg) {
       badges[i].innerHTML = parse.num_msg;  
     }
   }
-  else {
+  else if (parse.action === "get-public-papers"){
+    console.log("here");
     var paper_table = document.getElementById('browse-paper-table');
     var newBody = document.createElement('tbody');
 
-    for (var i = 0; i < parse.length; i++){
+    for (var i = 0; i < parse.papers.length; i++){
       var p = document.createElement('tr');
       //p.setAttribute("id", data.key);
-      p.innerHTML = "<th>" + parse[i] + "</th>";
+      p.innerHTML = "<th>" + parse.papers[i] + "</th>";
       newBody.appendChild(p);
     }
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
@@ -360,6 +361,8 @@ window.freedom.on('got-alerts', function(alerts){
     newBody.appendChild(p);
   }
   alerts_table.replaceChild(newBody, alerts_table.childNodes[0]);
+  if (parse.length === 0) alerts_table.innerHTML = "You have no new alerts.";
+
 });
 
 window.onload = function() {

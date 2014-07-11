@@ -20,8 +20,13 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = []; 
       }
 
-      social.sendMessage(parse.username, JSON.stringify(papers)).then(function(ret) {
-        console.log('sent message back to ' + parse.username + JSON.stringify(papers));
+      var msg = {
+        papers: papers,
+        action: 'get-public-papers'
+      };
+
+      social.sendMessage(parse.username, JSON.stringify(msg)).then(function(ret) {
+        console.log('sent message back to ' + parse.username + JSON.stringify(msg));
         //Fulfill - sendMessage succeeded
       }, function(err) {
         freedom.emit("recv-err", err);

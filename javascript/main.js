@@ -20,8 +20,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     messageList.push(parse); 
     parse.num_msg = messageList.length;     
   }
-//  else if (parse.action ===){
-  //}
+  console.log("data in main " + data.message);
   freedom.emit('recv-message', JSON.stringify(parse));    
 
 });
