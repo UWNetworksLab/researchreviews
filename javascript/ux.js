@@ -4,6 +4,7 @@ var currPaperKey = -1;
 var currPaperVersion = -1; 
 var username; 
 var alertNum = 0;
+var currRPaper;
 
 app.controller('drop_controller', function($scope) {
 }); 
@@ -24,6 +25,15 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
       templateUrl: 'addPaperTemplate.html',
       windowClass:'normal',
       controller: addPaperCtrl,
+      backdrop: 'static'
+    });
+  };
+
+  $scope.addReview = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'addReviewTemplate.html',
+      windowClass:'normal',
+      controller: addReviewCtrl,
       backdrop: 'static'
     });
   };
@@ -81,6 +91,24 @@ var addPaperCtrl = function ($scope, $modalInstance) {
     }
 
     uploadFile(files, comments);
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+var addReviewCtrl = function ($scope, $modalInstance) {
+  $scope.upload = function () {
+    console.log("got to add review ctrl");
+    var files = document.getElementById("addFile").files;
+    
+    if (files.length < 1) {
+      alert("No files found.");
+      return;
+    }
+
     $modalInstance.dismiss('cancel');
   };
 
@@ -159,6 +187,16 @@ function uploadFile(files, comments, key) {
   reader.readAsArrayBuffer(newPaper);
 }
 
+function downloadRPaper() {
+  console.log("downloadrpaper");
+  var ab = str2ab(currRPaper.binaryString);
+  var reader = new FileReader();
+
+  var blob = new Blob([ab], {type:'text/plain'});
+  reader.readAsArrayBuffer(blob);
+  saveAs(blob, currRPaper.title); 
+}
+
 function downloadVersion() {
   window.freedom.emit('download-version', {
     key: currPaperKey,
@@ -206,7 +244,8 @@ function updateTable(data, updateAction) {
 
 
 function updateReviewView(version){
-  console.log("VERSION " + JSON.stringify(version));
+  currRPaper = version;
+  //console.log("VERSION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
@@ -365,7 +404,7 @@ window.freedom.on('recv-status', function(msg) {
 });
 
 window.freedom.on('recv-message', function(msg) {
-  console.log("msg: " + msg);
+  //console.log("msg: " + msg);
   var parse = JSON.parse(msg);
 
   if(parse.action === 'invite-reviewer') {
