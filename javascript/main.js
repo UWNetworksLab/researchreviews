@@ -9,6 +9,23 @@ var messageList = [];
 
 //store.set('papers', []);
 
+freedom.on('get-r-papers', function(data) {
+  var promise = store.get(username + 'r_papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      papers = []; 
+      console.log("nothing");
+    }
+
+    freedom.emit('display-pending-reviews', papers); 
+  }); 
+}); 
+
 freedom.on('load-alerts', function(data){
   console.log("load alerts messagelist "+ JSON.stringify(messageList));
   freedom.emit('got-alerts', JSON.stringify(messageList));
@@ -18,11 +35,24 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
     messageList.push(parse); 
-//    parse.num_msg = messageList.length;
-  }
-  console.log("data in main " + data.message);
-  freedom.emit('recv-message', JSON.stringify(parse));    
+    var promise = store.get(username + 'r_papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
 
+      if(!papers || typeof papers !== "object") {
+        papers = []; 
+        console.log("nothing");
+      }
+
+      papers.push(parse); 
+      store.set(username + 'r_papers', JSON.stringify(papers)); 
+    });
+  }
+
+  freedom.emit('recv-message', JSON.stringify(parse));    
 });
 
 freedom.on('send-message', function(val) {

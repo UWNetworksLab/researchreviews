@@ -118,6 +118,7 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
     var msg = {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
       action: 'invite-reviewer',
+      key: currPaperKey,
       author: username
     };
 
@@ -258,6 +259,15 @@ window.freedom.on("got-paper-view", function(data) {
   updateView(data.version, data.action);
 }); 
 
+window.freedom.on('display-pending-reviews', function(papers) {
+  var paper_table = document.getElementById('pending-r-table'); 
+  for (var i = paper_table.rows.length; i < papers.length; i++){
+    var p = document.createElement('tr'); 
+    p.innerHTML = "<th>" + papers[i].title + " by " + papers[i].author + "</th>";
+    paper_table.appendChild(p);
+  }
+}); 
+
 window.freedom.on('display-table-and-view', function(papers){
   var btn_group = document.getElementById("v_btn_group"); 
   if(papers.length == 0)  {
@@ -308,6 +318,8 @@ function getPendingReviews() {
   
   past_btn.className = "btn btn-default"; 
   pending_btn.className = "btn btn-default active"; 
+
+  window.freedom.emit("get-r-papers", 0); 
 }
 
 // show the given page, hide the rest
