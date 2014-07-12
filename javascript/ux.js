@@ -111,7 +111,7 @@ var addReviewCtrl = function ($scope, $modalInstance) {
 
     var data = {
       version: currRPaper,
-      review: files[0],
+      review: files[0].name,
       reviewer: username,
       action: 'add-review'
     };
@@ -258,7 +258,13 @@ function updateReviewView(version){
   //console.log("VERSION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
-  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
+  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
+
+  if(version.reviews) {
+    console.log("UPDATE REVIEW VIEW......." + version.reviews); 
+    paper_view.getElementsByTagName("p")[1].innerHTML = version.reviews[0]; 
+  }
+
 
 /*  currPaperKey = version.key;
   currPaperVersion = version.vnum; */
@@ -286,7 +292,11 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
 
   var paper_view = document.getElementById("paper-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
-  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;  
+  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;
+  if(version.reviews) {
+    console.log("UPDATE VIEW......." + version.reviews); 
+    paper_view.getElementsByTagName("p")[1].innerHTML = version.reviews[0]; 
+  }
 
   currPaperKey = version.key;
   currPaperVersion = version.vnum; 

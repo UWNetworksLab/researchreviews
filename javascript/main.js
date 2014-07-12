@@ -49,7 +49,6 @@ freedom.on('load-alerts', function(data){
 });
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  console.log("MAIN DATA " + data.message);
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
     messageList.push(parse); 
@@ -96,24 +95,24 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
-    console.log("PARSE IN ADD REVIEW MAIN ");
-
-/*    var promise = store.get(username + 'papers');
+    console.log("PARSE IN ADD REVIEW MAIN " + data.message);
+    //now sending over binary string, only need to send key etc
+    var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
       for(var i = 0; i < papers.length; i++){
-        if (papers[i].key.toString() === data.key.toString()){
-          freedom.emit('got-paper', {
-            string: papers[i].versions[data.vnum].binaryString, 
-            title: papers[i].versions[data.vnum].title
-          });
+        if (papers[i].key.toString() === parse.version.key.toString()){
+          if(!papers[i].versions[parse.version.vnum].reviews)  
+            papers[i].versions[parse.version.vnum].reviews = []; 
+          
+          papers[i].versions[parse.version.vnum].reviews.push(parse.review);
+
           break;
         }
       }
+
+      store.set(username + 'papers', JSON.stringify(papers)); 
     });
-*/
-
-
     return;
   }
 
@@ -123,12 +122,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 freedom.on('upload-review', function(data){
   var parse = JSON.parse(data);
   console.log("UPLOAD REVIEW DATA " + parse.version.author);
-/*  social.sendMessage(parse.version.author, data).then(function(ret) {
-    //console.log(val.to + val.msg.from + val.msg);
-    //Fulfill - sendMessage succeeded
+  social.sendMessage(parse.version.author, data).then(function(ret) {
+    //console.log
   }, function(err) {
     freedom.emit("recv-err", err);
-  });*/
+  });
 });
 
 freedom.on('send-message', function(val) {
