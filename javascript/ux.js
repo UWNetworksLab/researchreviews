@@ -109,6 +109,15 @@ var addReviewCtrl = function ($scope, $modalInstance) {
       return;
     }
 
+    var data = {
+      version: currRPaper,
+      review: files[0],
+      reviewer: username,
+      action: 'add-review'
+    };
+
+    window.freedom.emit('upload-review', JSON.stringify(data));
+
     $modalInstance.dismiss('cancel');
   };
 
@@ -181,6 +190,7 @@ function uploadFile(files, comments, key) {
       date: today,
       key: key,
       comments: comments, 
+      author: username,
       binaryString: ab2str(arrayBuffer)
     });
   }
