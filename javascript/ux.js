@@ -471,8 +471,12 @@ window.freedom.on('got-alerts', function(alerts){
       p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + "</th>";
     }
 
-    if (i < alertNum) p.style.color = "#3CB371";
-    newBody.appendChild(p);
+    console.log(i + " " + alertNum); 
+    if (i >= parse.length - alertNum) { 
+      p.style.color = "#3CB371";    
+    }
+
+    newBody.insertBefore(p, newBody.childNodes[0]);
   }
   alerts_table.replaceChild(newBody, alerts_table.childNodes[0]);
   console.log(JSON.stringify(parse));
