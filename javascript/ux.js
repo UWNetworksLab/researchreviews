@@ -109,14 +109,30 @@ var addReviewCtrl = function ($scope, $modalInstance) {
       return;
     }
 
-    var data = {
-      version: currRPaper,
-      review: files[0].name,
-      reviewer: username,
-      action: 'add-review'
-    };
+    var reader = new FileReader();
+    reader.onload = function() {
+      var arrayBuffer = reader.result;
+      var today = new Date();  
+      var dd = today.getDate();
+      var mm = today.getMonth()+1; 
+      var yyyy = today.getFullYear();
+      today = yyyy+'-'+mm+'-'+dd; 
 
-    window.freedom.emit('upload-review', JSON.stringify(data));
+      var data = {
+        author: currRPaper.author,
+        key: currRPaper.key,
+        vnum: currRPaper.vnum,
+        string: ab2str(arrayBuffer),
+        name: files[0].name,
+        reviewer: username,
+        action: 'add-review',
+        date: today
+      };
+
+      window.freedom.emit('upload-review', JSON.stringify(data));
+    }
+    reader.readAsArrayBuffer(files[0]);    
+
 
     $modalInstance.dismiss('cancel');
   };
@@ -215,15 +231,31 @@ function downloadVersion() {
 }
 
 window.freedom.on('got-paper', function(data){
+  console.log("data " +JSON.stringify(data));
   var ab = str2ab(data.string);
-
   var reader = new FileReader();
+  var blob;
 
+  if (data.review) blob = new Blob([ab], {type:'text/plain'});
+  else blob = new Blob([ab], {type:'application/pdf'});
 
-  var blob = new Blob([ab], {type:'application/pdf'});
   reader.readAsArrayBuffer(blob);
   saveAs(blob, data.title); 
 });
+
+function downloadReview(){ //only for text
+  console.log("DOWNLOAD");
+  var data = currRPaper.reviews[0];
+
+  console.log("data " +JSON.stringify(data));
+  var ab = str2ab(data.string);
+  var reader = new FileReader();
+  var blob = new Blob([ab], {type:'text/plain'});
+
+  reader.readAsArrayBuffer(blob);
+  console.log("data.title  " + data.name);
+  saveAs(blob, data.name); 
+}
 
 function deletePaper(){
   window.freedom.emit('delete-paper', currPaperKey);
@@ -252,7 +284,6 @@ function updateTable(data, updateAction) {
   }
 }
 
-
 function updateReviewView(version){
   currRPaper = version;
   //console.log("VERSION " + JSON.stringify(version));
@@ -261,10 +292,10 @@ function updateReviewView(version){
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
 
   if(version.reviews) {
-    console.log("UPDATE REVIEW VIEW......." + version.reviews); 
-    paper_view.getElementsByTagName("p")[1].innerHTML = version.reviews[0]; 
+    console.log("UPDATE REVIEW VIEW.......asdfasdfadfadfsa" + JSON.stringify(version.reviews[0])); 
+    paper_view.getElementsByTagName("p")[1].innerHTML = '<a href = "#" onclick = \'downloadReview()\'>' 
+    + version.reviews[0].name + '</a>'; 
   }
-
 
 /*  currPaperKey = version.key;
   currPaperVersion = version.vnum; */
@@ -294,8 +325,13 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;
   if(version.reviews) {
-    console.log("UPDATE VIEW......." + version.reviews); 
-    paper_view.getElementsByTagName("p")[1].innerHTML = version.reviews[0]; 
+    for(var i = 0; i < version.reviews.length; i++){
+      //TODO: adding p elements
+      paper_view.getElementsByTagName("p")[1].innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' 
+      + currPaperKey + ', vnum: ' 
+      + currPaperVersion + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
+      + version.reviews[i].date + '</a>'; 
+    }
   }
 
   currPaperKey = version.key;
@@ -324,6 +360,8 @@ function getVersion(offset) {
 }
 
 window.freedom.on("got-paper-view", function(data) {
+//  console.log("IN GOT PAPER VIEW data : " + JSON.stringify(data));
+  console.log("IN GOT PAPER VIEW reviews : " + JSON.stringify(data.version.reviews));
   currPaperVersion = data.version.vnum; 
   currPaperKey = data.version.key; 
   updateView(data.version, data.action);

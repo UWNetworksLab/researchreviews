@@ -9,6 +9,28 @@ var messageList = [];
 
 //store.set('papers', []);
 
+freedom.on('download-review', function(data){
+  console.log("DOWNLOAD REVIEW IN MAIN");
+  parse = data;
+  var promise = store.get(username + 'papers');
+  promise.then(function(val) {
+    console.log("INSIDER PROMISE");
+    var papers = JSON.parse(val);
+    for(var i = 0; i < papers.length; i++){
+      console.log("i: " + i + "papers[i].key" + papers[i].key + " parse key : " + parse.key);
+      if (papers[i].key.toString() === parse.key.toString()){
+        console.log("GOT HERE");
+        freedom.emit('got-paper', {
+          string: papers[i].versions[data.vnum].reviews[0].string, 
+          title: papers[i].versions[data.vnum].reviews[0].name,
+          review: 1
+          });
+        break;
+      }
+    }
+  });
+});
+
 freedom.on('get-r-papers', function(data) {
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
@@ -95,18 +117,17 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
-    console.log("PARSE IN ADD REVIEW MAIN " + data.message);
+//    console.log("PARSE IN ADD REVIEW MAIN " + data.message);
     //now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
       for(var i = 0; i < papers.length; i++){
-        if (papers[i].key.toString() === parse.version.key.toString()){
-          if(!papers[i].versions[parse.version.vnum].reviews)  
-            papers[i].versions[parse.version.vnum].reviews = []; 
+        if (papers[i].key.toString() === parse.key.toString()){
+          if(!papers[i].versions[parse.vnum].reviews)  
+            papers[i].versions[parse.vnum].reviews = []; 
           
-          papers[i].versions[parse.version.vnum].reviews.push(parse.review);
-
+          papers[i].versions[parse.vnum].reviews.push(parse);
           break;
         }
       }
@@ -121,8 +142,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
 freedom.on('upload-review', function(data){
   var parse = JSON.parse(data);
-  console.log("UPLOAD REVIEW DATA " + parse.version.author);
-  social.sendMessage(parse.version.author, data).then(function(ret) {
+  console.log("UPLOAD REVIEW DATA " + parse.author);
+  social.sendMessage(parse.author, data).then(function(ret) {
     //console.log
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -131,7 +152,7 @@ freedom.on('upload-review', function(data){
 
 freedom.on('send-message', function(val) {
   social.sendMessage(val.to, val.msg).then(function(ret) {
-    console.log(val.to + val.msg.from + val.msg);
+    console.log("STRINGIFY " + val.to + ", " + JSON.stringify(val.msg));
     //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -153,6 +174,7 @@ freedom.on('download-version', function(data){
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
       if (papers[i].key.toString() === data.key.toString()){
+        console.log("BINARY STRING : " + papers[i].versions[data.vnum].binaryString);
         freedom.emit('got-paper', {
           string: papers[i].versions[data.vnum].binaryString, 
           title: papers[i].versions[data.vnum].title
@@ -248,8 +270,14 @@ freedom.on('get-paper-view', function(data) {
         if(data.vnum == -1) { //from clicking paper table
           var action = 1;
           if (papers[i].versions.length == 1) action = 0;
+
+//          console.log("MAIN REVIEWS JSON:  " + JSON.stringify(papers[i].versions[papers[i].versions.length-1]));
+
           freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: action});
         }
+
+        //all from clicking prev and next? action is disabling prev and next buttons
+        //TODO: make this cleaner?
         else if(data.vnum > 0 && data.vnum < papers[i].versions.length-1) { //clicking prev and next, version exists
           freedom.emit("got-paper-view", {version: papers[i].versions[data.vnum]});
         }
