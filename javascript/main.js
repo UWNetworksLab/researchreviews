@@ -91,7 +91,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
   //received paper to review
   else if (parse.action === 'send-r-paper'){
-    console.log("PARSE IN MAIN " + JSON.stringify(parse));
+    console.log("PARSE IN MAIN ");// + JSON.stringify(parse));
   }
 
   else if (parse.action === 'add-review'){
