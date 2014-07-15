@@ -47,10 +47,37 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         console.log("nothing in papers");
         papers = []; 
       }
-      papers.push(parse.title);
+      papers.push(parse);
       store.set('public-papers', JSON.stringify(papers)); 
-      });
+    });
   }
+
+  else if (parse.action === 'delete-paper'){
+    console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
+    var promise = store.get('public-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+     if(!papers || typeof papers !== "object") {
+        console.log("nothing in papers");
+        papers = []; 
+      }
+      
+      for(var i = 0; i < papers.length; i++)
+        if(papers[i].key == parse.key) {
+          papers.splice(i, 1);
+          break; 
+        }
+
+      console.log(papers.length);
+
+      store.set('public-papers', JSON.stringify(papers)); 
+    });
+  }
+
 });
 
 /*social.sendMessage(val.to, val.msg).then(function(ret) {

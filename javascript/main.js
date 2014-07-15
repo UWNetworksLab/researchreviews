@@ -200,6 +200,7 @@ freedom.on('add-paper', function(data) {
       var paper ={
         title: newPaper.versions[0].title,
         author: username,
+        key: data.key, 
         action: 'add-paper'
       };
       social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
@@ -293,6 +294,18 @@ freedom.on('delete-paper', function(key){
         break;
       }
     }
+
+    //to send to publicstorage
+    var paper ={
+      key: key, 
+      action: 'delete-paper'
+    };
+
+    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
+
     store.set(username+'papers', JSON.stringify(papers)); 
     freedom.emit('display-delete-paper', key);
   }); 

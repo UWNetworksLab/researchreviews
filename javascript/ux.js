@@ -486,7 +486,7 @@ window.freedom.on('recv-message', function(msg) {
     for (var i = 0; i < parse.papers.length; i++){
       var p = document.createElement('tr');
       //p.setAttribute("id", data.key);
-      p.innerHTML = "<th>" + parse.papers[i] + "</th>";
+      p.innerHTML = "<th>" + parse.papers[i].title + " by " + parse.papers[i].author + "</th>";
       newBody.appendChild(p);
     }
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
