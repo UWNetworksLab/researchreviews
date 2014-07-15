@@ -305,21 +305,9 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
   var btn_group = document.getElementById("v_btn_group"); 
   btn_group.getElementsByTagName("button")[0].removeAttribute('disabled'); 
   btn_group.getElementsByTagName("button")[1].removeAttribute('disabled'); 
-
-  if(version && typeof version === "object") {
-    document.getElementById('options-butt').removeAttribute('disabled');
-  }
-
-  if(action == 1) {
-    btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
-  }
-  else if(action == -1) {
-    btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
-  } 
-  else if(action == 0) {
-    btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
-    btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
-  }
+  if(version && typeof version === "object") document.getElementById('options-butt').removeAttribute('disabled');
+  if(action >= 0) btn_group.getElementsByTagName("button")[1].setAttribute('disabled', true); 
+  if(action <= 0) btn_group.getElementsByTagName("button")[0].setAttribute('disabled', true); 
 
   var paper_view = document.getElementById("paper-view-container");
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
