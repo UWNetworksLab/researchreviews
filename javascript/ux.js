@@ -275,6 +275,7 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
+  console.log("updatereviewview " + version);
   currRPaper = version;
   //console.log("VERSION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
@@ -286,12 +287,10 @@ function updateReviewView(version){
     paper_view.getElementsByTagName("p")[1].innerHTML = '<a href = "#" onclick = \'downloadReview()\'>' 
     + version.reviews[0].name + '</a>'; 
   }
-
-/*  currPaperKey = version.key;
-  currPaperVersion = version.vnum; */
 }
 
 function updateView(version, action) { //get newest version of uploaded paper/paper you were looking at 
+  currPaper = version; 
   var btn_group = document.getElementById("v_btn_group"); 
   btn_group.getElementsByTagName("button")[0].removeAttribute('disabled'); 
   btn_group.getElementsByTagName("button")[1].removeAttribute('disabled'); 
@@ -313,13 +312,12 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
       console.log("here");
       //TODO: adding p elements
       var pEl = document.createElement('p');
-      pEl.innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' + currPaper.key + ', vnum: ' 
-      + currPaper.vnum + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
+      pEl.innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' + version.key + ', vnum: ' 
+      + version.vnum + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
       + version.reviews[i].date + '</a>';
       paper_view.appendChild(pEl);
     }
   }
-  currPaper = version; 
 }
 
 window.freedom.on('display-delete-paper', function(key) {
@@ -472,7 +470,6 @@ window.freedom.on('recv-message', function(msg) {
     console.log("got to send r paper ux");
     updateReviewView(parse.version);
   }
-
 });
 
 window.freedom.on('got-alerts', function(alerts){

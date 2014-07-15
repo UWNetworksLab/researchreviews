@@ -92,6 +92,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
+    console.log("get-r-paper");
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
@@ -102,6 +103,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
               version: papers[i].versions[j],
               action: 'send-r-paper'
             };
+            console.log("MSG IN MAIN " + JSON.stringify(msg));
             social.sendMessage(parse.from, JSON.stringify(msg));
             break;
           }
