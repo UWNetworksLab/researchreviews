@@ -10,21 +10,16 @@ var messageList = [];
 //store.set('papers', []);
 
 freedom.on('download-review', function(data){
-  console.log("DOWNLOAD REVIEW IN MAIN");
-  parse = data;
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
-    console.log("INSIDER PROMISE");
     var papers = JSON.parse(val);
     for(var i = 0; i < papers.length; i++){
-      console.log("i: " + i + "papers[i].key" + papers[i].key + " parse key : " + parse.key);
-      if (papers[i].key.toString() === parse.key.toString()){
-        console.log("GOT HERE");
-        freedom.emit('got-paper', {
+      console.log("i: " + i + "papers[i].key" + papers[i].key + " parse key : " + data.key);
+      if (papers[i].key.toString() === data.key.toString()){
+        freedom.emit('got-review', {
           string: papers[i].versions[data.vnum].reviews[0].string, 
-          title: papers[i].versions[data.vnum].reviews[0].name,
-          review: 1
-          });
+          title: papers[i].versions[data.vnum].reviews[0].name
+        });
         break;
       }
     }

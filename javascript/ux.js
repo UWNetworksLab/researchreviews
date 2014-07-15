@@ -233,6 +233,18 @@ function downloadVersion() {
   saveAs(blob, currPaper.title);
 }
 
+window.freedom.on("got-review", function(data) {
+  console.log("download review");
+
+  var ab = str2ab(data.string);
+  var reader = new FileReader();
+  var blob = new Blob([ab], {type:'text/plain'});
+
+  reader.readAsArrayBuffer(blob);
+  console.log("data.title  " + data.title);
+  saveAs(blob, data.title); 
+}); 
+
 function downloadReview(){ //only for text
   console.log("DOWNLOAD");
   var data = currRPaper.reviews[0];
