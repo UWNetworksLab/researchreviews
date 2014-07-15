@@ -166,23 +166,6 @@ social.on('onUserProfile', function(data) {
  
 freedom.on('get-users', function(data) {
   freedom.emit('send-users', userList);
-}); 
-
-freedom.on('download-version', function(data){
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers = JSON.parse(val);
-    for(var i = 0; i < papers.length; i++){
-      if (papers[i].key.toString() === data.key.toString()){
-        console.log("BINARY STRING : " + papers[i].versions[data.vnum].binaryString);
-        freedom.emit('got-paper', {
-          string: papers[i].versions[data.vnum].binaryString, 
-          title: papers[i].versions[data.vnum].title
-        });
-        break;
-      }
-    }
-  });
 });
 
 freedom.on('add-paper', function(data) {

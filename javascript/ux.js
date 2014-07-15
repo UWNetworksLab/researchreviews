@@ -223,24 +223,15 @@ function downloadRPaper() {
 }
 
 function downloadVersion() {
-  window.freedom.emit('download-version', {
-    key: currPaper.key,
-    vnum: currPaper.vnum 
-  });
-}
+  console.log("downlaod version");
 
-window.freedom.on('got-paper', function(data){
-  console.log("data " +JSON.stringify(data));
-  var ab = str2ab(data.string);
+  var ab = str2ab(currPaper.binaryString);
   var reader = new FileReader();
-  var blob;
-
-  if (data.review) blob = new Blob([ab], {type:'text/plain'});
-  else blob = new Blob([ab], {type:'application/pdf'});
+  var blob = new Blob([ab], {type:'application/pdf'});
 
   reader.readAsArrayBuffer(blob);
-  saveAs(blob, data.title); 
-});
+  saveAs(blob, currPaper.title);
+}
 
 function downloadReview(){ //only for text
   console.log("DOWNLOAD");
