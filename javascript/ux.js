@@ -246,7 +246,7 @@ window.freedom.on("got-review", function(data) {
 }); 
 
 function downloadReview(i, reviewer){ //only for text
-  console.log("DOWNLOAD" + i + type);
+  console.log("DOWNLOAD" + i + reviewer);
   var data; 
   if (reviewer) data = currPaper.reviews[i];
   else data = currRPaper.reviews[i];

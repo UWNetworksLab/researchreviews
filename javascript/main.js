@@ -9,23 +9,6 @@ var messageList = [];
 
 //store.set('papers', []);
 
-freedom.on('download-review', function(data){
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers = JSON.parse(val);
-    for(var i = 0; i < papers.length; i++){
-      console.log("i: " + i + "papers[i].key" + papers[i].key + " parse key : " + data.key);
-      if (papers[i].key.toString() === data.key.toString()){
-        freedom.emit('got-review', {
-          string: papers[i].versions[data.vnum].reviews[0].string, 
-          title: papers[i].versions[data.vnum].reviews[0].name
-        });
-        break;
-      }
-    }
-  });
-});
-
 freedom.on('get-r-papers', function(data) {
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
