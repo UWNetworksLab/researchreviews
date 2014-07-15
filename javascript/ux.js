@@ -1,7 +1,6 @@
 //interactions
 var app = angular.module('researcher_app', ['ui.bootstrap']);
-var currPaperKey = -1; 
-var currPaperVersion = -1; 
+var currPaper;
 var username; 
 var alertNum = 0;
 var currRPaper;
@@ -152,7 +151,7 @@ var addVersionCtrl = function ($scope, $modalInstance) {
       return;
     }
 
-    uploadFile(files, comments, currPaperKey);
+    uploadFile(files, comments, currPaper.key);
     $modalInstance.dismiss('cancel');
   };
 
@@ -171,7 +170,7 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
     var msg = {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
       action: 'invite-reviewer',
-      key: currPaperKey,
+      key: currPaper.key,
       author: username,
       vnum: currPaperVersion
     };
@@ -225,8 +224,8 @@ function downloadRPaper() {
 
 function downloadVersion() {
   window.freedom.emit('download-version', {
-    key: currPaperKey,
-    vnum: currPaperVersion 
+    key: currPaper.key,
+    vnum: currPaper.vnum 
   });
 }
 
@@ -258,7 +257,7 @@ function downloadReview(){ //only for text
 }
 
 function deletePaper(){
-  window.freedom.emit('delete-paper', currPaperKey);
+  window.freedom.emit('delete-paper', currPaper.key);
 }
 
 function makeRow(title, date, key) {
@@ -323,14 +322,13 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
       console.log("here");
       //TODO: adding p elements
       var pEl = document.createElement('p');
-      pEl.innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' + currPaperKey + ', vnum: ' 
-      + currPaperVersion + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
+      pEl.innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' + currPaper.key + ', vnum: ' 
+      + currPaper.vnum + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
       + version.reviews[i].date + '</a>';
       paper_view.appendChild(pEl);
     }
   }
-  currPaperKey = version.key;
-  currPaperVersion = version.vnum; 
+  currPaper = version; 
 }
 
 window.freedom.on('display-delete-paper', function(key) {
@@ -349,16 +347,15 @@ window.freedom.on('display-new-version', function(paper) {
 
 function getVersion(offset) {
   window.freedom.emit('get-paper-view', {
-    key: currPaperKey, 
-    vnum: currPaperVersion+offset 
+    key: currPaper.key, 
+    vnum: currPaper.vnum+offset 
   }); 
 }
 
 window.freedom.on("got-paper-view", function(data) {
 //  console.log("IN GOT PAPER VIEW data : " + JSON.stringify(data));
   console.log("IN GOT PAPER VIEW reviews : " + JSON.stringify(data.version.reviews));
-  currPaperVersion = data.version.vnum; 
-  currPaperKey = data.version.key; 
+  currPaper = data.version; 
   updateView(data.version, data.action);
 }); 
 
