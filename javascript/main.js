@@ -253,7 +253,6 @@ freedom.on('add-paper', function(data) {
 }); 
 
 freedom.on('get-paper-view', function(data) {
-
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -270,9 +269,6 @@ freedom.on('get-paper-view', function(data) {
         if(data.vnum == -1) { //from clicking paper table
           var action = 1;
           if (papers[i].versions.length == 1) action = 0;
-
-//          console.log("MAIN REVIEWS JSON:  " + JSON.stringify(papers[i].versions[papers[i].versions.length-1]));
-
           freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: action});
         }
 
