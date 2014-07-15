@@ -245,10 +245,10 @@ window.freedom.on("got-review", function(data) {
   saveAs(blob, data.title); 
 }); 
 
-function downloadReview(i, type){ //only for text
+function downloadReview(i, reviewer){ //only for text
   console.log("DOWNLOAD" + i + type);
   var data; 
-  if (type) data = currPaper.reviews[i];
+  if (reviewer) data = currPaper.reviews[i];
   else data = currRPaper.reviews[i];
 
   console.log("data " +JSON.stringify(data));
