@@ -245,9 +245,11 @@ window.freedom.on("got-review", function(data) {
   saveAs(blob, data.title); 
 }); 
 
-function downloadReview(i){ //only for text
-  console.log("DOWNLOAD");
-  var data = currRPaper.reviews[i];
+function downloadReview(i, type){ //only for text
+  console.log("DOWNLOAD" + i + type);
+  var data; 
+  if (type) data = currPaper.reviews[i];
+  else data = currRPaper.reviews[i];
 
   console.log("data " +JSON.stringify(data));
   var ab = str2ab(data.string);
@@ -337,8 +339,7 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
       console.log("here");
       //TODO: adding p elements
       var pEl = document.createElement('p');
-      pEl.innerHTML = '<a href = \'#\' onclick="freedom.emit(\'download-review\', {key:' + version.key + ', vnum: ' 
-      + version.vnum + '})">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
+      pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i + ', 1)">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
       + version.reviews[i].date + '</a>';
       paper_view.appendChild(pEl);
     }
