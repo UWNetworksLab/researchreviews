@@ -53,7 +53,6 @@ freedom.on('get-pending-r-view', function(data){
   };
 
   social.sendMessage(data.username, JSON.stringify(msg)).then(function(ret) {
-    console.log(JSON.stringify(msg));
     //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -114,7 +113,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
-//    console.log("PARSE IN ADD REVIEW MAIN " + data.message);
     //now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
