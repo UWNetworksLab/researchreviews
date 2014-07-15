@@ -172,7 +172,7 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
       action: 'invite-reviewer',
       key: currPaper.key,
       author: username,
-      vnum: currPaperVersion
+      vnum: currPaper.vnum
     };
 
     freedom.emit('send-message', {
