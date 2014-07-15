@@ -468,7 +468,7 @@ window.freedom.on('recv-status', function(msg) {
 });
 
 window.freedom.on('recv-message', function(msg) {
-  //console.log("msg: " + msg);
+  console.log("msg asdfasdf: " + msg);
   var parse = JSON.parse(msg);
 
   if(parse.action === 'invite-reviewer') {
@@ -477,6 +477,13 @@ window.freedom.on('recv-message', function(msg) {
     for(var i = 0; i < badges.length; i++) {
       badges[i].innerHTML = alertNum;  
     }
+  }
+  else if(parse.action === 'add-review') {
+    var badges = document.getElementsByClassName("badge"); 
+    alertNum++;
+    for(var i = 0; i < badges.length; i++) {
+      badges[i].innerHTML = alertNum;  
+    } 
   }
   else if (parse.action === "get-public-papers"){
     console.log("here");
@@ -512,6 +519,10 @@ window.freedom.on('got-alerts', function(alerts){
     var p = document.createElement('tr');
     if (parse[i].action === "invite-reviewer"){
       p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + "</th>";
+    }
+    else if(parse[i].action === 'add-review') {
+      //TODO: have key, vnum, but need title?! 
+      p.innerHTML = "<th>" + parse[i].reviewer + " reviewed your paper</th>";
     }
 
     console.log(i + " " + alertNum); 

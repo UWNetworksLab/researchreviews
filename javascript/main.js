@@ -113,6 +113,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
+    console.log("add review: " + JSON.stringify(parse));
+    messageList.push(parse); 
     //now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
@@ -129,7 +131,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       store.set(username + 'papers', JSON.stringify(papers)); 
     });
-    return;
   }
 
   freedom.emit('recv-message', JSON.stringify(parse));    
