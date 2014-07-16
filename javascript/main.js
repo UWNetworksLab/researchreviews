@@ -9,7 +9,9 @@ var messageList = [];
 
 //store.set('papers', []);
 
-freedom.on('get-r-papers', function(data) {
+freedom.on('get-r-papers', function(pending) {
+  console.log("get r papers pending " + pending);
+
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
     var papers; 
@@ -22,7 +24,12 @@ freedom.on('get-r-papers', function(data) {
       console.log("nothing");
     }
 
-    freedom.emit('display-pending-reviews', papers); 
+    console.log("IN PROMISE IN MAIN before freedomemit papers " + JSON.stringify(papers));
+
+    freedom.emit('display-reviews', {
+      pending: pending,
+      papers: papers
+    }); 
   }); 
 }); 
 
@@ -62,8 +69,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = []; 
         console.log("nothing");
       }
-
+      parse.pending = 1;
       papers.push(parse); 
+
+      console.log("PAPERS IN MAIN " + JSON.stringify(papers));
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
   }
@@ -80,7 +89,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
               version: papers[i].versions[j],
               action: 'send-r-paper'
             };
-            console.log("MSG IN MAIN " + JSON.stringify(msg));
+//            console.log("MSG IN MAIN " + JSON.stringify(msg));
             social.sendMessage(parse.from, JSON.stringify(msg));
             break;
           }
@@ -96,15 +105,16 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
-    console.log("add review: " + JSON.stringify(parse));
     messageList.push(parse); 
-    //now sending over binary string, only need to send key etc
+    //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
       for(var i = 0; i < papers.length; i++){
         if (papers[i].key.toString() === parse.key.toString()){
-          if(!papers[i].versions[parse.vnum].reviews)  
+
+          console.log("PAPERS IN ADD=REVIEW " + JSON.stringify(papers[i]));
+          if(!papers[i].versions[parse.vnum].reviews)
             papers[i].versions[parse.vnum].reviews = []; 
           
           papers[i].versions[parse.vnum].reviews.push(parse);
@@ -122,6 +132,31 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 freedom.on('upload-review', function(data){
   var parse = JSON.parse(data);
   console.log("UPLOAD REVIEW DATA " + parse.author);
+
+//get papers and update them with pending = 0
+  var promise = store.get(username + 'r_papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      papers = []; 
+      console.log("nothing");
+    }
+
+    console.log("INSIDE PROMISE BEFORE LOOP papers "+ JSON.stringify(papers));
+    for (var i = 0; i < papers.length; i++){
+      if (parse.key === papers[i].key){
+        papers[i].pending = 0;
+        break;
+      }
+    }
+    console.log("INSIDE PROMISE after LOOP papers "+ JSON.stringify(papers));
+    store.set(username + 'r_papers', JSON.stringify(papers));
+  }); 
+
   social.sendMessage(parse.author, data).then(function(ret) {
     //console.log
   }, function(err) {

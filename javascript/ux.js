@@ -302,7 +302,6 @@ function updateReviewView(version){
     + version.reviews[0].name + '</a>'; */
 
     for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-      console.log("INNER HTML: " + paper_view.getElementsByTagName("p")[i].innerHTML);
       paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
     }
 
@@ -374,18 +373,6 @@ window.freedom.on("got-paper-view", function(data) {
   updateView(data.version, data.action);
 }); 
 
-window.freedom.on('display-pending-reviews', function(papers) {
-  var paper_table = document.getElementById('pending-r-table'); 
-  for (var i = paper_table.rows.length; i < papers.length; i++){
-    var p = document.createElement('tr'); 
-
-    p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
-      '{key:' + papers[i].key + ', vnum : ' + papers[i].vnum + ', username: \'' + 
-      papers[i].author +'\'})">' + papers[i].title + ' by ' + papers[i].author + "</th>";
-    paper_table.appendChild(p);
-  }
-}); 
-
 window.freedom.on('display-table-and-view', function(papers){
   var btn_group = document.getElementById("v_btn_group"); 
   if(papers.length == 0)  {
@@ -427,6 +414,8 @@ function getPastReviews() {
   
   past_btn.className = "btn btn-default active"; 
   pending_btn.className = "btn btn-default"; 
+
+  window.freedom.emit("get-r-papers", 0); 
 }
 
 //display papers that user was invited to review
@@ -437,8 +426,30 @@ function getPendingReviews() {
   past_btn.className = "btn btn-default"; 
   pending_btn.className = "btn btn-default active"; 
 
-  window.freedom.emit("get-r-papers", 0); 
+  window.freedom.emit("get-r-papers", 1); //1 for pending, 0 for past
 }
+
+window.freedom.on('display-reviews', function(data) {
+  console.log("DISPLAY REVIEWS papers : " + JSON.stringify(data.papers));
+  var paper_table = document.getElementById('pending-r-table'); 
+
+//deleting all
+  for (var i = 0; i < paper_table.rows.length; i++){
+    paper_table.removeChild(paper_table.rows[i]);
+  }
+
+  for (var i = 0; i < data.papers.length; i++){
+    console.log("DAT PAPERS PENDING " + data.papers[i].pending + ", DATA PENDING " + data.pending);
+    if (data.papers[i].pending === data.pending){
+      console.log("DISPLAY REVIEWS in loop pending: " + data.pending);
+      var p = document.createElement('tr');
+      p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
+      '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
+      data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
+      paper_table.appendChild(p);
+    }
+  }
+});
 
 // show the given page, hide the rest
 function showPage(id) {
@@ -469,7 +480,6 @@ window.freedom.on('recv-status', function(msg) {
 });
 
 window.freedom.on('recv-message', function(msg) {
-  console.log("msg asdfasdf: " + msg);
   var parse = JSON.parse(msg);
 
   if(parse.action === 'invite-reviewer') {
