@@ -182,6 +182,51 @@ freedom.on('get-users', function(data) {
   freedom.emit('send-users', userList);
 });
 
+freedom.on('edit-profile', function(data) {
+  console.log(data.description + " " + data.string);
+
+  var promise = store.get(username + 'profile');
+  promise.then(function(val) {
+    var profile; 
+    try {
+      profile = JSON.parse(val);
+    } catch(e) {}
+
+    if(!profile || typeof profile !== "object") {
+      console.log("this is a blank profile");
+      profile = {
+        url: "", 
+        description: ""
+      }; 
+    }
+  
+    profile.string = data.string;
+    profile.description = data.description; 
+
+    store.set(username + 'profile', JSON.stringify(profile)); 
+  }); 
+});
+
+freedom.on('load-profile', function(data) {
+  var promise = store.get(username + 'profile');
+  promise.then(function(val) {
+    var profile; 
+    try {
+      profile = JSON.parse(val);
+    } catch(e) {}
+
+    if(!profile || typeof profile !== "object") {
+      console.log("this is a blank profile");
+      profile = {
+        string: "", 
+        description: ""
+      }; 
+    }
+
+    freedom.emit('display-profile', profile);
+  });  
+});
+
 freedom.on('add-paper', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {

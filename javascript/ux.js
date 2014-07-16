@@ -223,10 +223,18 @@ function changeProfile(files, profile_description) {
   var url = window.URL.createObjectURL(files[0]);
   //console.log(url);
   document.getElementById("profile_pic").src= url;
+  var reader = new FileReader(); 
 
-  /*window.freedom.emit('edit-profile', {
+  reader.onload = function() {
+  var arrayBuffer = reader.result;
 
-  });*/  
+  window.freedom.emit('edit-profile', {
+    description: profile_description, 
+    string: ab2str(arrayBuffer)
+  }); 
+ }
+ 
+ reader.readAsArrayBuffer(files[0]);
 }
 
 function uploadFile(files, comments, key) {
@@ -492,6 +500,28 @@ window.freedom.on('display-reviews', function(data) {
   }
 });
 
+window.freedom.on('display-profile', function(data) {
+  if(data.string === "" && data.description === "") {
+    document.getElementById("profile_pic").src= "square.png"; 
+    return; 
+  }
+
+  //console.log(data.string);
+  var ab = str2ab(data.string);
+  //var reader = new FileReader();
+
+  var blob = new Blob([ab], {type:'image/*'});
+  //reader.readAsArrayBuffer(blob); 
+
+  //console.log(blob);
+
+  document.getElementById("profile-page").getElementsByTagName("p")[0].innerHTML = data.description; 
+
+  var url = window.URL.createObjectURL(blob);
+  //console.log(url);
+  document.getElementById("profile_pic").src= url;
+});
+
 // show the given page, hide the rest
 function showPage(id) {
   console.log("show page: " + id);
@@ -505,11 +535,14 @@ function showPage(id) {
     if(id === "papers-page") {
       window.freedom.emit('load-papers', 0);
     }
-    if(id === "browse-page") {
+    else if(id === "browse-page") {
       window.freedom.emit('load-public-storage', 0);
     }
-    if(id === "alerts-page") {
+    else if(id === "alerts-page") {
       window.freedom.emit('load-alerts', 0);
+    }
+    else if(id === "profile-page") {
+      window.freedom.emit('load-profile', 0); 
     }
 
     if (id) pg.style.display = 'block';
