@@ -28,6 +28,15 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
     });
   };
 
+  $scope.editProfile = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'editProfileTemplate.html',
+      windowClass:'normal',
+      controller: editProfileCtrl,
+      backdrop: 'static'
+    });
+  };
+
   $scope.addReview = function() {
     var modalInstance = $modal.open({
       templateUrl: 'addReviewTemplate.html',
@@ -90,6 +99,25 @@ var addPaperCtrl = function ($scope, $modalInstance) {
     }
 
     uploadFile(files, comments);
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+var editProfileCtrl = function ($scope, $modalInstance) {
+  //TODO: get email 
+  $scope.upload = function () {
+    var files = document.getElementById("addFile").files;
+  
+    if (files.length < 1) {
+      alert("No files found.");
+      return;
+    }
+
+    changeProfile(files, document.getElementById("profile_description_modal").value);
     $modalInstance.dismiss('cancel');
   };
 
@@ -187,6 +215,19 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
     $modalInstance.dismiss('cancel');
   };
 };
+
+function changeProfile(files, profile_description) {
+  //console.log(profile_description);
+  document.getElementById("profile-page").getElementsByTagName("p")[0].innerHTML = profile_description; 
+
+  var url = window.URL.createObjectURL(files[0]);
+  //console.log(url);
+  document.getElementById("profile_pic").src= url;
+
+  /*window.freedom.emit('edit-profile', {
+
+  });*/  
+}
 
 function uploadFile(files, comments, key) {
   var newPaper = files[0];
@@ -551,5 +592,6 @@ window.freedom.on('got-alerts', function(alerts){
 });
 
 window.onload = function() {
+  $("[data-toggle=tooltip]").tooltip();
   showPage();
 } 

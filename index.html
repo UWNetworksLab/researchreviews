@@ -10,6 +10,7 @@
   <script src="node_modules/angular/lib/angular.min.js" type="text/javascript"></script>
   <script src="node_modules/jquery/dist/cdn/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="javascript/ui-bootstrap-tpls-0.11.0.min.js" type="text/javascript"></script>
+  <script src="node_modules/bootstrap/js/tooltip.js"></script>
 
   <script type='text/javascript'
       src='node_modules/freedom/freedom.js'
@@ -25,7 +26,6 @@
   -->
   <script type='text/javascript' src='./javascript/ux.js'></script>
   <script type="text/javascript" src="./javascript/FileSaver.js"></script>
-  <!--<script type="text/javascript" src="./javascript/publicstorage.js"></script>--> 
 
 </head>
 
@@ -56,9 +56,26 @@
     <div class="col-md-2">
       <div class="sidebar">
         <div class="std-container">
-          <input type="image" src="square.png" data-toggle="tooltip" data-placement-"bottom" title="change profile picture"/>
+          <img id="profile_pic" height="150" width="150" src="square.png" data-toggle="tooltip" data-placement="bottom" title="edit my profile" ng-click="editProfile()"/>
           <h3>{{ username }}</h3>
-          Description: I am a cs nerd. This is my profile. Welcome to my page. I write cs papers.
+          
+          <p id="profile_description"> No description added. </p> 
+
+          <script type='text/ng-template' id="editProfileTemplate.html">
+            <div class='modal-container'> 
+              <h3>Edit Profile</h3>
+              <h4>Edit email: </h4> 
+              <div><textarea rows="1" cols="45" placeholder="Example: jdoe@blizi.com"></textarea><div> 
+              <h4>Edit description: </h4> 
+              <div><textarea rows="4" cols="90" id="profile_description_modal" placeholder="Your description here"></textarea></div> 
+              <h4>Upload profile pic: </h4> 
+              <div id="file-container">
+                <input type="file" accept="image/*" id="addFile"/>
+                <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+                <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+              </div>
+            </div> 
+          </script> 
         </div>
       </div> <!--sidebar-->
     </div> <!--profile-->
