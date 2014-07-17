@@ -111,11 +111,6 @@ var editProfileCtrl = function ($scope, $modalInstance) {
   //TODO: get email 
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
-  
-    if (files.length < 1) {
-      alert("No files found.");
-      return;
-    }
 
     changeProfile(files, document.getElementById("profile_description_modal").value);
     $modalInstance.dismiss('cancel');
@@ -233,7 +228,7 @@ function changeProfile(files, profile_description) {
     string: ab2str(arrayBuffer)
   }); 
  }
- 
+
  reader.readAsArrayBuffer(files[0]);
 }
 
