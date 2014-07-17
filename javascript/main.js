@@ -55,7 +55,6 @@ freedom.on('load-alerts', function(data){
 });
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  console.log("in on message");
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
     messageList.push(parse); 
@@ -78,7 +77,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if (parse.action === "get-profile"){
-    console.log("GET-PROFILE " + parse.from);
+    console.log("GET-PROFILE of " + username + " and send it to " + parse.from);
 
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
@@ -89,17 +88,23 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!profile || typeof profile !== "object") {
         profile = {
           string: "",
-          description: "",
-          action: 'got-profile'
+          description: "", 
         };
         console.log("nothing");
       }
+      profile.action = 'got-profile'; 
+      profile.username = username; 
       social.sendMessage(parse.from, JSON.stringify(profile));
     });
   }
   else if (parse.action === "got-profile"){
     console.log("GOT PROFILE" + JSON.stringify(parse));
-//    freedom.emit('display-profile', parse);
+    freedom.emit('display-profile', parse);
+    var data = {
+      id: parse.username, 
+      onLogin: false 
+    };
+    freedom.emit('recv-uid', data); 
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
@@ -225,7 +230,8 @@ freedom.on('edit-profile', function(data) {
       }; 
     }
   
-    profile.string = data.string;
+    if(data.string)
+      profile.string = data.string;
     profile.description = data.description; 
 
     store.set(username + 'profile', JSON.stringify(profile)); 
@@ -233,7 +239,7 @@ freedom.on('edit-profile', function(data) {
 });
 
 freedom.on('load-profile', function(data) {
-  if (!data){
+  if (data === 0){
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -248,7 +254,14 @@ freedom.on('load-profile', function(data) {
           description: ""
         }; 
       }
+
+      profile.username = username; 
       freedom.emit('display-profile', profile);
+      var msg = {
+        id: username,
+        onLogin: false
+      };
+      freedom.emit('recv-uid', msg); 
     });
   }
   else {
@@ -424,7 +437,11 @@ social.login({
 
 
   if (ret.status == social.STATUS["ONLINE"]) {
-    freedom.emit('recv-uid', ret.userId);
+    var data = {
+      id: ret.userId, 
+      onLogin: true
+    };
+    freedom.emit('recv-uid', data);
     freedom.emit('recv-status', "online");
        
   } else {

@@ -10,13 +10,19 @@ app.controller('drop_controller', function($scope) {
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
   $scope.username = "testing"; 
+  $scope.username_fixed = "testing"; 
 
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    $scope.username = data; 
-    username = data; 
+    console.log(JSON.stringify(data));
+    if(data.onLogin)
+      $scope.username_fixed = data.id; 
+    $scope.username = data.id; 
+    username = data.id; 
     $scope.$apply();
-    showPage('profile-page');
+    
+    if(data.onLogin)
+      showPage('profile-page');
   });
 
   $scope.addPaper = function() {
@@ -215,21 +221,28 @@ function changeProfile(files, profile_description) {
   //console.log(profile_description);
   document.getElementById("profile-page").getElementsByTagName("p")[0].innerHTML = profile_description; 
 
-  var url = window.URL.createObjectURL(files[0]);
-  //console.log(url);
-  document.getElementById("profile_pic").src= url;
-  var reader = new FileReader(); 
+  if(files[0]) {
+    var url = window.URL.createObjectURL(files[0]);
+    //console.log(url);
+    document.getElementById("profile_pic").src= url;
+    var reader = new FileReader(); 
 
-  reader.onload = function() {
-  var arrayBuffer = reader.result;
+    reader.onload = function() {
+    var arrayBuffer = reader.result;
 
-  window.freedom.emit('edit-profile', {
-    description: profile_description, 
-    string: ab2str(arrayBuffer)
-  }); 
+    window.freedom.emit('edit-profile', {
+      description: profile_description, 
+      string: ab2str(arrayBuffer)
+    }); 
+   }
+
+   reader.readAsArrayBuffer(files[0]);
  }
-
- reader.readAsArrayBuffer(files[0]);
+ else if(profile_description !== "") {
+  window.freedom.emit('edit-profile', {
+    description: profile_description
+  });
+ }
 }
 
 function uploadFile(files, comments, key) {
@@ -496,6 +509,8 @@ window.freedom.on('display-reviews', function(data) {
 });
 
 window.freedom.on('display-profile', function(data) {
+  console.log("trying to display profile of " + data.username);
+
   if(data.string === "" && data.description === "") {
     document.getElementById("profile_pic").src= "square.png"; 
     return; 
@@ -519,7 +534,6 @@ window.freedom.on('display-profile', function(data) {
 
 // show the given page, hide the rest
 function showPage(id, data) {
-  console.log("show page: " + id);
     var pg = document.getElementById(id);
 
     // get all pages, loop through them and hide them
@@ -537,7 +551,6 @@ function showPage(id, data) {
       window.freedom.emit('load-alerts', 0);
     }
     else if(id === "profile-page") {
-      console.log("UX DATA " + data);
       if (data) window.freedom.emit('load-profile', data); 
       else window.freedom.emit('load-profile', 0);
     }
