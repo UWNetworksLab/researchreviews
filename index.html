@@ -111,7 +111,8 @@
       <script type='text/ng-template' id="addPaperTemplate.html">
         <div class='modal-container'> 
           <h3>Add Paper</h3>
-          <div><textarea rows="2" cols="90" placeholder="Add coauthors"></textarea><div> 
+          <h4> Add coauthors: </h4> 
+          <input type="text" id="coauthor-input" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
           <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div> 
           <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
           <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
@@ -202,7 +203,8 @@
             <script type='text/ng-template' id="addPaperTemplate.html">
             <div class='modal-container'> 
               <h3>Add Paper</h3>
-              <div><textarea rows="2" cols="90" placeholder="Add coauthors"></textarea><div> 
+              <h4> Add coauthors: </h4> 
+              <input type="text" id="coauthor-input" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
               <div><textarea id="add-paper-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
               <div><textarea rows="2" cols="90" placeholder="Add reviewers"></textarea></div>
               <div><textarea rows="4" cols="90" placeholder="Add a message to your reviewers"></textarea></div> 
@@ -257,6 +259,7 @@
                       <h3>Invite Reviewers</h3>    
                       <div><textarea id="invite-reviewers-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
 
+                        <h4> add reviewers : </h4> 
                         <input type="text" id="reviewer-input" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
                        
                       <div> 

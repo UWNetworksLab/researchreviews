@@ -14,7 +14,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
 
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    console.log(JSON.stringify(data));
     if(data.onLogin)
       $scope.username_fixed = data.id; 
     $scope.username = data.id; 
@@ -24,15 +23,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
     if(data.onLogin)
       showPage('profile-page');
   });
-
-  $scope.addPaper = function() {
-    var modalInstance = $modal.open({
-      templateUrl: 'addPaperTemplate.html',
-      windowClass:'normal',
-      controller: addPaperCtrl,
-      backdrop: 'static'
-    });
-  };
 
   $scope.editProfile = function() {
     var modalInstance = $modal.open({
@@ -61,22 +51,42 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
     });
   };
 
-  $scope.inviteReviewers = function() {
-    window.freedom.emit('get-users', 0);
+  $scope.addPaper = function() {
+    window.freedom.emit('get-users', 'add-paper'); 
   };
 
-  window.freedom.on('send-users', function(userList) {
-    var modalInstance = $modal.open({
-      templateUrl: 'inviteReviewersTemplate.html',
-      windowClass:'normal',
-      controller: inviteReviewersCtrl,
-      backdrop: 'static', 
-      resolve: {
-        userList: function () {
-          return userList;
+  $scope.inviteReviewers = function() {
+    window.freedom.emit('get-users', 'invite-reviewer');
+  };
+
+  window.freedom.on('send-users', function(msg) {
+
+    if(msg.action === 'invite-reviewer') {
+      var modalInstance = $modal.open({
+        templateUrl: 'inviteReviewersTemplate.html',
+        windowClass:'normal',
+        controller: inviteReviewersCtrl,
+        backdrop: 'static', 
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }
         }
-      }
-    });
+      });      
+    }
+    else if(msg.action === 'add-paper') {
+      var modalInstance = $modal.open({
+        templateUrl: 'addPaperTemplate.html',
+        windowClass:'normal',
+        controller: addPaperCtrl,
+        backdrop: 'static', 
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }
+        }
+      });
+    }
   }); 
 }); 
 
@@ -94,7 +104,9 @@ function str2ab(str) {
   return buf;
 }
 
-var addPaperCtrl = function ($scope, $modalInstance) {
+var addPaperCtrl = function ($scope, $modalInstance, userList) {
+  $scope.states = userList; 
+
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
@@ -105,6 +117,24 @@ var addPaperCtrl = function ($scope, $modalInstance) {
     }
 
     uploadFile(files, comments);
+
+    var coauthor_input = document.getElementById("coauthor-input").value; 
+
+    //TODO: make author an array, and add coauthor_input to author[]
+    //will have to change a lot of stuff throughout code to get this to work...
+    var msg = {
+      title: files[0].name, 
+      action: 'add-coauthor',
+      key: currPaper.key,
+      author: username,
+      vnum: currPaper.vnum
+    };
+
+    freedom.emit('send-message', {
+      to: coauthor_input,
+      msg: JSON.stringify(msg)
+    });
+
     $modalInstance.dismiss('cancel');
   };
 
@@ -129,7 +159,6 @@ var editProfileCtrl = function ($scope, $modalInstance) {
 
 var addReviewCtrl = function ($scope, $modalInstance) {
   $scope.upload = function () {
-    console.log("got to add review ctrl");
     var files = document.getElementById("addFile").files;
     
     if (files.length < 1) {
@@ -270,7 +299,6 @@ function uploadFile(files, comments, key) {
 }
 
 function downloadRPaper() {
-  console.log("downloadrpaper");
   var ab = str2ab(currRPaper.binaryString);
   var reader = new FileReader();
 
@@ -280,8 +308,6 @@ function downloadRPaper() {
 }
 
 function downloadVersion() {
-  console.log("downlaod version");
-
   var ab = str2ab(currPaper.binaryString);
   var reader = new FileReader();
   var blob = new Blob([ab], {type:'application/pdf'});
@@ -291,30 +317,25 @@ function downloadVersion() {
 }
 
 window.freedom.on("got-review", function(data) {
-  console.log("download review");
 
   var ab = str2ab(data.string);
   var reader = new FileReader();
   var blob = new Blob([ab], {type:'text/plain'});
 
   reader.readAsArrayBuffer(blob);
-  console.log("data.title  " + data.title);
   saveAs(blob, data.title); 
 }); 
 
 function downloadReview(i, reviewer){ //only for text
-  console.log("DOWNLOAD" + i + reviewer);
   var data; 
   if (reviewer) data = currPaper.reviews[i];
   else data = currRPaper.reviews[i];
 
-  console.log("data " +JSON.stringify(data));
   var ab = str2ab(data.string);
   var reader = new FileReader();
   var blob = new Blob([ab], {type:'text/plain'});
 
   reader.readAsArrayBuffer(blob);
-  console.log("data.title  " + data.name);
   saveAs(blob, data.name); 
 }
 
@@ -346,7 +367,6 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
-  console.log("updatereviewview " + version);
   currRPaper = version;
   //console.log("VERSION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
@@ -386,13 +406,11 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;
 
   for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-    console.log("INNER HTML: " + paper_view.getElementsByTagName("p")[i].innerHTML);
     paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
   }
 
   if(version.reviews) {
     for(var i = 0; i < version.reviews.length; i++){
-      console.log("here");
       //TODO: adding p elements
       var pEl = document.createElement('p');
       pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i + ', 1)">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
@@ -425,7 +443,6 @@ function getVersion(offset) {
 
 window.freedom.on("got-paper-view", function(data) {
 //  console.log("IN GOT PAPER VIEW data : " + JSON.stringify(data));
-  console.log("IN GOT PAPER VIEW reviews : " + JSON.stringify(data.version.reviews));
   currPaper = data.version; 
   updateView(data.version, data.action);
 }); 
@@ -487,7 +504,6 @@ function getPendingReviews() {
 }
 
 window.freedom.on('display-reviews', function(data) {
-  console.log("DISPLAY REVIEWS papers : " + JSON.stringify(data.papers));
   var paper_table = document.getElementById('pending-r-table'); 
 
 //deleting all
@@ -496,9 +512,7 @@ window.freedom.on('display-reviews', function(data) {
   }
 
   for (var i = 0; i < data.papers.length; i++){
-    console.log("DAT PAPERS PENDING " + data.papers[i].pending + ", DATA PENDING " + data.pending);
     if (data.papers[i].pending === data.pending){
-      console.log("DISPLAY REVIEWS in loop pending: " + data.pending);
       var p = document.createElement('tr');
       p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
       '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
@@ -509,7 +523,7 @@ window.freedom.on('display-reviews', function(data) {
 });
 
 window.freedom.on('display-profile', function(data) {
-  console.log("trying to display profile of " + data.username);
+
 
   if(data.string === "" && data.description === "") {
     document.getElementById("profile_pic").src= "square.png"; 
@@ -573,6 +587,13 @@ window.freedom.on('recv-message', function(msg) {
       badges[i].innerHTML = alertNum;  
     }
   }
+  else if(parse.action === 'add-coauthor') {
+    var badges = document.getElementsByClassName("badge"); 
+    alertNum++;
+    for(var i = 0; i < badges.length; i++) {
+      badges[i].innerHTML = alertNum;  
+    }  
+  }
   else if(parse.action === 'add-review') {
     var badges = document.getElementsByClassName("badge"); 
     alertNum++;
@@ -581,7 +602,6 @@ window.freedom.on('recv-message', function(msg) {
     } 
   }
   else if (parse.action === "get-public-papers"){ //just for browsing page
-    console.log("here");
     var paper_table = document.getElementById('browse-paper-table');
     var newBody = document.createElement('tbody');
 
@@ -596,13 +616,11 @@ window.freedom.on('recv-message', function(msg) {
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
   }
   else if (parse.action === "send-r-paper"){
-    console.log("got to send r paper ux");
     updateReviewView(parse.version);
   }
 });
 
 window.freedom.on('got-alerts', function(alerts){
-  console.log("got-alerts");
   var badges = document.getElementsByClassName("badge"); 
   for(var i = 0; i < badges.length; i++) {
     badges[i].innerHTML = "";  
@@ -621,8 +639,10 @@ window.freedom.on('got-alerts', function(alerts){
       //TODO: have key, vnum, but need title?! 
       p.innerHTML = "<th>" + parse[i].reviewer + " reviewed your paper</th>";
     }
+    else if(parse[i].action === 'add-coauthor') {
+      p.innerHTML = "<th> You were added as a coauthor of the paper " + parse[i].title + " by " + parse[i].author + " </th>";  
+    }
 
-    console.log(i + " " + alertNum); 
     if (i >= parse.length - alertNum) { 
       p.style.color = "#3CB371";    
     }
@@ -630,7 +650,6 @@ window.freedom.on('got-alerts', function(alerts){
     newBody.insertBefore(p, newBody.childNodes[0]);
   }
   alerts_table.replaceChild(newBody, alerts_table.childNodes[0]);
-  console.log(JSON.stringify(parse));
   alertNum = 0;
 
   if (parse.length === 0) alerts_table.innerHTML = "You have no new alerts.";

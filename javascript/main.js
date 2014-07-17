@@ -76,6 +76,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
   }
+  else if(parse.action === 'add-coauthor') {
+    messageList.push(parse); 
+    //make sure coauthor is added to author[] in new paper 
+  }
   else if (parse.action === "get-profile"){
     console.log("GET-PROFILE of " + username + " and send it to " + parse.from);
 
@@ -209,7 +213,11 @@ social.on('onUserProfile', function(data) {
 });
  
 freedom.on('get-users', function(data) {
-  freedom.emit('send-users', userList);
+  var msg = {
+    action: data, 
+    userList: userList
+  };
+  freedom.emit('send-users', msg);
 });
 
 freedom.on('edit-profile', function(data) {
