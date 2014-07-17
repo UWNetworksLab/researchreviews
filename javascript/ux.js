@@ -118,11 +118,11 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
 
     uploadFile(files, comments);
 
-   var coauthor_input = document.getElementById("coauthor-input").value; 
+    ///var coauthor_input = document.getElementById("coauthor-input").value; 
 
     //TODO: make author an array, and add coauthor_input to author[]
     //will have to change a lot of stuff throughout code to get this to work...
-    var msg = {
+    /*var msg = {
       title: files[0].name, 
       action: 'add-coauthor', 
       author: username,
@@ -132,7 +132,7 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
     freedom.emit('send-message', {
       to: coauthor_input,
       msg: JSON.stringify(msg)
-    });
+    });*/ 
 
     $modalInstance.dismiss('cancel');
   };
@@ -373,6 +373,11 @@ function updateReviewView(version){
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
 
   if(version.reviews) {
+    for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
+      console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
+      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+    }
+
     for(var i = 0; i < version.reviews.length; i++){
       //TODO: adding p elements
       var pEl = document.createElement('p');
