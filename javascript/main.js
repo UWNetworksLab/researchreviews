@@ -55,6 +55,7 @@ freedom.on('load-alerts', function(data){
 });
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
+  console.log("in on message");
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
     messageList.push(parse); 
@@ -75,6 +76,30 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       console.log("PAPERS IN MAIN " + JSON.stringify(papers));
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
+  }
+  else if (parse.action === "get-profile"){
+    console.log("GET-PROFILE " + parse.from);
+
+    var promise = store.get(username + 'profile');
+    promise.then(function(val) {
+      var profile; 
+      try {
+        profile = JSON.parse(val);
+      } catch(e) {}
+      if(!profile || typeof profile !== "object") {
+        profile = {
+          string: "",
+          description: "",
+          action: 'got-profile'
+        };
+        console.log("nothing");
+      }
+      social.sendMessage(parse.from, JSON.stringify(profile));
+    });
+  }
+  else if (parse.action === "got-profile"){
+    console.log("GOT PROFILE" + JSON.stringify(parse));
+//    freedom.emit('display-profile', parse);
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
@@ -208,23 +233,35 @@ freedom.on('edit-profile', function(data) {
 });
 
 freedom.on('load-profile', function(data) {
-  var promise = store.get(username + 'profile');
-  promise.then(function(val) {
-    var profile; 
-    try {
-      profile = JSON.parse(val);
-    } catch(e) {}
+  if (!data){
+    var promise = store.get(username + 'profile');
+    promise.then(function(val) {
+      var profile; 
+      try {
+        profile = JSON.parse(val);
+      } catch(e) {}
 
-    if(!profile || typeof profile !== "object") {
-      console.log("this is a blank profile");
-      profile = {
-        string: "", 
-        description: ""
-      }; 
-    }
-
-    freedom.emit('display-profile', profile);
-  });  
+      if(!profile || typeof profile !== "object") {
+        console.log("this is a blank profile");
+        profile = {
+          string: "", 
+          description: ""
+        }; 
+      }
+      freedom.emit('display-profile', profile);
+    });
+  }
+  else {
+    console.log("DATA" + data);
+    var message = {
+      action: 'get-profile',
+      from: username
+    };
+    social.sendMessage(data, JSON.stringify(message)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
+  }
 });
 
 freedom.on('add-paper', function(data) {

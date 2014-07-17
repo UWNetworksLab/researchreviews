@@ -518,7 +518,7 @@ window.freedom.on('display-profile', function(data) {
 });
 
 // show the given page, hide the rest
-function showPage(id) {
+function showPage(id, data) {
   console.log("show page: " + id);
     var pg = document.getElementById(id);
 
@@ -537,7 +537,9 @@ function showPage(id) {
       window.freedom.emit('load-alerts', 0);
     }
     else if(id === "profile-page") {
-      window.freedom.emit('load-profile', 0); 
+      console.log("UX DATA " + data);
+      if (data) window.freedom.emit('load-profile', data); 
+      else window.freedom.emit('load-profile', 0);
     }
 
     if (id) pg.style.display = 'block';
@@ -565,7 +567,7 @@ window.freedom.on('recv-message', function(msg) {
       badges[i].innerHTML = alertNum;  
     } 
   }
-  else if (parse.action === "get-public-papers"){
+  else if (parse.action === "get-public-papers"){ //just for browsing page
     console.log("here");
     var paper_table = document.getElementById('browse-paper-table');
     var newBody = document.createElement('tbody');
@@ -573,7 +575,9 @@ window.freedom.on('recv-message', function(msg) {
     for (var i = 0; i < parse.papers.length; i++){
       var p = document.createElement('tr');
       //p.setAttribute("id", data.key);
-      p.innerHTML = "<th>" + parse.papers[i].title + " by " + parse.papers[i].author + "</th>";
+      p.innerHTML = '<th>' + parse.papers[i].title + ' by '
+      + '<a href = "#" onclick = "showPage(\'profile-page\', \'' + parse.papers[i].author + '\')">' 
+      + parse.papers[i].author + "</a></th>";
       newBody.appendChild(p);
     }
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
