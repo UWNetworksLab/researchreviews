@@ -374,20 +374,18 @@ function updateReviewView(version){
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
 
   if(version.reviews) {
-   /* console.log("UPDATE REVIEW VIEW.......asdfasdfadfadfsa" + JSON.stringify(version.reviews[0])); 
-    paper_view.getElementsByTagName("p")[1].innerHTML = '<a href = "#" onclick = \'downloadReview()\'>' 
-    + version.reviews[0].name + '</a>'; */
-
-    for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
-    }
-
     for(var i = 0; i < version.reviews.length; i++){
       //TODO: adding p elements
       var pEl = document.createElement('p');
       pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i +  ')">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
       + version.reviews[i].date + '</a>';
       paper_view.appendChild(pEl);
+    }
+  }
+  else {
+    for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
+      console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
+      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
     }
   }
 }
