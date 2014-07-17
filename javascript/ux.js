@@ -118,14 +118,13 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
 
     uploadFile(files, comments);
 
-    var coauthor_input = document.getElementById("coauthor-input").value; 
+   var coauthor_input = document.getElementById("coauthor-input").value; 
 
     //TODO: make author an array, and add coauthor_input to author[]
     //will have to change a lot of stuff throughout code to get this to work...
     var msg = {
       title: files[0].name, 
-      action: 'add-coauthor',
-      key: currPaper.key,
+      action: 'add-coauthor', 
       author: username,
       vnum: currPaper.vnum
     };
