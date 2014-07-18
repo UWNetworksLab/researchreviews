@@ -470,27 +470,30 @@ window.freedom.on('display-table-and-view', function(papers){
     document.getElementById('options-butt').removeAttribute('disabled');
   } 
 
-  var paper_table = document.getElementById('paper-table');
-  for (var i = paper_table.rows.length; i < papers.length; i++){
-    var p = document.createElement('tr'); 
-    p.setAttribute("id", papers[i].key);
-    var len = papers[i].versions.length-1; 
-    p.innerHTML = makeRow(papers[i].versions[len].title, papers[i].versions[len].date, papers[i].key); 
-    paper_table.appendChild(p);
+  var tables = document.getElementsByClassName('paper-table');
+  for (var x = 0; x < tables.length; x++){
+    var paper_table = tables[x];
+    for (var i = paper_table.rows.length; i < papers.length; i++){
+      var p = document.createElement('tr'); 
+      p.setAttribute("id", papers[i].key);
+      var len = papers[i].versions.length-1; 
+      p.innerHTML = makeRow(papers[i].versions[len].title, papers[i].versions[len].date, papers[i].key); 
+      paper_table.appendChild(p);
+    }
+
+    var paper_view = document.getElementById("paper-view-container");
+    if (!papers.length) {
+      paper_view.getElementsByTagName("h1")[0].innerHTML = "";
+      paper_view.getElementsByTagName("p")[0].innerHTML = "";
+      return;
+    }
+
+    var action = 1;
+    if (papers[0].versions.length == 1) action = 0;
+
+    var firstVersion = papers[0].versions[papers[0].versions.length-1];
+    updateView(firstVersion, action);
   }
-
-  var paper_view = document.getElementById("paper-view-container");
-  if (!papers.length) {
-    paper_view.getElementsByTagName("h1")[0].innerHTML = "";
-    paper_view.getElementsByTagName("p")[0].innerHTML = "";
-    return;
-  }
-
-  var action = 1;
-  if (papers[0].versions.length == 1) action = 0;
-
-  var firstVersion = papers[0].versions[papers[0].versions.length-1];
-  updateView(firstVersion, action); 
 });
 
 //display papers that user already interviewed
@@ -516,21 +519,23 @@ function getPendingReviews() {
 }
 
 window.freedom.on('display-reviews', function(data) {
-  var paper_table = document.getElementById('pending-r-table'); 
+  var papers = document.getElementsByClassName('pending-r-table'); 
+  for (var x = 0; x < papers.length; x++){
+    paper_table = papers[x];
+  //deleting all
+    for (var i = 0; i < paper_table.rows.length; i++){
+      paper_table.removeChild(paper_table.rows[i]);
+    }
 
-//deleting all
-  for (var i = 0; i < paper_table.rows.length; i++){
-    paper_table.removeChild(paper_table.rows[i]);
+    for (var i = 0; i < data.papers.length; i++){
+        var p = document.createElement('tr');
+        p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
+        '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
+        data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
+        paper_table.appendChild(p);
+    }
+    updateReviewView(data.papers[0]);
   }
-
-  for (var i = 0; i < data.papers.length; i++){
-      var p = document.createElement('tr');
-      p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
-      '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
-      data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
-      paper_table.appendChild(p);
-  }
-  updateReviewView(data.papers[0]);
 });
 
 window.freedom.on('display-profile', function(data) {
@@ -578,6 +583,8 @@ function showPage(id, data) {
     else if(id === "profile-page") {
       if (data) window.freedom.emit('load-profile', data); 
       else window.freedom.emit('load-profile', 0);
+      window.freedom.emit('load-papers', 0);
+      window.freedom.emit('get-r-papers', 1);
     }
 
     if (id) pg.style.display = 'block';
