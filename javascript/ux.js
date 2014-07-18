@@ -366,31 +366,41 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
-  currRPaper = version;
-  //console.log("VERSION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
-  paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
-  paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
+  if (version){
+    currRPaper = version;
+    //console.log("VERSION " + JSON.stringify(version));
+    paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
+    paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
 
-  if(version.reviews) {
-    for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-      console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
-      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+    if(version.reviews) {
+      for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
+        console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
+        paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+      }
+
+      for(var i = 0; i < version.reviews.length; i++){
+        //TODO: adding p elements
+        var pEl = document.createElement('p');
+        pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i +  ')">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
+        + version.reviews[i].date + '</a>';
+        paper_view.appendChild(pEl);
+      }
     }
-
-    for(var i = 0; i < version.reviews.length; i++){
-      //TODO: adding p elements
-      var pEl = document.createElement('p');
-      pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i +  ')">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
-      + version.reviews[i].date + '</a>';
-      paper_view.appendChild(pEl);
+    else {
+      for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
+        console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
+        paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+      }
     }
   }
   else {
-    for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-      console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
+    for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
       paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
     }
+    paper_view.getElementsByTagName("h1")[0].innerHTML = "";
+    paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+    paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
   }
 }
 
@@ -514,14 +524,13 @@ window.freedom.on('display-reviews', function(data) {
   }
 
   for (var i = 0; i < data.papers.length; i++){
-    if (data.papers[i].pending === data.pending){
       var p = document.createElement('tr');
       p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
       '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
       data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
       paper_table.appendChild(p);
-    }
   }
+  updateReviewView(data.papers[0]);
 });
 
 window.freedom.on('display-profile', function(data) {

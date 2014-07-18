@@ -26,8 +26,14 @@ freedom.on('get-r-papers', function(pending) {
 
     console.log("IN PROMISE IN MAIN before freedomemit papers " + JSON.stringify(papers));
 
+    for (var i = 0; i < papers.length; i++){
+      if (papers[i].pending !== pending){
+        papers.splice(i, 1);
+      }
+    }
+
     freedom.emit('display-reviews', {
-      pending: pending,
+//      pending: pending,
       papers: papers
     }); 
   }); 
