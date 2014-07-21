@@ -223,13 +223,15 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
   $scope.invite = function () {
     //invite reviewers 
     var reviewer_input = document.getElementById("reviewer-input").value; 
+    var comments = document.getElementById("invite-reviewers-comments").value; 
 
     var msg = {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
       action: 'invite-reviewer',
       key: currPaper.key,
       author: username,
-      vnum: currPaper.vnum
+      vnum: currPaper.vnum,
+      comments: comments
     };
 
     freedom.emit('send-message', {
@@ -680,7 +682,7 @@ window.freedom.on('got-alerts', function(alerts){
   for (var i = 0; i < parse.length; i++){
     var p = document.createElement('tr');
     if (parse[i].action === "invite-reviewer"){
-      p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + "</th>";
+      p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + ": " + parse[i].comments + "</th>";
     }
     else if(parse[i].action === 'add-review') {
       //TODO: have key, vnum, but need title?! 

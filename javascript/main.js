@@ -58,7 +58,6 @@ freedom.on('get-pending-r-view', function(data){
 });
 
 freedom.on('load-alerts', function(data){
-  console.log("load alerts messagelist "+ JSON.stringify(messageList));
   freedom.emit('got-alerts', JSON.stringify(messageList));
 });
 
