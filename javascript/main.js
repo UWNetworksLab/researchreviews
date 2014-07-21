@@ -33,7 +33,6 @@ freedom.on('get-r-papers', function(pending) {
     }
 
     freedom.emit('display-reviews', {
-//      pending: pending,
       papers: papers
     }); 
   }); 

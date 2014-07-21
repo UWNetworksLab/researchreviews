@@ -347,19 +347,21 @@ function makeRow(title, date, key) {
 }
 
 function updateTable(data, updateAction) {
-  var paper_table = document.getElementById('paper-table');
-  if(updateAction == 1) {
-    var versionLen = data.versions.length-1; 
-    var p = document.createElement('tr');
-    p.setAttribute("id", data.key);
-    p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
-    paper_table.appendChild(p);
-  }
-
-  else if (updateAction == -1){
-    for (var i = 0; i < paper_table.rows.length; i++){
-      if (data == paper_table.rows[i].getAttribute("id")){
-        paper_table.deleteRow(i);
+  var papers = document.getElementsByClassName('paper-table');
+  for (var i = 0; i < papers.length; i ++){
+    var paper_table = papers[i];
+    if(updateAction == 1) {
+        var versionLen = data.versions.length-1; 
+        var p = document.createElement('tr');
+        p.setAttribute("id", data.key);
+        p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
+        paper_table.appendChild(p);
+    }
+    else if (updateAction == -1){
+      for (var i = 0; i < paper_table.rows.length; i++){
+        if (data == paper_table.rows[i].getAttribute("id")){
+          paper_table.deleteRow(i);
+        }
       }
     }
   }
@@ -367,6 +369,13 @@ function updateTable(data, updateAction) {
 
 function updateReviewView(version){
   var paper_view = document.getElementById("review-view-container");
+  for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
+    paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+  }
+  paper_view.getElementsByTagName("h1")[0].innerHTML = "";
+  paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+  paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
+
   if (version){
     currRPaper = version;
     //console.log("VERSION " + JSON.stringify(version));
@@ -380,27 +389,21 @@ function updateReviewView(version){
       }
 
       for(var i = 0; i < version.reviews.length; i++){
-        //TODO: adding p elements
         var pEl = document.createElement('p');
         pEl.innerHTML = '<a href = \'#\' onclick="downloadReview(' + i +  ')">' + version.reviews[i].name + ' by ' + version.reviews[i].reviewer + ' on ' 
         + version.reviews[i].date + '</a>';
         paper_view.appendChild(pEl);
       }
     }
-    else {
-      for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
-        console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
-        paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
-      }
-    }
   }
-  else {
-    for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
-      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
-    }
+  else { //clearing everything
     paper_view.getElementsByTagName("h1")[0].innerHTML = "";
     paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
     paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
+
+    for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
+      paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
+    }
   }
 }
 
@@ -519,10 +522,11 @@ function getPendingReviews() {
 }
 
 window.freedom.on('display-reviews', function(data) {
-  var papers = document.getElementsByClassName('pending-r-table'); 
+  var papers = document.getElementsByClassName('r-table'); 
   for (var x = 0; x < papers.length; x++){
     paper_table = papers[x];
   //deleting all
+  console.log("DATA PAPERS LENGTH " + data.papers.length);
     for (var i = 0; i < paper_table.rows.length; i++){
       paper_table.removeChild(paper_table.rows[i]);
     }
