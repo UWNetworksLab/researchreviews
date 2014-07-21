@@ -368,14 +368,15 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
+  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
+
+  paper_view.getElementsByTagName("p")[0].innerHTML = "";
+  paper_view.getElementsByTagName("p")[1].innerHTML = "";
+
   for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
     paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
   }
-  paper_view.getElementsByTagName("h1")[0].innerHTML = "";
-  paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
-  paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
-
   if (version){
     currRPaper = version;
     //console.log("VERSION " + JSON.stringify(version));
@@ -525,8 +526,8 @@ window.freedom.on('display-reviews', function(data) {
   var papers = document.getElementsByClassName('r-table'); 
   for (var x = 0; x < papers.length; x++){
     paper_table = papers[x];
-  //deleting all
-  console.log("DATA PAPERS LENGTH " + data.papers.length);
+    //deleting all
+    console.log("DATA PAPERS LENGTH " + data.papers.length);
     for (var i = 0; i < paper_table.rows.length; i++){
       paper_table.removeChild(paper_table.rows[i]);
     }
@@ -538,13 +539,24 @@ window.freedom.on('display-reviews', function(data) {
         data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
         paper_table.appendChild(p);
     }
-    updateReviewView(data.papers[0]);
+
+    if (data.papers.length){
+      window.freedom.emit('get-pending-r-view', {
+        key : data.papers[0].key,
+        vnum: data.papers[0].vnum,
+        username: data.papers[0].author
+      });
+    }
+    else {
+      var paper_view = document.getElementById("review-view-container");
+      paper_view.getElementsByTagName("h1")[0].innerHTML = "";
+      paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+      paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
+    }    
   }
 });
 
 window.freedom.on('display-profile', function(data) {
-
-
   if(data.string === "" && data.description === "") {
     document.getElementById("profile_pic").src= "square.png"; 
     return; 
