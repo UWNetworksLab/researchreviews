@@ -368,7 +368,7 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
-  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
+//  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
   var paper_view = document.getElementById("review-view-container");
 
   paper_view.getElementsByTagName("p")[0].innerHTML = "";
@@ -524,11 +524,11 @@ function getPendingReviews() {
 
 window.freedom.on('display-reviews', function(data) {
   var papers = document.getElementsByClassName('r-table'); 
-  for (var x = 0; x < papers.length; x++){
+  for (var x = 1; x < papers.length; x++){
     paper_table = papers[x];
     //deleting all
     console.log("DATA PAPERS LENGTH " + data.papers.length);
-    for (var i = 0; i < paper_table.rows.length; i++){
+    for (var i = paper_table.rows.length - 1; i >=0 ; i--){
       paper_table.removeChild(paper_table.rows[i]);
     }
 
@@ -595,6 +595,9 @@ function showPage(id, data) {
     }
     else if(id === "alerts-page") {
       window.freedom.emit('load-alerts', 0);
+    }
+    else if (id === "reviews-page"){
+      window.freedom.emit('get-r-papers', 1);      
     }
     else if(id === "profile-page") {
       if (data) window.freedom.emit('load-profile', data); 

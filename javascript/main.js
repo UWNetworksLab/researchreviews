@@ -26,11 +26,14 @@ freedom.on('get-r-papers', function(pending) {
 
     console.log("IN PROMISE IN MAIN before freedomemit papers " + JSON.stringify(papers));
 
-    for (var i = 0; i < papers.length; i++){
+    var i = papers.length;
+    while (i--){
       if (papers[i].pending !== pending){
+        console.log("PENDING NOT MATCH " + i);
         papers.splice(i, 1);
       }
     }
+    console.log("IN PROMISE IN MAIN before after freedomemit papers " + JSON.stringify(papers));
 
     freedom.emit('display-reviews', {
       papers: papers
