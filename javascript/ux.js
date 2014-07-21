@@ -368,7 +368,9 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
+  document.getElementById('r-options-butt').removeAttribute('disabled'); 
 //  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
+
   var paper_view = document.getElementById("review-view-container");
 
   paper_view.getElementsByTagName("p")[0].innerHTML = "";
@@ -405,6 +407,8 @@ function updateReviewView(version){
     for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
       paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
     }
+    console.log("OPTIONS BUTT + " + document.getElementById('r-options-butt').innerHTML);
+    document.getElementById('r-options-butt').setAttribute('disabled', true); 
   }
 }
 
@@ -552,6 +556,7 @@ window.freedom.on('display-reviews', function(data) {
       paper_view.getElementsByTagName("h1")[0].innerHTML = "";
       paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
       paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
+      document.getElementById('r-options-butt').setAttribute('disabled', true);
     }    
   }
 });
