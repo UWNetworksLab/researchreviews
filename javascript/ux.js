@@ -524,7 +524,7 @@ function getPendingReviews() {
 
 window.freedom.on('display-reviews', function(data) {
   var papers = document.getElementsByClassName('r-table'); 
-  for (var x = 1; x < papers.length; x++){
+  for (var x = 0; x < papers.length; x++){
     paper_table = papers[x];
     //deleting all
     console.log("DATA PAPERS LENGTH " + data.papers.length);
@@ -603,7 +603,7 @@ function showPage(id, data) {
       if (data) window.freedom.emit('load-profile', data); 
       else window.freedom.emit('load-profile', 0);
       window.freedom.emit('load-papers', 0);
-      window.freedom.emit('get-r-papers', 1);
+      window.freedom.emit('get-r-papers', 0);
     }
 
     if (id) pg.style.display = 'block';
