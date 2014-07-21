@@ -597,7 +597,12 @@ function showPage(id, data) {
       window.freedom.emit('load-alerts', 0);
     }
     else if (id === "reviews-page"){
-      window.freedom.emit('get-r-papers', 1);      
+      var past_btn = document.getElementById("review-btns").getElementsByTagName("button")[0]; 
+      var pending_btn = document.getElementById("review-btns").getElementsByTagName("button")[1];
+      past_btn.className = "btn btn-default"; 
+      pending_btn.className = "btn btn-default active"; 
+      window.freedom.emit('get-r-papers', 1);
+
     }
     else if(id === "profile-page") {
       if (data) window.freedom.emit('load-profile', data); 
