@@ -385,16 +385,17 @@ function updateReviewView(version){
   if (version){
       console.log("HERE");
     currRPaper = version;
+    //console.log("VERSION " + JSON.stringify(version));
+    paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
+    paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
+
     if (version.length === 0){
       console.log("HERE");
       paper_view.getElementsByTagName("h1")[0].innerHTML = "Paper has been deleted.";
       paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
       return;
     }
-    //console.log("VERSION " + JSON.stringify(version));
-    paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
-    paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
-
+    
     if(version.reviews) {
       for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
         console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);

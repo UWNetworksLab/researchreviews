@@ -132,9 +132,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             };
 //            console.log("MSG IN MAIN " + JSON.stringify(msg));
             social.sendMessage(parse.from, JSON.stringify(msg));
-            break;
+            return;
           }
-          break;
         }
       }
       var noPaper = {
