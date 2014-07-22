@@ -393,9 +393,10 @@ function updateReviewView(version){
       console.log("HERE");
       paper_view.getElementsByTagName("h1")[0].innerHTML = "Paper has been deleted.";
       paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+      document.getElementById('r-options-butt').setAttribute('disabled', true); 
       return;
     }
-    
+
     if(version.reviews) {
       for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
         console.log("INNER HTML " + paper_view.getElementsByTagName("p")[i].innerHTML);
@@ -418,7 +419,6 @@ function updateReviewView(version){
     for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
       paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
     }
-    console.log("OPTIONS BUTT + " + document.getElementById('r-options-butt').innerHTML);
     document.getElementById('r-options-butt').setAttribute('disabled', true); 
   }
 }
