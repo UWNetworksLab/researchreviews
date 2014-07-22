@@ -370,10 +370,7 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
-  console.log("VERSION " + JSON.stringify(version));
   document.getElementById('r-options-butt').removeAttribute('disabled'); 
-//  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
-
   var paper_view = document.getElementById("review-view-container");
 
   paper_view.getElementsByTagName("p")[0].innerHTML = "";
