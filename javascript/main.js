@@ -137,6 +137,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           break;
         }
       }
+      var noPaper = {
+        version: [],
+        action: 'send-r-paper'
+      };
+      social.sendMessage(parse.from, JSON.stringify(noPaper));
     });
   }
 

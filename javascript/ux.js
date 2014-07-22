@@ -370,6 +370,7 @@ function updateTable(data, updateAction) {
 }
 
 function updateReviewView(version){
+  console.log("VERSION " + JSON.stringify(version));
   document.getElementById('r-options-butt').removeAttribute('disabled'); 
 //  console.log("UPDATE REVIEW VIEW VESION " + JSON.stringify(version));
 
@@ -382,7 +383,14 @@ function updateReviewView(version){
     paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
   }
   if (version){
+      console.log("HERE");
     currRPaper = version;
+    if (version.length === 0){
+      console.log("HERE");
+      paper_view.getElementsByTagName("h1")[0].innerHTML = "Paper has been deleted.";
+      paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
+      return;
+    }
     //console.log("VERSION " + JSON.stringify(version));
     paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
     paper_view.getElementsByTagName("p")[0].innerHTML = version.comments; 
