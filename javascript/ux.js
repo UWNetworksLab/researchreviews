@@ -360,9 +360,9 @@ function updateTable(data, updateAction) {
         paper_table.appendChild(p);
     }
     else if (updateAction == -1){
-      for (var i = 0; i < paper_table.rows.length; i++){
-        if (data == paper_table.rows[i].getAttribute("id")){
-          paper_table.deleteRow(i);
+      for (var j = 0; j < paper_table.rows.length; j++){
+        if (data == paper_table.rows[j].getAttribute("id")){
+          paper_table.deleteRow(j);
         }
       }
     }
