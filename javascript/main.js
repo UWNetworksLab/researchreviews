@@ -32,7 +32,6 @@ freedom.on('get-r-papers', function(pending) {
 }); 
 
 freedom.on('get-pending-r-view', function(data){
-  console.log("Get pending r view data " + JSON.stringify(data));
   var msg = {
     action: 'get-r-paper',
     key: data.key,
@@ -41,7 +40,6 @@ freedom.on('get-pending-r-view', function(data){
   };
 
   social.sendMessage(data.username, JSON.stringify(msg)).then(function(ret) {
-    //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -62,14 +60,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
 
-      if(!papers || typeof papers !== "object") {
-        papers = []; 
-        console.log("nothing");
-      }
+      if(!papers || typeof papers !== "object") papers = []; 
       parse.pending = 1;
       papers.push(parse); 
-
-      console.log("PAPERS IN MAIN " + JSON.stringify(papers));
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
   }
@@ -78,8 +71,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     //make sure coauthor is added to author[] in new paper 
   }
   else if (parse.action === "get-profile"){
-    console.log("GET-PROFILE of " + username + " and send it to " + parse.from);
-
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -91,7 +82,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           string: "",
           description: "", 
         };
-        console.log("nothing");
       }
       profile.action = 'got-profile'; 
       profile.username = username; 
@@ -99,7 +89,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if (parse.action === "got-profile"){
-    console.log("GOT PROFILE" + JSON.stringify(parse));
     freedom.emit('display-profile', parse);
     var data = {
       id: parse.username, 
@@ -109,7 +98,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
-    console.log("get-r-paper");
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
@@ -120,7 +108,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
               version: papers[i].versions[j],
               action: 'send-r-paper'
             };
-//            console.log("MSG IN MAIN " + JSON.stringify(msg));
             social.sendMessage(parse.from, JSON.stringify(msg));
             return;
           }
@@ -134,9 +121,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
 
-  //received paper to review
   else if (parse.action === 'send-r-paper'){
-    console.log("PARSE IN MAIN ");// + JSON.stringify(parse));
   }
 
   else if (parse.action === 'add-review'){
@@ -147,8 +132,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       var papers = JSON.parse(val);
       for(var i = 0; i < papers.length; i++){
         if (papers[i].key.toString() === parse.key.toString()){
-
-          console.log("PAPERS IN ADD=REVIEW " + JSON.stringify(papers[i]));
           if(!papers[i].versions[parse.vnum].reviews)
             papers[i].versions[parse.vnum].reviews = []; 
           
@@ -156,17 +139,14 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           break;
         }
       }
-
       store.set(username + 'papers', JSON.stringify(papers)); 
     });
   }
-
   freedom.emit('recv-message', JSON.stringify(parse));    
 });
 
 freedom.on('upload-review', function(data){
   var parse = JSON.parse(data);
-  console.log("UPLOAD REVIEW DATA " + parse.author);
 
 //get papers and update them with pending = 0
   var promise = store.get(username + 'r_papers');
@@ -176,19 +156,13 @@ freedom.on('upload-review', function(data){
       papers = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") {
-      papers = []; 
-      console.log("nothing");
-    }
-
-    console.log("INSIDE PROMISE BEFORE LOOP papers "+ JSON.stringify(papers));
+if(!papers || typeof papers !== "object") papers = []; 
     for (var i = 0; i < papers.length; i++){
       if (parse.key === papers[i].key){
         papers[i].pending = 0;
         break;
       }
     }
-    console.log("INSIDE PROMISE after LOOP papers "+ JSON.stringify(papers));
     store.set(username + 'r_papers', JSON.stringify(papers));
   }); 
 
@@ -201,8 +175,6 @@ freedom.on('upload-review', function(data){
 
 freedom.on('send-message', function(val) {
   social.sendMessage(val.to, val.msg).then(function(ret) {
-    console.log("STRINGIFY " + val.to + ", " + JSON.stringify(val.msg));
-    //Fulfill - sendMessage succeeded
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -222,8 +194,6 @@ freedom.on('get-users', function(data) {
 });
 
 freedom.on('edit-profile', function(data) {
-  console.log(data.description + " " + data.string);
-
   var promise = store.get(username + 'profile');
   promise.then(function(val) {
     var profile; 
@@ -232,7 +202,6 @@ freedom.on('edit-profile', function(data) {
     } catch(e) {}
 
     if(!profile || typeof profile !== "object") {
-      console.log("this is a blank profile");
       profile = {
         url: "", 
         description: ""
@@ -257,7 +226,6 @@ freedom.on('load-profile', function(data) {
       } catch(e) {}
 
       if(!profile || typeof profile !== "object") {
-        console.log("this is a blank profile");
         profile = {
           string: "", 
           description: ""
@@ -274,7 +242,6 @@ freedom.on('load-profile', function(data) {
     });
   }
   else {
-    console.log("DATA" + data);
     var message = {
       action: 'get-profile',
       from: username
@@ -292,11 +259,9 @@ freedom.on('add-paper', function(data) {
     var papers; 
     try {
       papers = JSON.parse(val);
-      console.log("papers length before adding new paper: " + papers.length);
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      console.log("nothing in papers");
       papers = []; 
     }
 
@@ -320,7 +285,7 @@ freedom.on('add-paper', function(data) {
       papers.push(newPaper); 
 
       //to send to publicstorage
-      var paper ={
+      var paper = {
         title: newPaper.versions[0].title,
         author: username,
         key: data.key, 
@@ -334,7 +299,7 @@ freedom.on('add-paper', function(data) {
     }
     store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
-}); 
+});
 
 freedom.on('get-paper-view', function(data) {
   var promise = store.get(username + 'papers');
@@ -394,13 +359,9 @@ freedom.on('load-papers', function(data) {
       papers = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") {
-      papers = []; 
-      console.log("nothing");
-    }
-
-    freedom.emit('display-table-and-view', papers); 
-  }); 
+  if(!papers || typeof papers !== "object") papers = []; 
+      freedom.emit('display-table-and-view', papers); 
+    }); 
 });
 
 freedom.on('delete-paper', function(key){
@@ -443,7 +404,6 @@ social.login({
 }).then(function(ret) {
   myClientState = ret;
   username = ret.userId;
-
 
   if (ret.status == social.STATUS["ONLINE"]) {
     var data = {
