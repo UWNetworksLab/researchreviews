@@ -225,16 +225,11 @@
 
 
                   <script type='text/ng-template' id="inviteReviewersTemplate.html">
-                    <div ng-controller="inviteReviewersCtrl" class='modal-container'> 
+                    <div class='modal-container'> 
                       <h3>Invite Reviewers</h3>    
                       <div><textarea id="invite-reviewers-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
 
                         <h4> add reviewers : </h4> 
-
-
-
-
-
 
         <input type="text" id = "reviewer-input" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:10" typeahead-on-select="selectMatch($item)" class="form-control">
         <hr>

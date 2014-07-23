@@ -232,7 +232,8 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
   };
   $scope.invite = function () {
     //invite reviewers 
-    var reviewer_input = document.getElementById("reviewer-input").value; 
+    //var reviewer_input = document.getElementById("reviewer-input").value; 
+
     var comments = document.getElementById("invite-reviewers-comments").value; 
 
     var msg = {
@@ -244,10 +245,13 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
       comments: comments
     };
 
-    freedom.emit('send-message', {
-      to: reviewer_input,
-      msg: JSON.stringify(msg)
-    });
+    for(var i = 0; i < $scope.alerts.length; i++) {
+      freedom.emit('send-message', {
+        to: $scope.alerts[i].msg,
+        msg: JSON.stringify(msg)
+      });
+    }
+
     
     $modalInstance.dismiss('cancel');
   };
