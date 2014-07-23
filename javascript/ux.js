@@ -219,7 +219,17 @@ var addVersionCtrl = function ($scope, $modalInstance) {
 
 var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
   $scope.states = userList; 
-
+  $scope.selected = undefined;
+  $scope.alerts = [];
+    
+  $scope.selectMatch = function(selection) {
+    $scope.alerts.push({msg: selection});
+    $scope.selected = '';
+  };
+  
+  $scope.closeAlert = function(index) {
+    $scope.alerts.splice(index, 1);
+  };
   $scope.invite = function () {
     //invite reviewers 
     var reviewer_input = document.getElementById("reviewer-input").value; 
