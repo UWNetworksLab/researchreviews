@@ -110,15 +110,21 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
-    
+    var paper_public = true; 
+
+    if(document.getElementById("addPaperPublic").checked)
+      console.log("paper is public");
+    else 
+    {      
+      console.log("paper is private");
+      paper_public = false; 
+    }
     if (files.length < 1) {
       alert("No files found.");
       return;
     }
-
-    uploadFile(files, comments);
-
-    var reviewer_input = document.getElementById("reviewer-input-2").value; 
+  
+    /*var reviewer_input = document.getElementById("reviewer-input-2").value; 
     var comments = document.getElementById("invite-reviewers-comments-2").value;
     var msg = {
       title: files[0].name,
@@ -132,7 +138,10 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
     freedom.emit('send-message', {
       to: reviewer_input,
       msg: JSON.stringify(msg)
-    });
+    });*/ 
+
+
+    uploadFile(files, comments, false, paper_public);
 
     $modalInstance.dismiss('cancel');
   };
@@ -289,7 +298,7 @@ function changeProfile(files, profile_description) {
  }
 }
 
-function uploadFile(files, comments, key) {
+function uploadFile(files, comments, key, paper_public) {
   var newPaper = files[0];
   var reader = new FileReader();
 
@@ -301,13 +310,19 @@ function uploadFile(files, comments, key) {
     var yyyy = today.getFullYear();
     today = yyyy+'-'+mm+'-'+dd; 
 
+    if(paper_public)
+      accessList = []; 
+    else 
+      accessList = [username];
+
     window.freedom.emit('add-paper', {
       title: newPaper.name,
       date: today,
       key: key,
       comments: comments, 
       author: username,
-      binaryString: ab2str(arrayBuffer)
+      binaryString: ab2str(arrayBuffer), 
+      accessList: accessList
     });
   }
   reader.readAsArrayBuffer(newPaper);

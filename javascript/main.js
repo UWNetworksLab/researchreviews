@@ -291,10 +291,13 @@ freedom.on('add-paper', function(data) {
         key: data.key, 
         action: 'add-paper'
       };
-      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
+
+      if(data.accessList.length == 0)
+        social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+
       freedom.emit('display-new-paper', newPaper);
     }
     store.set(username + 'papers', JSON.stringify(papers)); 
