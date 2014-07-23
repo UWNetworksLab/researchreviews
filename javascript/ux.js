@@ -688,7 +688,7 @@ window.freedom.on('got-alerts', function(alerts){
   for (var i = 0; i < parse.length; i++){
     var p = document.createElement('tr');
     if (parse[i].action === "invite-reviewer"){
-      p.innerHTML = "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + ": " + parse[i].comments + "</th>";
+      p.innerHTML =  "<th>You were invited to review the paper " + parse[i].title + " by " + parse[i].author + (parse[i].comments? ": " + parse[i].comments : "") + "</th>"; 
     }
     else if(parse[i].action === 'add-review') {
       //TODO: have key, vnum, but need title?! 
