@@ -371,7 +371,7 @@ function updateTable(data, updateAction) {
         var p = document.createElement('tr');
         p.setAttribute("id", data.key);
         p.innerHTML = makeRow(data.versions[versionLen].title, data.versions[versionLen].date, data.key); 
-        paper_table.appendChild(p);
+        paper_table.insertBefore(p, paper_table.childNodes[0]);
     }
     else if (updateAction == -1){
       for (var j = 0; j < paper_table.rows.length; j++){
@@ -508,7 +508,7 @@ window.freedom.on('display-table-and-view', function(papers){
       p.setAttribute("id", papers[i].key);
       var len = papers[i].versions.length-1; 
       p.innerHTML = makeRow(papers[i].versions[len].title, papers[i].versions[len].date, papers[i].key); 
-      paper_table.appendChild(p);
+      paper_table.insertBefore(p, paper_table.childNodes[0]);
     }
 
     var paper_view = document.getElementById("paper-view-container");
@@ -675,7 +675,7 @@ window.freedom.on('recv-message', function(msg) {
       p.innerHTML = '<th>' + parse.papers[i].title + ' by '
       + '<a href = "#" onclick = "showPage(\'profile-page\', \'' + parse.papers[i].author + '\')">' 
       + parse.papers[i].author + "</a></th>";
-      newBody.appendChild(p);
+      newBody.insertBefore(p, newBody.childNodes[0]);
     }
     paper_table.replaceChild(newBody, paper_table.childNodes[0]);
   }
