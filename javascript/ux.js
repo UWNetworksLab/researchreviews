@@ -376,7 +376,7 @@ function updateReviewView(version){
   paper_view.getElementsByTagName("p")[0].innerHTML = "";
   paper_view.getElementsByTagName("p")[1].innerHTML = "";
 
-  for (var i = 2; i < paper_view.getElementsByTagName("p").length; i++){
+  for (var i = paper_view.getElementsByTagName("p").length-1; i >=2; i--){
     paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
   }
   if (version){
@@ -433,7 +433,7 @@ function updateView(version, action) { //get newest version of uploaded paper/pa
   paper_view.getElementsByTagName("h1")[0].innerHTML = version.title + " v." + version.vnum;
   paper_view.getElementsByTagName("p")[0].innerHTML = version.comments;
 
-  for (var i = 1; i < paper_view.getElementsByTagName("p").length; i++){
+  for (var i = paper_view.getElementsByTagName("p").length-1; i>=1; i--){
     paper_view.removeChild(paper_view.getElementsByTagName("p")[i]);
   }
 
@@ -543,7 +543,6 @@ window.freedom.on('display-reviews', function(data) {
     for (var i = paper_table.rows.length - 1; i >=0 ; i--){
       paper_table.removeChild(paper_table.rows[i]);
     }
-
     for (var i = 0; i < data.papers.length; i++){
         var p = document.createElement('tr');
         p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
@@ -560,11 +559,7 @@ window.freedom.on('display-reviews', function(data) {
       });
     }
     else {
-      var paper_view = document.getElementById("review-view-container");
-      paper_view.getElementsByTagName("h1")[0].innerHTML = "";
-      paper_view.getElementsByTagName("p")[0].innerHTML = ""; 
-      paper_view.getElementsByTagName("p")[1].innerHTML = ""; 
-      document.getElementById('r-options-butt').setAttribute('disabled', true);
+      updateReviewView();
     }    
   }
 });

@@ -10,8 +10,6 @@ var messageList = [];
 //store.set('papers', []);
 
 freedom.on('get-r-papers', function(pending) {
-  console.log("get r papers pending " + pending);
-
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
     var papers; 
@@ -19,13 +17,7 @@ freedom.on('get-r-papers', function(pending) {
       papers = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") {
-      papers = []; 
-      console.log("nothing");
-    }
-
-    console.log("IN PROMISE IN MAIN before freedomemit papers " + JSON.stringify(papers));
-
+    if(!papers || typeof papers !== "object") papers = []; 
     var i = papers.length;
     while (i--){
       if (papers[i].pending !== pending){
@@ -33,8 +25,6 @@ freedom.on('get-r-papers', function(pending) {
         papers.splice(i, 1);
       }
     }
-    console.log("IN PROMISE IN MAIN before after freedomemit papers " + JSON.stringify(papers));
-
     freedom.emit('display-reviews', {
       papers: papers
     }); 
