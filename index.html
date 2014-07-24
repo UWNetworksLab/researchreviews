@@ -173,26 +173,35 @@
             <script type='text/ng-template' id="addPaperTemplate.html">
             <div class='modal-container'> 
               <h3>Add Paper</h3>
-              <div><textarea id="add-paper-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-
-              <div><textarea id="invite-reviewers-comments-2" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-              <h4> add reviewers : </h4> 
-              <input type="text" id="reviewer-input-2" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
-              
+              <div><textarea id="add-paper-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div>               
               <h4>Privacy Settings</h4> 
 
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="addPaperPrivate" value="option1" checked>
-                    Private (only co-authors and invited reviewers can see this)
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="addPaperPublic" value="option2">
-                    Public (everyone can see this)
-                  </label>
-                </div>
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsRadios" id="addPaperPublic" ng-model = "privacyHeading" value = "Invite reviewers." ng-change="setPublic()"/>
+    Public (everyone can see this)
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsRadios" id="addPaperPrivate" ng-model="privacyHeading" value="Select users to view this paper." ng-change="setPrivate()"/>
+    Private (only co-authors and invited reviewers can see this)
+  </label>
+</div>
+
+
+
+
+<div><textarea id="invite-reviewers-comments-2" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
+<h4 id = "privacy-heading"> {{privacyHeading}} </h4> 
+<input type="text" id = "reviewer-input-2" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:10" typeahead-on-select="selectMatch($item)" class="form-control">
+<hr>
+
+<table id="privacyTable" class="table table-condensed">
+  <tbody >
+  </tbody>
+<table>
+
 
 
               <div id="file-container">
