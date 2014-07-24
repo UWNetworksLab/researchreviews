@@ -197,21 +197,26 @@
 <input type="text" id = "reviewer-input-2" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:10" typeahead-on-select="selectMatch($item)" class="form-control">
 <hr>
 
-<table id="privacyTable" class="table table-condensed">
-  <tbody >
-  </tbody>
-<table>
+<table> 
+  <tr ng-repeat="alert in alerts"> 
+    <td class='col-md-10'> {{alert.msg}} </td> 
+    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper"> </td> 
+    <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+  </tr> 
+</table>
+
+
+    <div id="file-container">
+      <input type="file" accept="application/pdf" id="addFile"/>
+      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+    </div>
+  </div> 
+</script> 
+</div><!--add paper button and modal-->
 
 
 
-              <div id="file-container">
-                <input type="file" accept="application/pdf" id="addFile"/>
-                <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
-                <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
-              </div>
-            </div> 
-          </script> 
-          </div><!--add paper button and modal-->
           <table class="table table-hover">
             <tbody class="paper-table">
             </tbody> 

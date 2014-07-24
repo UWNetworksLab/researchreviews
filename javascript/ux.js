@@ -115,59 +115,23 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
   $scope.alerts = [];
 
   $scope.setPrivate = function(){
-    console.log("SET PRIVATE");
-    console.log("ALERTS " + JSON.stringify($scope.alerts));
-
-    var check_cols = document.getElementsByClassName("check-col");
-    for (var i = 0; i < check_cols.length; i++){
-      check_cols[i].innerHTML = "<input type='checkbox'>";
-    }
-/*    $(".check-col").each(function(i, obj){
-      obj.innerHTML = "<input type='checkbox'>";
-    });*/
     $scope.privatePaper = true;
   }
 
   $scope.setPublic = function(){
-    var check_cols = document.getElementsByClassName("check-col");
-    for (var i = 0; i < check_cols.length; i++){
-      check_cols[i].innerHTML = "";
-    }
-
     $scope.privatePaper = false;
+  }
+
+  $scope.deleteUser = function(id) {
+    console.log("trying to delete " + id);
+    $scope.alerts.splice(id, 1);
   }
 
   $scope.selectMatch = function(selection) {
     $scope.alerts.push({msg: selection});
     $scope.selected = '';
-
-    var row = document.getElementById("privacyTable").insertRow(0);
-    var nameCell = row.insertCell(0);
-    nameCell.innerHTML = $scope.alerts[$scope.alerts.length-1].msg;
-    nameCell.className = "col-md-10";
-    var removeCell = row.insertCell(1);
-    removeCell.className = "col-md-1";
-    removeCell.innerHTML = "<span class = 'glyphicon glyphicon-remove'></span>";
-
-    if ($scope.privatePaper){
-      var checkCell = row.insertCell(1);
-      checkCell.innerHTML = "<input type='checkbox'>";
-      checkCell.className = "check-col col-md-1";
-    }
-    else {
-      var checkCell = row.insertCell(1);
-      checkCell.className = "check-col col-md-1";
-    }
   };
-  
-  $scope.closeAlert = function(index) {
-    $scope.alerts.splice(index, 1);
-  };
-//
-  
-  $scope.clicked = function(){
-    console.log("CLICKED");
-  }
+
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
