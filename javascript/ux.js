@@ -755,6 +755,5 @@ window.freedom.on('got-alerts', function(alerts){
 });
 
 window.onload = function() {
-  $("[data-toggle=tooltip]").tooltip();
   showPage();
 } 

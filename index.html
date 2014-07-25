@@ -56,7 +56,7 @@
     <div class="col-md-2">
       <div class="sidebar">
         <div class="std-container">
-          <img id="profile_pic" height="150" width="150" src="square.png" data-toggle="tooltip" data-placement="bottom" title="edit my profile" ng-click="editProfile()"/>
+          <img id="profile_pic" height="150" width="150" src="square.png" tooltip="edit my profile" ng-click="editProfile()"/>
           <h3>{{ username }}</h3>
           
           <p id="profile_description"> No description added. </p> 
@@ -211,7 +211,7 @@
 </table>
     <div id="file-container">
       <input type="file" accept="application/pdf" id="addFile"/>
-      <button type="button" tooltip = "hi" class="btn btn-success" ng-click="upload()">upload</button>
+      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
       <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
     </div>
   </div> 
