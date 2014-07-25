@@ -33,6 +33,15 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
     });
   };
 
+  $scope.editPrivacy = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'editPrivacyTemplate.html',
+      windowClass:'normal',
+      controller: editPrivacyCtrl,
+      backdrop: 'static'
+    });
+  }; 
+
   $scope.addReview = function() {
     var modalInstance = $modal.open({
       templateUrl: 'addReviewTemplate.html',
@@ -43,12 +52,7 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   };
 
   $scope.addVersion = function() {
-    var modalInstance = $modal.open({
-      templateUrl: 'addVersionTemplate.html',
-      windowClass:'normal',
-      controller: addVersionCtrl,
-      backdrop: 'static'
-    });
+    window.freedom.emit('get-users', 'add-version'); 
   };
 
   $scope.addPaper = function() {
@@ -87,6 +91,19 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
         }
       });
     }
+    else if(msg.action === 'add-version') {    
+      var modalInstance = $modal.open({
+        templateUrl: 'addVersionTemplate.html',
+        windowClass:'normal',
+        controller: addVersionCtrl,
+        backdrop: 'static',
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }
+        }
+      });
+    }
   }); 
 }); 
 
@@ -109,8 +126,6 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
   $scope.privacyHeading = "Invite reviewers.";
   $scope.privatePaper = false;
 
-//
-  $scope.states = userList; 
   $scope.selected = undefined;
   $scope.alerts = [];
 
@@ -230,17 +245,76 @@ var addReviewCtrl = function ($scope, $modalInstance) {
   };
 };
 
-var addVersionCtrl = function ($scope, $modalInstance) {
+var addVersionCtrl = function ($scope, $modalInstance, userList) {
+  $scope.states = userList; 
+  $scope.privacyHeading = "Invite reviewers.";
+  $scope.privatePaper = false;
+
+  $scope.selected = undefined;
+  $scope.alerts = [];
+
+  $scope.checkList = []; 
+
+  $scope.setPrivate = function(){
+    $scope.privatePaper = true;
+  };
+
+  $scope.setPublic = function(){
+    $scope.privatePaper = false;
+  };
+
+  $scope.deleteUser = function(id) {
+    var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
+    if(idx > -1) 
+      $scope.checkList.splice(idx, 1); 
+
+    $scope.alerts.splice(id, 1);
+  };
+
+  $scope.selectMatch = function(selection) {
+    $scope.alerts.push({msg: selection});
+  };
+
+  $scope.checkAlert = function(username) {
+    var idx = $scope.checkList.indexOf(username); 
+
+    if (idx > -1) $scope.checkList.splice(idx, 1);
+    else $scope.checkList.push(username);
+  }; 
+
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-version-comments").value;
-    
+    var r_comments = document.getElementById("invite-reviewers-comments-2").value; 
+
+    var alertList = [];
+    for(var i = 0; i < $scope.alerts.length; i++) 
+      alertList.push($scope.alerts[i].msg); 
+
+    console.log(JSON.stringify(alertList));
+
+    if(!$scope.privatePaper) { //publicly shared
+      uploadFile(files, comments, false, false, alertList);
+    }
+    else { //privately shared
+      uploadFile(files, comments, false, alertList, $scope.checkList);
+    }
+
     if (files.length < 1) {
       alert("No files found.");
       return;
     }
 
-    uploadFile(files, comments, currPaper.key);
+    $modalInstance.dismiss('cancel');
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+var editPrivacyCtrl = function ($scope, $modalInstance) {
+  $scope.upload = function () {
     $modalInstance.dismiss('cancel');
   };
 
