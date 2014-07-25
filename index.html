@@ -206,7 +206,7 @@
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
     <td class='col-md-1'> <input tooltip="invite to review" ng-show="privatePaper" type="checkbox"  ng-click="checkAlert(alert.msg)"> </td> 
-    <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+    <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class='glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
     <div id="file-container">
