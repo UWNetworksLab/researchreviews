@@ -114,61 +114,59 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
   $scope.selected = undefined;
   $scope.alerts = [];
 
+  $scope.checkList = []; 
+
   $scope.setPrivate = function(){
     $scope.privatePaper = true;
-  }
+  };
 
   $scope.setPublic = function(){
     $scope.privatePaper = false;
-  }
+  };
 
   $scope.deleteUser = function(id) {
-    console.log("trying to delete " + id);
+    var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
+    if(idx > -1) 
+      $scope.checkList.splice(idx, 1); 
+
     $scope.alerts.splice(id, 1);
-  }
+  };
 
   $scope.selectMatch = function(selection) {
     $scope.alerts.push({msg: selection});
     $scope.selected = '';
   };
 
+  $scope.checkAlert = function(username) {
+    var idx = $scope.checkList.indexOf(username); 
+
+    if (idx > -1) $scope.checkList.splice(idx, 1);
+    else $scope.checkList.push(username);
+  }; 
+
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
-    var paper_public = true; 
+    var r_comments = document.getElementById("invite-reviewers-comments-2").value; 
 
-    if(document.getElementById("addPaperPublic").checked){
-      console.log("paper is public");
+    var alertList = [];
+    for(var i = 0; i < $scope.alerts.length; i++) 
+      alertList.push($scope.alerts[i].msg); 
+
+    console.log(JSON.stringify(alertList));
+
+    if(!$scope.privatePaper) { //publicly shared
+      uploadFile(files, comments, false, false, alertList);
     }
-    else 
-    {
-      console.log("paper is private");
-      paper_public = false; 
+    else { //privately shared
+      uploadFile(files, comments, false, alertList, $scope.checkList);
     }
+
     if (files.length < 1) {
       alert("No files found.");
       return;
     }
-  
-    var comments = document.getElementById("invite-reviewers-comments-2").value; 
 
-    var msg = {
-      title: files[0].name,
-      action: 'invite-reviewer',
-      key: currPaper.key,
-      author: username,
-      vnum: currPaper.vnum,
-      comments: comments
-    };
-
-    for(var i = 0; i < $scope.alerts.length; i++) {
-      freedom.emit('send-message', {
-        to: $scope.alerts[i].msg,
-        msg: JSON.stringify(msg)
-      });
-    }
-
-    uploadFile(files, comments, false, paper_public);
     $modalInstance.dismiss('cancel');
   };
 
@@ -324,7 +322,7 @@ function changeProfile(files, profile_description) {
  }
 }
 
-function uploadFile(files, comments, key, paper_public) {
+function uploadFile(files, comments, key, viewList, alertList) {
   var newPaper = files[0];
   var reader = new FileReader();
 
@@ -336,11 +334,6 @@ function uploadFile(files, comments, key, paper_public) {
     var yyyy = today.getFullYear();
     today = yyyy+'-'+mm+'-'+dd; 
 
-    if(paper_public)
-      accessList = []; 
-    else 
-      accessList = [username];
-
     window.freedom.emit('add-paper', {
       title: newPaper.name,
       date: today,
@@ -348,7 +341,8 @@ function uploadFile(files, comments, key, paper_public) {
       comments: comments, 
       author: username,
       binaryString: ab2str(arrayBuffer), 
-      accessList: accessList
+      viewList: viewList,
+      alertList: alertList
     });
   }
   reader.readAsArrayBuffer(newPaper);

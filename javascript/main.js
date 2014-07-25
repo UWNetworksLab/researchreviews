@@ -265,7 +265,7 @@ freedom.on('add-paper', function(data) {
       papers = []; 
     }
 
-    if(data.key) { //add new version
+    if(data.key) { //add new version //TODO: make sure version works for sharing papers
       for(var i = 0; i < papers.length; i++)
         if(papers[i].key == data.key) {
           data.vnum = papers[i].versions.length; 
@@ -292,11 +292,31 @@ freedom.on('add-paper', function(data) {
         action: 'add-paper'
       };
 
-      if(data.accessList.length == 0)
+      if(!data.viewList) //publicly shared
         social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
+
+        //TODO: make sure viewList works for privately shared papers
+        //TODO: send r_comments over
+      var msg = {
+        title: newPaper.versions[0].title, 
+        author: username, 
+        vnum: 0, 
+        key: data.key,
+        action: 'invite-reviewer' 
+      };
+
+      console.log(JSON.stringify(data.alertList));
+
+      for(var i = 0; i < data.alertList.length; i++) {
+        console.log("trying to send to " + data.alertList[i]);
+        social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+      }
 
       freedom.emit('display-new-paper', newPaper);
     }

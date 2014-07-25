@@ -200,7 +200,7 @@
 <table> 
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper"> </td> 
+    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
     <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
