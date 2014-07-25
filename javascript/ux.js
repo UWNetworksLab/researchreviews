@@ -134,7 +134,6 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
 
   $scope.selectMatch = function(selection) {
     $scope.alerts.push({msg: selection});
-    $scope.selected = '';
   };
 
   $scope.checkAlert = function(username) {
