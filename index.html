@@ -202,24 +202,16 @@
         class="form-control">
 <hr>
 
-<table> 
-  <tr>
-    <td class='col-md-10'>Selected users </td> 
-    <td class='col-md-2' ng-show = "privatePaper"> Invite to review 
-    </td> 
-  </tr>
-
+<table>
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
+    <td class='col-md-1'> <input tooltip="invite to review" ng-show="privatePaper" type="checkbox"  ng-click="checkAlert(alert.msg)"> </td> 
     <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
-
-
     <div id="file-container">
       <input type="file" accept="application/pdf" id="addFile"/>
-      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+      <button type="button" tooltip = "hi" class="btn btn-success" ng-click="upload()">upload</button>
       <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
     </div>
   </div> 

@@ -105,6 +105,7 @@ function str2ab(str) {
 }
 
 var addPaperCtrl = function ($scope, $modalInstance, userList) {
+
   $scope.states = userList; 
   $scope.privacyHeading = "Invite reviewers.";
   $scope.privatePaper = false;
