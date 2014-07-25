@@ -315,9 +315,25 @@ var addVersionCtrl = function ($scope, $modalInstance, userList) {
 };
 
 var editPrivacyCtrl = function ($scope, $modalInstance) {
-  $scope.upload = function () {
+  $scope.currSetting = currPaper.viewList? "private" : "public";  
+
+  $scope.save = function () { 
+    var msg = {
+      vnum: currPaper.vnum, 
+      key: currPaper.key
+    }; 
+    if($("#addPaperPublic2").is(':checked') && currPaper.viewList) { //private to public
+      msg.publicSetting = 1; 
+      window.freedom.emit('edit-privacy',  JSON.stringify(msg)); //1 = public 
+    }
+    else if($('#addPaperPrivate2').is(':checked') && !currPaper.viewList) { //public to private
+      msg.publicSetting = 0; 
+      window.freedom.emit('edit-privacy', JSON.stringify(msg)); //0 = private
+    }
     $modalInstance.dismiss('cancel');
   };
+
+
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
