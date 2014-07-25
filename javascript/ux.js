@@ -1,12 +1,58 @@
 //interactions
-var app = angular.module('researcher_app', ['ui.bootstrap']);
+var app = angular.module('researcher_app', ['ui.bootstrap', 'ngRoute']);
 var currPaper;
 var username; 
 var alertNum = 0;
 var currRPaper;
 
+app.config(function($routeProvider) {
+  $routeProvider
+
+    // route for the home page
+/*    .when('/papers', {
+      templateUrl : 'pages/paperspage.html',
+      controller  : 'paperController'
+    });
+
+    // route for the about page
+    .when('/reviews', {
+      templateUrl : 'pages/reviewspage.html',
+      controller  : 'reviewController'
+    })
+*/
+    // route for the service page
+    .when('/alertspage', {
+      templateUrl : 'pages/alertspage.html',
+      controller  : 'alertsController'
+    });
+
+/*    .when('/profile', {
+      templateUrl : 'pages/profilepage.html',
+      controller  : 'profileController'
+    });
+    .when('/browse', {
+      templateUrl : 'pages/browsepage.html',
+      controller  : 'browseController'
+    });*/
+});
+
+app.controller('alertsController', function($scope) {
+  // create a message to display in our view
+  console.log("alertsPAGE");
+});
+
+/*
 app.controller('drop_controller', function($scope) {
 }); 
+
+app.controller('reviews_controller', ['$scope', function($scope) {
+//  $scope.$apply();
+  $scope.reviews = currPaper ? currPaper.reviews: [];
+  $scope.getReviews = function(){
+    console.log("GET REVIEWS");
+    $scope.reviews = currPaper? currPaper.reviews: [];
+  };
+}]); 
 
 app.controller('main_controller', function($scope, $http, $modal, $window) {
   $scope.username = "testing"; 
@@ -107,7 +153,6 @@ app.controller('main_controller', function($scope, $http, $modal, $window) {
   }); 
 }); 
 
-/* arraybuffer/string conversion */
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
@@ -858,4 +903,4 @@ window.freedom.on('got-alerts', function(alerts){
 
 window.onload = function() {
   showPage();
-} 
+} */

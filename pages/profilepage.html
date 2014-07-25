@@ -1,0 +1,105 @@
+  <div id="profile-page" class="page" style="">
+    <!--Three Columns--profile, papers, reviews-->
+    <div class="col-md-2">
+      <div class="sidebar">
+        <div class="std-container">
+          <img id="profile_pic" height="150" width="150" src="square.png" tooltip="edit my profile" ng-click="editProfile()"/>
+          <h3>{{ username }}</h3>
+          
+          <p id="profile_description"> No description added. </p> 
+
+          <script type='text/ng-template' id="editProfileTemplate.html">
+            <div class='modal-container'> 
+              <h3>Edit Profile</h3>
+              <h4>Edit email: </h4> 
+              <div><textarea rows="1" class="form-control" placeholder="Example: jdoe@blizi.com"></textarea><div> 
+              <h4>Edit description: </h4> 
+              <div><textarea rows="4" class="form-control" id="profile_description_modal" placeholder="Your description here"></textarea></div> 
+              <h4>Upload profile pic: </h4> 
+              <div id="file-container">
+                <input type="file" accept="image/*" id="addFile"/>
+                <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+                <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+              </div>
+            </div> 
+          </script> 
+        </div>
+      </div> <!--sidebar-->
+    </div> <!--profile-->
+    
+    <!--papers-->
+    <div class="col-md-5">
+      <div class="landing-container">
+        <h2> My Papers 
+          <span id="paper-links">
+            <a onclick="showPage('papers-page')" class="btn btn-link">Detailed View</a>
+            <button type="button" class="btn btn-link" ng-click="addPaper()">Add Paper</button>
+          </span>
+        </h2>
+        <table class="table table-hover">
+          <tbody class="paper-table">
+          </tbody>
+        </table>
+      </div> <!--landing-container-->
+
+    <script type='text/ng-template' id="addPaperTemplate.html">
+            <div class='modal-container'> 
+              <h3>Add Paper</h3>
+              <div><textarea id="add-paper-comments" rows="4" class="form-control" placeholder="Add comments"></textarea></div>               
+              <h4>Privacy Settings</h4> 
+
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsRadios" id="addPaperPublic" ng-model = "privacyHeading" value = "Invite reviewers." ng-change="setPublic()"/>
+    Public (everyone can see this)
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsRadios" id="addPaperPrivate" ng-model="privacyHeading" value="Select users to view this paper." ng-change="setPrivate()"/>
+    Private (only co-authors and invited reviewers can see this)
+  </label>
+</div>
+
+<h4 id = "privacy-heading"> {{privacyHeading}} </h4> 
+<input  type="text" 
+        id = "reviewer-input-2" 
+        ng-model="selected" 
+        typeahead="state for state in states | filter:$viewValue | limitTo:10" 
+        typeahead-on-select="selectMatch(selected); selected='';" 
+        class="form-control">
+<hr>
+
+<table> 
+  <tr ng-repeat="alert in alerts"> 
+    <td class='col-md-10'> {{alert.msg}} </td> 
+    <td class='col-md-1'> <input tooltip = "invite to review" type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
+    <td class='col-md-1'> <span tooltip = "remove user" ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+  </tr> 
+</table>
+
+
+    <div id="file-container">
+      <input type="file" accept="application/pdf" id="addFile"/>
+      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+    </div>
+  </div> 
+</script> 
+    </div>
+
+    <div class="col-md-5">
+      <div class="landing-container">
+        <h2>
+          My Reviews
+          <span id="paper-links">
+            <a onclick="showPage('reviews-page')" class="btn btn-link">Detailed View</a>
+          </span>
+        </h2>
+        <table class="table table-hover">
+          <tbody class= "r-table">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
