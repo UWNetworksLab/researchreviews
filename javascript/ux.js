@@ -162,7 +162,6 @@ var addPaperCtrl = function ($scope, $modalInstance, userList) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-paper-comments").value;
-    var r_comments = document.getElementById("invite-reviewers-comments-2").value; 
 
     var alertList = [];
     for(var i = 0; i < $scope.alerts.length; i++) 
@@ -286,7 +285,6 @@ var addVersionCtrl = function ($scope, $modalInstance, userList) {
   $scope.upload = function () {
     var files = document.getElementById("addFile").files;
     var comments = document.getElementById("add-version-comments").value;
-    var r_comments = document.getElementById("invite-reviewers-comments-2").value; 
 
     var alertList = [];
     for(var i = 0; i < $scope.alerts.length; i++) 
@@ -357,15 +355,12 @@ var inviteReviewersCtrl = function ($scope, $modalInstance, userList) {
     //invite reviewers 
     //var reviewer_input = document.getElementById("reviewer-input").value; 
 
-    var comments = document.getElementById("invite-reviewers-comments").value; 
-
     var msg = {
       title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
       action: 'invite-reviewer',
       key: currPaper.key,
       author: username,
-      vnum: currPaper.vnum,
-      comments: comments
+      vnum: currPaper.vnum
     };
 
     for(var i = 0; i < $scope.alerts.length; i++) {
