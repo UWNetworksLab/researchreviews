@@ -128,16 +128,10 @@
 <hr>
 
 <table> 
-  <tr>
-    <td class='col-md-10'>Selected users </td> 
-    <td class='col-md-2' ng-show = "privatePaper"> Invite to review 
-    </td> 
-  </tr>
-
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
-    <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+    <td class='col-md-1'> <input tooltip = "invite to review" type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
+    <td class='col-md-1'> <span tooltip = "remove user" ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
 
@@ -281,17 +275,10 @@
         class="form-control">
 <hr>
 
-<table> 
-  <tr>
-    <td class='col-md-10'>Selected users </td> 
-    <td class='col-md-2' ng-show = "privatePaper"> Invite to review 
-    </td> 
-  </tr>
-
+<table>
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
-    <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+    <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class = 'glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
 
@@ -334,16 +321,10 @@
 <hr>
 
 <table> 
-  <tr>
-    <td class='col-md-10'>Selected users </td> 
-    <td class='col-md-2' ng-show = "privatePaper"> Invite to review 
-    </td> 
-  </tr>
-
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" ng-click="checkAlert(alert.msg)"> </td> 
-    <td class='col-md-1'> <span ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
+    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" tooltip = "invite to review" ng-click="checkAlert(alert.msg)"> </td> 
+    <td class='col-md-1'> <span tooltip = "remove user" ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
 
