@@ -786,7 +786,7 @@ window.freedom.on('recv-message', function(msg) {
     } 
   }
   else if (parse.action === "get-public-papers"){ //just for browsing page
-    var paper_table = document.getElementById('browse-paper-table');
+    var paper_table = document.getElementById('browse-public-paper');
     var newBody = document.createElement('tbody');
 
     for (var i = 0; i < parse.papers.length; i++){
@@ -803,6 +803,23 @@ window.freedom.on('recv-message', function(msg) {
     updateReviewView(parse.version);
   }
 });
+
+
+window.freedom.on('send-private-papers', function(papers) {
+  console.log("send private papers......" + JSON.stringify(papers));
+  var paper_table = document.getElementById('browse-private-paper'); 
+    var newBody = document.createElement('tbody');
+
+    for (var i = 0; i < papers.length; i++){
+      var p = document.createElement('tr');
+      //p.setAttribute("id", data.key);
+      p.innerHTML = '<th>' + papers[i].title + ' by '
+      + '<a href = "#" onclick = "showPage(\'profile-page\', \'' + papers[i].author + '\')">' 
+      + papers[i].author + "</a></th>";
+      newBody.insertBefore(p, newBody.childNodes[0]);
+    }
+    paper_table.replaceChild(newBody, paper_table.childNodes[0]);
+}); 
 
 window.freedom.on('got-alerts', function(alerts){
   var badges = document.getElementsByClassName("badge"); 

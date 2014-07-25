@@ -522,30 +522,37 @@
 
     <!--browse-papers-->
     <div class="view-container">
-      <ol class="breadcrumb">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Computer Science</a></li>
-        <li class="active">Big Data</li>
-      </ol>
-
-        <h2> Browse Papers
-          <!-- Sort by -->
-        <span class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
-          <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
-            Sort By <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Title</a></li>
-            <li><a href="#">Date</a></li>
-            <li><a href="#">Rating</a></li>
-          </ul>
-        </span>
+      <h2> Browse Papers
         <!-- Sort by -->
-        </h2>
+      <span class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
+          Sort By <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Title</a></li>
+          <li><a href="#">Date</a></li>
+          <li><a href="#">Rating</a></li>
+        </ul>
+      </span>
+      <!-- Sort by -->
+      </h2>
 
-        <table id="browse-paper-table" class="table table-hover">
-          <tbody></tbody>
-        </table> 
+      <tabset>
+        <tab heading="Public Papers" onclick="window.freedom.emit('load-public-storage', 0)">
+          <table id="browse-public-paper" class="table table-hover">
+            <tbody></tbody>
+          </table> 
+        </tab>
+
+        <tab heading="Shared Private Papers" onclick="window.freedom.emit('load-private-papers', 0)">
+          <table id="browse-private-paper" class="table table-hover">
+            <tbody></tbody>
+          </table>     
+        </tab>
+      </tabset>
+
+ 
+
     </div> <!--browse-container-->
   <div> 
 </body>

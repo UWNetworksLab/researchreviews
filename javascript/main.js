@@ -66,6 +66,22 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username + 'r_papers', JSON.stringify(papers)); 
     });
   }
+  else if(parse.action === 'allow-access') {
+    var promise = store.get(username+'private-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+     if(!papers || typeof papers !== "object") {
+        console.log("nothing in papers");
+        papers = []; 
+      }
+      papers.push(parse); 
+      store.set(username+'private-papers', JSON.stringify(papers)); 
+    });
+  }
   else if(parse.action === 'add-coauthor') {
     messageList.push(parse); 
     //make sure coauthor is added to author[] in new paper 
@@ -329,9 +345,16 @@ freedom.on('add-paper', function(data) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
+      else { //send private paper to viewList
+        paper.action = 'allow-access';
+        for(var i = 0; i < data.viewList.length; i++) {
+          social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
+          }, function(err) {
+            freedom.emit("recv-err", err);
+          });
+        }
+      }
 
-        //TODO: make sure viewList works for privately shared papers
-        //TODO: send r_comments over
       var msg = {
         title: newPaper.versions[0].title, 
         author: username, 
@@ -390,6 +413,24 @@ freedom.on('get-paper-view', function(data) {
         break;
       }
     }
+  });  
+});
+
+freedom.on('load-private-papers', function(data) {
+  console.log("got here");
+  var promise = store.get(username+'private-papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      console.log("nothing in papers");
+      papers = []; 
+    }
+
+    freedom.emit('send-private-papers', papers); 
   });  
 });
 
