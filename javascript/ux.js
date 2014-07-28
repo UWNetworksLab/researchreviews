@@ -86,7 +86,7 @@ app.controller('papersController', function($scope, $modal) {
 
   window.freedom.on('send-users', function(msg) {
     var modalInstance = $modal.open({
-      templateUrl: '/pages/addPaperTemplate.html',
+      templateUrl: '/modals/addPaperTemplate.html',
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 

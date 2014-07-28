@@ -1,0 +1,19 @@
+<div class='modal-container'> 
+  <h3>Edit privacy settings: currently {{currSetting}}</h3>
+  <div class="radio">
+    <label>
+      <input type="radio" name="optionsRadios" id="addPaperPublic2" ng-model = "privacyHeading" value = "Invite reviewers."/>
+      Public (everyone can see this)
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="radio" name="optionsRadios" id="addPaperPrivate2" ng-model="privacyHeading" value="Select users to view this paper."/>
+      Private (only co-authors and invited reviewers can see this)
+    </label>
+  </div>
+  <div id="file-container">
+    <button type="button" class="btn btn-success" ng-click="save()">save</button>
+    <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+  </div>
+</div> 
