@@ -44,7 +44,6 @@ app.controller('papersController', function($scope, $modal) {
   $scope.papers = {}; 
 
   //for paperView
-  $scope.currVersion = 0; 
   $scope.viewTitle = "";
   $scope.viewComments = ""; 
 
@@ -66,10 +65,14 @@ app.controller('papersController', function($scope, $modal) {
   loadPapersPage(); 
 
   $scope.showPaperView = function(key) {
-    var len = $scope.papers[key].versions.length; 
-    //TODO; get paper to work
+    var len = $scope.papers[key].versions.length;
+
     $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of v." + len; 
     $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+
+    if(!$scope.$$phase) {
+      $scope.$apply(); 
+    }
   }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
