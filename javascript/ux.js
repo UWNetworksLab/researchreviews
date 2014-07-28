@@ -43,13 +43,14 @@ app.controller('reviewsController', function($scope) {
 
 app.controller('papersController', function($scope, $modal) {
   $scope.papers = [{title: "asdf", author: "as", date:"34"}]; 
-  $scope.asdf = "asdf"; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
+    console.log(newPaper.versions[0].title + " " + newPaper.versions[0].author + " " + newPaper.versions[0].date);
+
       $scope.papers.push({
-        title: newPaper.title, 
-        author: newPaper.author, 
-        date: newPaper.date
+        title: newPaper.versions[0].title, 
+        author: newPaper.versions[0].author, 
+        date: newPaper.versions[0].date
       });
   }); 
 
@@ -167,7 +168,7 @@ app.controller('papersController', function($scope, $modal) {
 
       msg.title = newFile.name; 
       msg.date = today;
-      msg.author = username;
+      msg.author = username; 
       msg.binaryString = ab2str(arrayBuffer); 
 
       //TODO: get versioning to work

@@ -7,10 +7,9 @@
           <div style="margin-bottom:20px; margin-top:20px">
             <button class="btn btn-default" ng-click="addPaper()">add paper</button>
 
-            {{papers}}
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              {{paper.title}} by {{paper.author}} on {{paper.date}} 
+              <td> {{paper.title}} by {{paper.author}} on {{paper.date}} </td> 
             </tr> 
           </table>
 
