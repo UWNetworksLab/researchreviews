@@ -1,9 +1,7 @@
 //interactions
 var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
-var currPaper;
 var username; 
 var alertNum = 0;
-var currRPaper;
 
 app.config(function($routeProvider) {
   $routeProvider
@@ -42,16 +40,22 @@ app.controller('reviewsController', function($scope) {
 });
 
 app.controller('papersController', function($scope, $modal) {
-  $scope.papers = [{title: "asdf", author: "as", date:"34"}]; 
+  $scope.papers = {}; 
+  $scope.currVersion = 0; 
+
+  $scope.viewTitle = "";
+  $scope.viewComments = ""; 
+
+  $scope.showPaperView = function(key) {
+    console.log(key); 
+    var len = $scope.papers[key].versions.length; 
+    //TODO; get paper to work
+    $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of v." + len; 
+    $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+  }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
-    console.log(newPaper.versions[0].title + " " + newPaper.versions[0].author + " " + newPaper.versions[0].date);
-
-      $scope.papers.push({
-        title: newPaper.versions[0].title, 
-        author: newPaper.versions[0].author, 
-        date: newPaper.versions[0].date
-      });
+    $scope.papers[newPaper.key] = newPaper; 
   }); 
 
   $scope.addPaper = function() {

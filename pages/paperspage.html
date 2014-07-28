@@ -9,7 +9,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              <td> {{paper.title}} by {{paper.author}} on {{paper.date}} </td> 
+              <td ng-click="showPaperView(paper.key)"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date}} </td> 
             </tr> 
           </table>
 
@@ -175,15 +175,16 @@
 
                 </ul>
               </div>
-              <div id="v_btn_group" class="btn-group pull-right">
-                <button type="button" class="btn btn-default" onclick="getVersion(-1)">Previous</button>
-                <button type="button" class="btn btn-default" onclick="getVersion(1)">Next</button>
-              </div>
+            
+
+              <h1 align="center"> {{viewTitle}} </h1> 
+            <pager ng-model="currVersion" align="false"></pager>
             </div>
+
             <h4> Comments </h4>
-            <p> </p>
+            <p> {{viewComments}}</p>
             <br>
-            <h4> Reviews for this version </h4>
+            <h4> Reviews </h4>
             <p> </p>
           </div> <!--landing-container-->
         </div> <!--column-->
