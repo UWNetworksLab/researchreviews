@@ -46,6 +46,7 @@ app.controller('papersController', function($scope, $modal) {
   //for paperView
   $scope.viewTitle = "";
   $scope.viewComments = ""; 
+  $scope.viewKey; 
 
   //for moving between versions
   $scope.currVersion = 1;
@@ -60,7 +61,6 @@ app.controller('papersController', function($scope, $modal) {
 
       $scope.$apply(); 
 
-      console.log(data.viewKey);
       if(data.viewKey)
         $scope.showPaperView(data.viewKey); 
     }); 
@@ -71,6 +71,7 @@ app.controller('papersController', function($scope, $modal) {
   $scope.showPaperView = function(key) {
     var len = $scope.papers[key].versions.length;
 
+    $scope.viewKey = key; 
     $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
     $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
 
@@ -80,12 +81,19 @@ app.controller('papersController', function($scope, $modal) {
     if(!$scope.$$phase) {
       $scope.$apply(); 
     }
+
+    console.log($scope.viewKey);
   }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
     $scope.papers[newPaper.key] = newPaper;  
     $scope.showPaperView(newPaper.key); 
   }); 
+
+  window.freedom.on('display-new-version', function(newVersion) {
+    $scope.papers[newVersion.key] = newVersion; 
+    $scope.showPaperView(newVersion.key); 
+  });
 
   $scope.addVersion = function() {
     window.freedom.emit('get-users', 'add-version')
@@ -96,23 +104,35 @@ app.controller('papersController', function($scope, $modal) {
   };
 
   window.freedom.on('send-users', function(msg) {
-    var templateUrl = ""; 
-    if(msg.action === 'add-paper') 
-      templateUrl = '/pages/addPaperTemplate.html'; 
-    else if(msg.action === 'add-version')
-      templateUrl = '/pages/addVersionTemplate.html'; 
-
-    var modalInstance = $modal.open({
-      templateUrl: templateUrl,
-      windowClass:'normal',
-      controller: addPaperCtrl,
-      backdrop: 'static', 
-      resolve: {
-        userList: function () {
-          return msg.userList;
+    if(msg.action === 'add-paper') {
+      var modalInstance = $modal.open({
+        templateUrl: '/pages/addPaperTemplate.html',
+        windowClass:'normal',
+        controller: addPaperCtrl,
+        backdrop: 'static', 
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }
         }
-      }
-    });      
+      }); 
+    }
+    else if(msg.action === 'add-version') {
+     var modalInstance = $modal.open({
+        templateUrl: '/pages/addVersionTemplate.html',
+        windowClass:'normal',
+        controller: addVersionCtrl,
+        backdrop: 'static', 
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }, 
+          key: function() {
+            return $scope.viewKey; 
+          }
+        }
+      });   
+    }
   });      
 
   var addPaperCtrl = function ($scope, $modalInstance, userList) {
@@ -164,6 +184,11 @@ app.controller('papersController', function($scope, $modal) {
         comments: comments
       };
 
+      if (files.length < 1) {
+        alert("No files found.");
+        return;
+      }
+
       if(!$scope.privatePaper) { //publicly shared
         paper.viewList = false; 
         paper.alertList = alertList; 
@@ -175,9 +200,78 @@ app.controller('papersController', function($scope, $modal) {
         uploadFile(files, paper);
       }
 
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  var addVersionCtrl = function ($scope, $modalInstance, userList, key) {
+    $scope.states = userList; 
+    $scope.privacyHeading = "Invite reviewers.";
+    $scope.privatePaper = false;
+
+    $scope.selected = undefined;
+    $scope.alerts = [];
+
+    $scope.checkList = []; 
+
+    $scope.setPrivate = function(){
+      $scope.privatePaper = true;
+    };
+
+    $scope.setPublic = function(){
+      $scope.privatePaper = false;
+    };
+
+    $scope.deleteUser = function(id) {
+      var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
+      if(idx > -1) 
+        $scope.checkList.splice(idx, 1); 
+
+      $scope.alerts.splice(id, 1);
+    };
+
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push({msg: selection});
+    };
+
+    $scope.checkAlert = function(username) {
+      var idx = $scope.checkList.indexOf(username); 
+
+      if (idx > -1) $scope.checkList.splice(idx, 1);
+      else $scope.checkList.push(username);
+    }; 
+
+    $scope.upload = function () {
+      var files = document.getElementById("addFile").files;
+      var comments = document.getElementById("add-version-comments").value;
+
+      var alertList = [];
+      for(var i = 0; i < $scope.alerts.length; i++) 
+        alertList.push($scope.alerts[i].msg); 
+
+      var paper = {
+        comments: comments, 
+        key: key 
+      };
+
       if (files.length < 1) {
         alert("No files found.");
         return;
+      }
+
+      if(!$scope.privatePaper) { //publicly shared
+        paper.viewList = false; 
+        paper.alertList = alertList; 
+        uploadFile(files, paper);
+      }
+      else { //privately shared
+        paper.viewList = alertList;
+        paper.alertList = $scope.checkList; 
+        uploadFile(files, paper);
       }
 
       $modalInstance.dismiss('cancel');
@@ -194,10 +288,6 @@ app.controller('papersController', function($scope, $modal) {
 
   //msg is paper or version to be uploaded
   function uploadFile(files, msg) {
-    //add date
-    //title
-    //binary string
-    //author
     var newFile = files[0];
     var reader = new FileReader();
 
@@ -214,7 +304,6 @@ app.controller('papersController', function($scope, $modal) {
       msg.author = username; 
       msg.binaryString = ab2str(arrayBuffer); 
 
-      //TODO: get versioning to work
       if(msg.key)
         window.freedom.emit('add-version', msg);
       else 
