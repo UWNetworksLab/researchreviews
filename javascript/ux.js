@@ -52,6 +52,11 @@ app.controller('papersController', function($scope, $modal) {
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
 
+  $scope.displayVersion = function(offset) {
+    $scope.currVersion = $scope.currVersion + offset; 
+    $scope.showPaperView($scope.viewKey, $scope.currVersion)
+  }; 
+
   var loadPapersPage = function() {
     window.freedom.emit('get-papers', 0); 
     window.freedom.on('display-papers', function(data) {
@@ -61,28 +66,32 @@ app.controller('papersController', function($scope, $modal) {
 
       $scope.$apply(); 
 
-      if(data.viewKey)
+      if(data.viewKey) 
         $scope.showPaperView(data.viewKey); 
     }); 
   };  
 
   loadPapersPage(); 
 
-  $scope.showPaperView = function(key) {
+  $scope.showPaperView = function(key, vnum) {
     var len = $scope.papers[key].versions.length;
 
-    $scope.viewKey = key; 
-    $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
-    $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+    if(vnum) {
+      $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[vnum-1].comments;  
+    }
+    else {
+      $scope.viewKey = key; 
+      $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
 
-    $scope.currVersion = len; 
-    $scope.totalVersion = len; 
+      $scope.currVersion = len; 
+      $scope.totalVersion = len; 
+    }
 
     if(!$scope.$$phase) {
       $scope.$apply(); 
     }
-
-    console.log($scope.viewKey);
   }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
@@ -114,6 +123,8 @@ app.controller('papersController', function($scope, $modal) {
           userList: function () {
             return msg.userList;
           }
+        }
+      }); 
     }
     else if(msg.action === 'add-version') {
      var modalInstance = $modal.open({
