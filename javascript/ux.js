@@ -103,7 +103,11 @@ app.controller('papersController', function($scope, $modal) {
       templateUrl = '/pages/addVersionTemplate.html'; 
 
     var modalInstance = $modal.open({
+<<<<<<< HEAD
       templateUrl: templateUrl,
+=======
+      templateUrl: '/modals/addPaperTemplate.html',
+>>>>>>> 5be1a8c9d42d3b26085bd70e51c7b6fa7df44927
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 
