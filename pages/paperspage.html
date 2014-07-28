@@ -18,12 +18,12 @@
       <!--papers-->
         <div class="col-md-8">
           <div id="paper-view-container" class="landing-container">
-            <h1></h1>
-            <div id = "options-and-nav">
-             <!-- <div class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
+           <h1 align="center"> {{viewTitle}} </h1> 
+            <div>
+              <div class="btn-group" dropdown is-open="status.isopen">
                 <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
                   Options <span class="caret">
-                </button>--> 
+                </button>
                 <ul class="dropdown-menu" role="menu">
                   <li><a onclick="downloadVersion()">Download This Version</a></li>
                   <li><a ng-click="inviteReviewers()">Invite Reviewers</a></li>
@@ -50,55 +50,6 @@
 </table>
 
       <button type="button" class="btn btn-success" ng-click="invite()">invite</button>
-      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
-    </div>
-  </div> 
-</script> 
-
-<script type='text/ng-template' id="addVersionTemplate.html">
-            <div class='modal-container'> 
-              <h3>Add Version</h3>
-              <div><textarea id="add-version-comments" rows="4" cols="90" placeholder="Add comments"></textarea></div>               
-              <h4>Privacy Settings</h4> 
-
-<div class="radio">
-  <label>
-    <input type="radio" name="optionsRadios" id="addPaperPublic" ng-model = "privacyHeading" value = "Invite reviewers." ng-change="setPublic()"/>
-    Public (everyone can see this)
-  </label>
-</div>
-<div class="radio">
-  <label>
-    <input type="radio" name="optionsRadios" id="addPaperPrivate" ng-model="privacyHeading" value="Select users to view this paper." ng-change="setPrivate()"/>
-    Private (only co-authors and invited reviewers can see this)
-  </label>
-</div>
-
-
-
-
-<div><textarea id="invite-reviewers-comments-2" rows="4" cols="90" placeholder="Add comments"></textarea></div> 
-<h4 id = "privacy-heading"> {{privacyHeading}} </h4> 
-<input  type="text" 
-        id = "reviewer-input-2" 
-        ng-model="selected" 
-        typeahead="state for state in states | filter:$viewValue | limitTo:10" 
-        typeahead-on-select="selectMatch(selected); selected='';" 
-        class="form-control">
-<hr>
-
-<table> 
-  <tr ng-repeat="alert in alerts"> 
-    <td class='col-md-10'> {{alert.msg}} </td> 
-    <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" tooltip = "invite to review" ng-click="checkAlert(alert.msg)"> </td> 
-    <td class='col-md-1'> <span tooltip = "remove user" ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
-  </tr> 
-</table>
-
-
-    <div id="file-container">
-      <input type="file" accept="application/pdf" id="addFile"/>
-      <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
       <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
     </div>
   </div> 
@@ -132,8 +83,7 @@
 
                 </ul>
               </div>
-            
-              <h1 align="center"> {{viewTitle}} </h1> 
+          
             
        <div class="btn-group pull-right">
                 <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="currVersion=currVersion-1">Previous</button>

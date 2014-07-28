@@ -87,13 +87,23 @@ app.controller('papersController', function($scope, $modal) {
     $scope.showPaperView(newPaper.key); 
   }); 
 
+  $scope.addVersion = function() {
+    window.freedom.emit('get-users', 'add-version')
+  };
+
   $scope.addPaper = function() {
-    window.freedom.emit('get-users', 0); 
+    window.freedom.emit('get-users', 'add-paper'); 
   };
 
   window.freedom.on('send-users', function(msg) {
+    var templateUrl = ""; 
+    if(msg.action === 'add-paper') 
+      templateUrl = '/pages/addPaperTemplate.html'; 
+    else if(msg.action === 'add-version')
+      templateUrl = '/pages/addVersionTemplate.html'; 
+
     var modalInstance = $modal.open({
-      templateUrl: '/pages/addPaperTemplate.html',
+      templateUrl: templateUrl,
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 
@@ -102,7 +112,7 @@ app.controller('papersController', function($scope, $modal) {
           return msg.userList;
         }
       }
-    });
+    });      
   });      
 
   var addPaperCtrl = function ($scope, $modalInstance, userList) {
