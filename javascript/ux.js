@@ -98,16 +98,12 @@ app.controller('papersController', function($scope, $modal) {
   window.freedom.on('send-users', function(msg) {
     var templateUrl = ""; 
     if(msg.action === 'add-paper') 
-      templateUrl = '/pages/addPaperTemplate.html'; 
+      templateUrl = '/modals/addPaperTemplate.html'; 
     else if(msg.action === 'add-version')
-      templateUrl = '/pages/addVersionTemplate.html'; 
+      templateUrl = '/modals/addVersionTemplate.html'; 
 
     var modalInstance = $modal.open({
-<<<<<<< HEAD
       templateUrl: templateUrl,
-=======
-      templateUrl: '/modals/addPaperTemplate.html',
->>>>>>> 5be1a8c9d42d3b26085bd70e51c7b6fa7df44927
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 
