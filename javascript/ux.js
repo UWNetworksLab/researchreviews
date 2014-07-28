@@ -104,6 +104,7 @@ app.controller('papersController', function($scope, $modal) {
   };
 
   window.freedom.on('send-users', function(msg) {
+<<<<<<< HEAD
     if(msg.action === 'add-paper') {
       var modalInstance = $modal.open({
         templateUrl: '/pages/addPaperTemplate.html',
@@ -114,6 +115,22 @@ app.controller('papersController', function($scope, $modal) {
           userList: function () {
             return msg.userList;
           }
+=======
+    var templateUrl = ""; 
+    if(msg.action === 'add-paper') 
+      templateUrl = '/modals/addPaperTemplate.html'; 
+    else if(msg.action === 'add-version')
+      templateUrl = '/modals/addVersionTemplate.html'; 
+
+    var modalInstance = $modal.open({
+      templateUrl: templateUrl,
+      windowClass:'normal',
+      controller: addPaperCtrl,
+      backdrop: 'static', 
+      resolve: {
+        userList: function () {
+          return msg.userList;
+>>>>>>> 82590e1813bcb88cd49b383972910d1885cf324c
         }
       }); 
     }
