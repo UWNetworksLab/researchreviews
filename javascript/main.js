@@ -378,7 +378,7 @@ freedom.on('add-paper', function(data) {
   }); 
 });
 
-freedom.on('get-paper-view', function(data) {
+freedom.on('get-papers', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -387,31 +387,17 @@ freedom.on('get-paper-view', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      console.log("nothing in papers");
       papers = []; 
     }
-   for(var i = 0; i < papers.length; i++){
-      if(papers[i].key == data.key) {
-        if(data.vnum == -1) { //from clicking paper table
-          var action = 1;
-          if (papers[i].versions.length == 1) action = 0;
-          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: action});
-        }
 
-        //all from clicking prev and next? action is disabling prev and next buttons
-        //TODO: make this cleaner?
-        else if(data.vnum > 0 && data.vnum < papers[i].versions.length-1) { //clicking prev and next, version exists
-          freedom.emit("got-paper-view", {version: papers[i].versions[data.vnum]});
-        }
-        else if(data.vnum == 0) { //if number disable
-          freedom.emit("got-paper-view", {version: papers[i].versions[0], action: -1});
-        }
-        else if(data.vnum >= papers[i].versions.length-1){
-          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: 1});          
-        }
-        break;
-      }
-    }
+    var msg = { 
+      papers: papers 
+    }; 
+
+    if(papers.length > 0)
+      msg.viewKey = papers[papers.length-1].key; 
+
+    freedom.emit('display-papers', msg);
   });  
 });
 

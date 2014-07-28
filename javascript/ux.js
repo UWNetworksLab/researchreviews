@@ -40,22 +40,42 @@ app.controller('reviewsController', function($scope) {
 });
 
 app.controller('papersController', function($scope, $modal) {
+  //for paperTable
   $scope.papers = {}; 
-  $scope.currVersion = 0; 
 
+  //for paperView
+  $scope.currVersion = 0; 
   $scope.viewTitle = "";
   $scope.viewComments = ""; 
 
+  var loadPapersPage = function() {
+    window.freedom.emit('get-papers', 0); 
+    window.freedom.on('display-papers', function(data) {
+      (data.papers).forEach(function(paper) {
+        $scope.papers[paper.key] = paper; 
+      }); 
+
+      $scope.$apply(); 
+
+      console.log(data.viewKey);
+      if(data.viewKey)
+        $scope.showPaperView(data.viewKey); 
+    }); 
+  };  
+
+  loadPapersPage(); 
+
   $scope.showPaperView = function(key) {
-    console.log(key); 
     var len = $scope.papers[key].versions.length; 
     //TODO; get paper to work
     $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of v." + len; 
     $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+    $scope.$apply(); 
   }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
-    $scope.papers[newPaper.key] = newPaper; 
+    $scope.papers[newPaper.key] = newPaper;  
+    $scope.showPaperView(newPaper.key); 
   }); 
 
   $scope.addPaper = function() {
