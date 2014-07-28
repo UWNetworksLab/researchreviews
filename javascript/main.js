@@ -8,8 +8,6 @@ var userList = [];
 var messageList = []; 
 var username; 
 
-//store.set('papers', []);
-
 freedom.on('get-r-papers', function(pending) {
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
@@ -74,11 +72,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       try {
         papers = JSON.parse(val);
       } catch(e) {}
-
-     if(!papers || typeof papers !== "object") {
-        console.log("nothing in papers");
-        papers = []; 
-      }
+     if(!papers || typeof papers !== "object") papers = []; 
       papers.push(parse); 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
@@ -131,18 +125,15 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         }
       }
       var noPaper = {
-        version: [],
+        versions: [],
         action: 'send-r-paper'
       };
       social.sendMessage(parse.from, JSON.stringify(noPaper));
     });
   }
 
-  else if (parse.action === 'send-r-paper'){
-  }
-
   else if (parse.action === 'add-review'){
-    messageList.push(parse); 
+    messageList.push(parse); //TODO: don't push everything onto messagelist
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
@@ -164,8 +155,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
 freedom.on('upload-review', function(data){
   var parse = JSON.parse(data);
-
-//get papers and update them with pending = 0
   var promise = store.get(username + 'r_papers');
   promise.then(function(val) {
     var papers; 
@@ -173,7 +162,7 @@ freedom.on('upload-review', function(data){
       papers = JSON.parse(val);
     } catch(e) {}
 
-if(!papers || typeof papers !== "object") papers = []; 
+  if(!papers || typeof papers !== "object") papers = []; 
     for (var i = 0; i < papers.length; i++){
       if (parse.key === papers[i].key){
         papers[i].pending = 0;
@@ -200,15 +189,16 @@ freedom.on('send-message', function(val) {
 social.on('onUserProfile', function(data) {
   if(data.userId !== 'publicstorage' && data.userId !== username) 
     userList.push(data.userId); 
+  freedom.emit('new-user', data.userId);
 });
  
-freedom.on('get-users', function(data) {
+/*freedom.on('get-users', function(data) {
   var msg = {
     action: data, 
     userList: userList
   };
   freedom.emit('send-users', msg);
-});
+});*/
 
 freedom.on('edit-profile', function(data) {
   var promise = store.get(username + 'profile');
@@ -431,8 +421,6 @@ freedom.on('load-public-storage', function(data){
 });
 
 freedom.on('load-papers', function(data) {
-  console.log('loading papers for ' + username);
-
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 

@@ -1,6 +1,7 @@
 //interactions
 var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
-var username; 
+var username;
+var userList;
 var alertNum = 0;
 
 app.config(function($routeProvider) {
@@ -28,7 +29,7 @@ app.config(function($routeProvider) {
     .when('/profilepage', {
       templateUrl : 'pages/profilepage.html',
       controller  : 'profileController'
-    }); 
+    });
 });
 
 app.controller('alertsController', function($scope) {
@@ -50,6 +51,15 @@ app.controller('papersController', function($scope, $modal) {
   //for moving between versions
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
+
+  function openModal(url, controller){
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/' + url,
+      windowClass:'normal',
+      controller: controller,
+      backdrop: 'static', 
+    });    
+  }
 
   var loadPapersPage = function() {
     window.freedom.emit('get-papers', 0); 
@@ -88,34 +98,15 @@ app.controller('papersController', function($scope, $modal) {
   }); 
 
   $scope.addVersion = function() {
-    window.freedom.emit('get-users', 'add-version')
+    openModal('addVersionTemplate.html', addVersionCtrl);
   };
 
   $scope.addPaper = function() {
-    window.freedom.emit('get-users', 'add-paper'); 
+    openModal('addPaperTemplate.html', addPaperCtrl);
   };
 
-  window.freedom.on('send-users', function(msg) {
-    var templateUrl = ""; 
-    if(msg.action === 'add-paper') 
-      templateUrl = '/modals/addPaperTemplate.html'; 
-    else if(msg.action === 'add-version')
-      templateUrl = '/modals/addVersionTemplate.html'; 
-
-    var modalInstance = $modal.open({
-      templateUrl: templateUrl,
-      windowClass:'normal',
-      controller: addPaperCtrl,
-      backdrop: 'static', 
-      resolve: {
-        userList: function () {
-          return msg.userList;
-        }
-      }
-    });      
-  });      
-
-  var addPaperCtrl = function ($scope, $modalInstance, userList) {
+  var addPaperCtrl = function ($scope, $modalInstance) {
+    console.log("HERE");
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -132,6 +123,8 @@ app.controller('papersController', function($scope, $modal) {
     $scope.setPublic = function(){
       $scope.privatePaper = false;
     };
+
+
 
     $scope.deleteUser = function(id) {
       var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
@@ -233,17 +226,13 @@ app.controller('profileController', function($scope) {
 });
 
 app.controller('mainController', function($scope) {
-  $scope.username_fixed = "testing"; 
   $scope.username = "testing"; 
-
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    if(data.onLogin)
-      $scope.username_fixed = data.id; 
-    $scope.username = data.id; 
-    username = data.id; 
+    if(data.onLogin) $scope.username = data.id; 
+    username = data.id;
+    userList = data.userList;
     $scope.$apply();
-
-    //show profile page
+    //TODO: show profile page
   });
 });
