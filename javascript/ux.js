@@ -70,7 +70,6 @@ app.controller('papersController', function($scope, $modal) {
     //TODO; get paper to work
     $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of v." + len; 
     $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
-    $scope.$apply(); 
   }; 
 
   window.freedom.on('display-new-paper', function(newPaper) {
