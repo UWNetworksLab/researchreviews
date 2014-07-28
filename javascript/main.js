@@ -529,7 +529,8 @@ social.login({
   if (ret.status == social.STATUS["ONLINE"]) {
     var data = {
       id: ret.userId, 
-      onLogin: true
+      onLogin: true,
+      userList: userList
     };
     freedom.emit('recv-uid', data);
     freedom.emit('recv-status', "online");

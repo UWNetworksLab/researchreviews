@@ -1,8 +1,14 @@
 //interactions
 var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
 var username;
-var userList;
+var userList = [];
 var alertNum = 0;
+
+window.freedom.on('new-user', function(newUser){
+  userList.push(newUser); //TODO: check if this works?? 
+  //I think it would be better to just emit changes to userlist instead of 
+  //accessing it each time we want to do something with it (in modals)
+});
 
 app.config(function($routeProvider) {
   $routeProvider
@@ -72,9 +78,7 @@ app.controller('papersController', function($scope, $modal) {
       (data.papers).forEach(function(paper) {
         $scope.papers[paper.key] = paper; 
       }); 
-
       $scope.$apply(); 
-
       if(data.viewKey) 
         $scope.showPaperView(data.viewKey); 
     }); 
@@ -122,6 +126,7 @@ app.controller('papersController', function($scope, $modal) {
   };
 
   var addPaperCtrl = function ($scope, $modalInstance) {
+    console.log("USERLIST: " + userList);
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -138,8 +143,6 @@ app.controller('papersController', function($scope, $modal) {
     $scope.setPublic = function(){
       $scope.privatePaper = false;
     };
-
-
 
     $scope.deleteUser = function(id) {
       var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
