@@ -47,6 +47,7 @@ app.controller('papersController', function($scope, $modal) {
   //for paperView
   $scope.viewTitle = "";
   $scope.viewComments = ""; 
+  $scope.viewKey; 
 
   //for moving between versions
   $scope.currVersion = 1;
@@ -60,6 +61,10 @@ app.controller('papersController', function($scope, $modal) {
       backdrop: 'static', 
     });    
   }
+  $scope.displayVersion = function(offset) {
+    $scope.currVersion = $scope.currVersion + offset; 
+    $scope.showPaperView($scope.viewKey, $scope.currVersion)
+  }; 
 
   var loadPapersPage = function() {
     window.freedom.emit('get-papers', 0); 
@@ -70,22 +75,28 @@ app.controller('papersController', function($scope, $modal) {
 
       $scope.$apply(); 
 
-      console.log(data.viewKey);
-      if(data.viewKey)
+      if(data.viewKey) 
         $scope.showPaperView(data.viewKey); 
     }); 
   };  
 
   loadPapersPage(); 
 
-  $scope.showPaperView = function(key) {
+  $scope.showPaperView = function(key, vnum) {
     var len = $scope.papers[key].versions.length;
 
-    $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
-    $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+    if(vnum) {
+      $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[vnum-1].comments;  
+    }
+    else {
+      $scope.viewKey = key; 
+      $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
 
-    $scope.currVersion = len; 
-    $scope.totalVersion = len; 
+      $scope.currVersion = len; 
+      $scope.totalVersion = len; 
+    }
 
     if(!$scope.$$phase) {
       $scope.$apply(); 
@@ -97,6 +108,11 @@ app.controller('papersController', function($scope, $modal) {
     $scope.showPaperView(newPaper.key); 
   }); 
 
+  window.freedom.on('display-new-version', function(newVersion) {
+    $scope.papers[newVersion.key] = newVersion; 
+    $scope.showPaperView(newVersion.key); 
+  });
+
   $scope.addVersion = function() {
     openModal('addVersionTemplate.html', addVersionCtrl);
   };
@@ -106,7 +122,6 @@ app.controller('papersController', function($scope, $modal) {
   };
 
   var addPaperCtrl = function ($scope, $modalInstance) {
-    console.log("HERE");
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -157,6 +172,11 @@ app.controller('papersController', function($scope, $modal) {
         comments: comments
       };
 
+      if (files.length < 1) {
+        alert("No files found.");
+        return;
+      }
+
       if(!$scope.privatePaper) { //publicly shared
         paper.viewList = false; 
         paper.alertList = alertList; 
@@ -168,9 +188,78 @@ app.controller('papersController', function($scope, $modal) {
         uploadFile(files, paper);
       }
 
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  var addVersionCtrl = function ($scope, $modalInstance, userList, key) {
+    $scope.states = userList; 
+    $scope.privacyHeading = "Invite reviewers.";
+    $scope.privatePaper = false;
+
+    $scope.selected = undefined;
+    $scope.alerts = [];
+
+    $scope.checkList = []; 
+
+    $scope.setPrivate = function(){
+      $scope.privatePaper = true;
+    };
+
+    $scope.setPublic = function(){
+      $scope.privatePaper = false;
+    };
+
+    $scope.deleteUser = function(id) {
+      var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
+      if(idx > -1) 
+        $scope.checkList.splice(idx, 1); 
+
+      $scope.alerts.splice(id, 1);
+    };
+
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push({msg: selection});
+    };
+
+    $scope.checkAlert = function(username) {
+      var idx = $scope.checkList.indexOf(username); 
+
+      if (idx > -1) $scope.checkList.splice(idx, 1);
+      else $scope.checkList.push(username);
+    }; 
+
+    $scope.upload = function () {
+      var files = document.getElementById("addFile").files;
+      var comments = document.getElementById("add-version-comments").value;
+
+      var alertList = [];
+      for(var i = 0; i < $scope.alerts.length; i++) 
+        alertList.push($scope.alerts[i].msg); 
+
+      var paper = {
+        comments: comments, 
+        key: key 
+      };
+
       if (files.length < 1) {
         alert("No files found.");
         return;
+      }
+
+      if(!$scope.privatePaper) { //publicly shared
+        paper.viewList = false; 
+        paper.alertList = alertList; 
+        uploadFile(files, paper);
+      }
+      else { //privately shared
+        paper.viewList = alertList;
+        paper.alertList = $scope.checkList; 
+        uploadFile(files, paper);
       }
 
       $modalInstance.dismiss('cancel');
@@ -187,10 +276,6 @@ app.controller('papersController', function($scope, $modal) {
 
   //msg is paper or version to be uploaded
   function uploadFile(files, msg) {
-    //add date
-    //title
-    //binary string
-    //author
     var newFile = files[0];
     var reader = new FileReader();
 
@@ -207,7 +292,6 @@ app.controller('papersController', function($scope, $modal) {
       msg.author = username; 
       msg.binaryString = ab2str(arrayBuffer); 
 
-      //TODO: get versioning to work
       if(msg.key)
         window.freedom.emit('add-version', msg);
       else 

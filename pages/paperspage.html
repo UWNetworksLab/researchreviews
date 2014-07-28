@@ -33,8 +33,8 @@
           
             
        <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="currVersion=currVersion-1">Previous</button>
-                <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="currVersion=currVersion+1">Next</button>
+                <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)">Previous</button>
+                <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)">Next</button>
               </div>
             
             </div>
