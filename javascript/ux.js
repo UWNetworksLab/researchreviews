@@ -67,7 +67,7 @@ app.controller('papersController', function($scope, $modal) {
   $scope.showPaperView = function(key) {
     var len = $scope.papers[key].versions.length;
 
-    $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of v." + len; 
+    $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
     $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
 
     if(!$scope.$$phase) {
@@ -86,7 +86,7 @@ app.controller('papersController', function($scope, $modal) {
 
   window.freedom.on('send-users', function(msg) {
     var modalInstance = $modal.open({
-      templateUrl: 'addPaperTemplate.html',
+      templateUrl: '/pages/addPaperTemplate.html',
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 
