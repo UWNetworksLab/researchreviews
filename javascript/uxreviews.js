@@ -35,11 +35,11 @@ app.controller('reviewsController', function($scope, $modal) {
 	    reader.onload = function() {
 	      var arrayBuffer = reader.result;
 	      var today = new Date();  
-	      var dd = today.getDate();
+/*	      var dd = today.getDate();
 	      var mm = today.getMonth()+1; 
 	      var yyyy = today.getFullYear();
 	      today = yyyy+'-'+mm+'-'+dd; 
-
+*/
 	      /*var data = {
 	        author: currRPaper.author,
 	        key: currRPaper.key,

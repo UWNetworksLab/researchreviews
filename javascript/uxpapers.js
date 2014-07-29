@@ -127,8 +127,11 @@ app.controller('papersController', function($scope, $modal) {
         key: function() {
           return $scope.viewKey; 
         },
-        privateSetting: function() {
-          return $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].privateSetting; 
+        papers : function() {
+          return $scope.papers;
+        },
+        vnum :function() {
+          return $scope.currVersion-1;
         }
       }
     }); 
@@ -234,11 +237,13 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
- var inviteReviewersCtrl = function ($scope, $modalInstance, key, privateSetting) {
+//TODO: variables like $scope.viewKey??
+
+  var inviteReviewersCtrl = function ($scope, $modalInstance, key, papers, vnum) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
-    $scope.privacyHeading = privateSetting? "Select users to view this paper" : "Invite reviewers";  
+    $scope.privacyHeading = papers[key].versions[vnum].privateSetting ? "Select users to view this paper" : "Invite reviewers";  
 
     $scope.selectMatch = function(selection) {
       $scope.alerts.push({msg: selection});
@@ -251,11 +256,11 @@ app.controller('papersController', function($scope, $modal) {
 
     $scope.invite = function () {
       var msg = {
-        title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
+        title: papers[key].versions[vnum].title,        
         action: 'invite-reviewer',
-        key: currPaper.key,
+        key: key,
         author: username,
-        vnum: currPaper.vnum
+        vnum: vnum
       };
 
       for(var i = 0; i < $scope.alerts.length; i++) {
