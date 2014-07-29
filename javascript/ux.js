@@ -52,6 +52,16 @@ app.controller('papersController', function($scope, $modal) {
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
 
+  $scope.downloadVersion = function() {
+    var file = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
+    var ab = str2ab(file.binaryString);
+    var reader = new FileReader();
+    var blob = new Blob([ab], {type:'application/pdf'});
+
+    reader.readAsArrayBuffer(blob);
+    saveAs(blob, file.title);
+  }; 
+
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
     $scope.showPaperView($scope.viewKey, $scope.currVersion)
@@ -112,6 +122,10 @@ app.controller('papersController', function($scope, $modal) {
     window.freedom.emit('get-users', 'add-paper'); 
   };
 
+  $scope.inviteReviewers = function() {
+    window.freedom.emit('get-users', 'invite-reviewers'); 
+  }; 
+
   window.freedom.on('send-users', function(msg) {
     if(msg.action === 'add-paper') {
       var modalInstance = $modal.open({
@@ -138,6 +152,25 @@ app.controller('papersController', function($scope, $modal) {
           }, 
           key: function() {
             return $scope.viewKey; 
+          } 
+        }
+      });   
+    }
+    else if(msg.action === 'invite-reviewers') {
+     var modalInstance = $modal.open({
+        templateUrl: '/pages/inviteReviewersTemplate.html',
+        windowClass:'normal',
+        controller: inviteReviewersCtrl,
+        backdrop: 'static', 
+        resolve: {
+          userList: function () {
+            return msg.userList;
+          }, 
+          key: function() {
+            return $scope.viewKey; 
+          },
+          privateSetting: function() {
+            return $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].privateSetting; 
           }
         }
       });   
@@ -190,7 +223,8 @@ app.controller('papersController', function($scope, $modal) {
         alertList.push($scope.alerts[i].msg); 
 
       var paper = {
-        comments: comments
+        comments: comments,
+        privateSetting: $scope.privatePaper 
       };
 
       if (files.length < 1) {
@@ -264,7 +298,8 @@ app.controller('papersController', function($scope, $modal) {
 
       var paper = {
         comments: comments, 
-        key: key 
+        key: key, 
+        privateSetting: $scope.privatePaper 
       };
 
       if (files.length < 1) {
@@ -291,8 +326,66 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
+  var inviteReviewersCtrl = function ($scope, $modalInstance, userList, key, privateSetting) {
+    $scope.states = userList; 
+    $scope.selected = undefined;
+    $scope.alerts = [];
+    $scope.privacyHeading = "Invite reviewers"; 
+
+    function init() {
+      if(privateSetting)
+        $scope.privacyHeading = "Select users to view this paper"; 
+      else
+        $scope.privacyHeading = "Invite reviewers"; 
+    }
+
+    init(); 
+
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push({msg: selection});
+      $scope.selected = '';
+    };
+    
+    $scope.closeAlert = function(index) {
+      $scope.alerts.splice(index, 1);
+    };
+
+    $scope.invite = function () {
+      var msg = {
+        title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
+        action: 'invite-reviewer',
+        key: currPaper.key,
+        author: username,
+        vnum: currPaper.vnum
+      };
+
+      for(var i = 0; i < $scope.alerts.length; i++) {
+        freedom.emit('send-message', {
+          to: $scope.alerts[i].msg,
+          msg: JSON.stringify(msg)
+        });
+      }
+
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  //TODO: eventually, we don't need these. (need to download large files)
   function ab2str(buf) {
     return String.fromCharCode.apply(null, new Uint8Array(buf));
+  }
+
+  function str2ab(str) {
+    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i<strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
   }
 
   //msg is paper or version to be uploaded

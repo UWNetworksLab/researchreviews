@@ -394,7 +394,7 @@ freedom.on('add-paper', function(data) {
       action: 'add-paper'
     };
 
-    if(!data.viewList) //public (send paper to public storage)
+    if(!data.privateSetting) //public (send paper to public storage) 
       social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
       }, function(err) {
         freedom.emit("recv-err", err);
