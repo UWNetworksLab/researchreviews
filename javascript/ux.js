@@ -5,9 +5,8 @@ var userList = [];
 var alertNum = 0;
 
 window.freedom.on('new-user', function(newUser){
-  userList.push(newUser); //TODO: check if this works?? 
-  //I think it would be better to just emit changes to userlist instead of 
-  //accessing it each time we want to do something with it (in modals)
+  if(newUser !== 'publicstorage' && newUser !== username)
+  userList.push(newUser); 
 });
 
 app.config(function($routeProvider) {
@@ -58,15 +57,6 @@ app.controller('papersController', function($scope, $modal) {
   //for moving between versions
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
-
-  function openModal(url, controller){
-    var modalInstance = $modal.open({
-      templateUrl: '/modals/' + url,
-      windowClass:'normal',
-      controller: controller,
-      backdrop: 'static', 
-    });    
-  }
   
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
@@ -119,19 +109,46 @@ app.controller('papersController', function($scope, $modal) {
   });
 
   $scope.addVersion = function() {
-    openModal('addVersionTemplate.html', addVersionCtrl);
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/addVersionTemplate.html',
+      windowClass:'normal',
+      controller: addVersionCtrl,
+      backdrop: 'static', 
+      resolve: {
+        key: function() {
+          return $scope.viewKey; 
+        } 
+      }
+    }); 
   };
 
   $scope.addPaper = function() {
-    openModal('addPaperTemplate.html', addPaperCtrl);
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/addPaperTemplate.html',
+      windowClass:'normal',
+      controller: addPaperCtrl,
+      backdrop: 'static', 
+    }); 
   };
 
   $scope.inviteReviewers = function() {
-    openModal('inviteReviewersTemplate.html', inviteReviewersCtrl);
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/inviteReviewersTemplate.html',
+      windowClass:'normal',
+      controller: inviteReviewersCtrl,
+      backdrop: 'static', 
+      resolve: {
+        key: function() {
+          return $scope.viewKey; 
+        },
+        privateSetting: function() {
+          return $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].privateSetting; 
+        }
+      }
+    }); 
   };
 
   var addPaperCtrl = function ($scope, $modalInstance) {
-    console.log("USERLIST: " + userList);
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -177,7 +194,8 @@ app.controller('papersController', function($scope, $modal) {
         alertList.push($scope.alerts[i].msg); 
 
       var paper = {
-        comments: comments
+        comments: comments,
+        privateSetting: $scope.privatePaper 
       };
 
       if (files.length < 1) {
@@ -204,10 +222,21 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
- var inviteReviewersCtrl = function ($scope, $modalInstance) {
+ var inviteReviewersCtrl = function ($scope, $modalInstance, key, privateSetting) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
+    $scope.privacyHeading = "Invite reviewers"; 
+
+    function init() {
+      if(privateSetting)
+        $scope.privacyHeading = "Select users to view this paper"; 
+      else
+        $scope.privacyHeading = "Invite reviewers"; 
+    }
+
+    init(); 
+
     $scope.selectMatch = function(selection) {
       $scope.alerts.push({msg: selection});
       $scope.selected = '';
@@ -284,7 +313,8 @@ app.controller('papersController', function($scope, $modal) {
 
       var paper = {
         comments: comments, 
-        key: key 
+        key: key, 
+        privateSetting: $scope.privatePaper 
       };
 
       if (files.length < 1) {

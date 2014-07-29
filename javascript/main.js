@@ -389,6 +389,7 @@ freedom.on('add-paper', function(data) {
       }, function(err) {
         freedom.emit("recv-err", err);
       });
+
     else { //private (send private paper to viewList) 
       paper.action = 'allow-access';
       for(var i = 0; i < data.viewList.length; i++) {
