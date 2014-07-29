@@ -437,9 +437,6 @@ freedom.on('get-papers', function(data) {
       papers: papers 
     }; 
 
-    if(Object.keys(papers).length > 0)
-      msg.viewKey = papers[papers.length-1].key; 
-
     freedom.emit('display-papers', msg);
   });  
 });

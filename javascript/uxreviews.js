@@ -6,7 +6,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	window.freedom.emit('get-reviews', 1); 
 
 	$scope.getReviewView = function(rkey){
-		console.log("GET REVIEWVIEW" + rkey);
 		$scope.reviewKey = rkey;
 		var msg = {
 			key: $scope.reviews[rkey].pkey,
@@ -16,10 +15,11 @@ app.controller('reviewsController', function($scope, $modal) {
 			action: 'get-r-paper'
 		};
 		window.freedom.emit('get-r-paper', msg);
-	};
+	}; 
 
 	window.freedom.on('recv-message', function(msg){
 		if (msg.action === 'send-r-paper') {
+			$scope.reviewKey = msg.rkey; 
 			$scope.currRPaper = msg.version;
 			$scope.$apply();
 		}

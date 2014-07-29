@@ -19,14 +19,15 @@ app.controller('papersController', function($scope, $modal) {
   var loadPapersPage = function() {
     window.freedom.emit('get-papers', 0); 
     window.freedom.on('display-papers', function(data) {
-      if(Object.keys(data.papers).length > 0) 
-        (data.papers).forEach(function(paper) {
-          $scope.papers[paper.key] = paper; 
-        }); 
+      if(Object.keys(data.papers).length > 0) {
+        for(var key in data.papers) {
+          $scope.papers[key] = data.papers[key]; 
+        }
+      }
       $scope.$apply(); 
-      if(data.viewKey) 
-        $scope.showPaperView(data.viewKey); 
     }); 
+    $scope.viewTitle = "Please choose a paper.";
+    $scope.viewComments = ""; 
   };  
 
   loadPapersPage(); 
