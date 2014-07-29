@@ -5,54 +5,32 @@
       <div class="row">
         <div class="col-md-4">
           <div style="margin-bottom:20px; margin-top:20px">
-            <div class="btn-group" id="review-btns">
-              <button type="button" class="btn btn-default" onclick="getPastReviews()">Past Reviews</button>
-              <button type="button" class="btn btn-default active" onclick="getPendingReviews()">Pending Reviews</button>
+            <div class="btn-group">
+              <button type="button" id="pastBtn" class="btn btn-default" ng-click="getPastReviews()">Past Reviews</button>
+              <button type="button" id="pendingBtn" class="btn btn-default active" ng-click="getPendingReviews()">Pending Reviews</button>
             </div>
           </div>
 
           <table class="table table-hover">
-            <tbody class="r-table"></tbody> 
+            <tr ng-repeat="review in reviews"> 
+              <td ng-click="showReviewView(review.key)"> <!--{{ stuff (paper title, date reviewed/date paper is published) }}--> </td> 
+            </tr> 
           </table>
+
         </div>
       
       <!--papers-->
         <div class="col-md-8">
           <div id = "review-view-container" class="landing-container">
-            <h1>Peer Paper (Version 6/6)</h1>
+            <h1> <!--{{ viewTitle }}--> </h1>
             <div id = "options-and-nav">
-             <!-- <div class="btn-group" dropdown is-open="status.isopen" ng-controller="drop_controller">
-                <button type="button"  id = "r-options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
+              <div class="btn-group" dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!reviewKey">
                   Options <span class="caret">
-                </button>--> 
+                </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li><a href="#" ng-click="addReview()">Upload Review</a></li>
-                  <li><a href="#" onclick="downloadRPaper()">Download this paper</a></li>
-            
-                  <script type='text/ng-template' id="addReviewTemplate.html">
-                    <div class='modal-container'> 
-                      <h3>Upload Review</h3>
-                      <div><textarea rows="4" cols="90" placeholder="Add comments"></textarea></div>
-                      <h4>Privacy Settings</h4> 
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                            Private (only co-authors and invited reviewers can see this)
-                          </label>
-                        </div>
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                            Public (everyone can see this)
-                          </label>
-                        </div>
-                      <div id="file-container">
-                        <input type="file" accept="text/plain" id="addFile"/>
-                        <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
-                        <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
-                      </div>
-                    </div> 
-                  </script> 
+                  <li><a ng-click="addReview()">Upload Review</a></li>
+                  <li><a ng-click="downloadRPaper()">Download this paper</a></li>
                 </ul>
               </div>
 <!--
@@ -62,13 +40,8 @@
               </div>
 -->
             </div>
-            <h4> Comments </h4>
-            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam bibendum vel erat a semper. In facilisis sagittis erat et congue. Pellentesque ac justo neque. Etiam tincidunt vulputate vehicula. Vestibulum suscipit massa a orci placerat varius. Fusce quis tincidunt ligula, in aliquet sapien. Aenean sit amet magna eget metus vehicula lobortis. Mauris in tellus purus. Cras id pellentesque massa. Nunc purus metus, dignissim eu justo id, vulputate congue lectus. Sed et interdum risus. Vestibulum malesuada faucibus fermentum. Sed commodo nisi lacus, ut fringilla libero luctus at. Nulla vel imperdiet ligula, at laoreet lorem. Nulla auctor elit luctus mattis vulputate.
-            </p>
-            <br>
-            <h4> Reviews for this version </h4>
-            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam bibendum vel erat a semper. In facilisis sagittis erat et congue. Pellentesque ac justo neque. Etiam tincidunt vulputate vehicula. Vestibulum suscipit massa a orci placerat varius. Fusce quis tincidunt ligula, in aliquet sapien. Aenean sit amet magna eget metus vehicula lobortis. Mauris in tellus purus. Cras id pellentesque massa. Nunc purus metus, dignissim eu justo id, vulputate congue lectus. Sed et interdum risus. Vestibulum malesuada faucibus fermentum. Sed commodo nisi lacus, ut fringilla libero luctus at. Nulla vel imperdiet ligula, at laoreet lorem. Nulla auctor elit luctus mattis vulputate.
-            </p>
+            <h4> Comments </h4> 
+            <!--{{ viewComments }}--> 
           </div> <!--landing-container-->
         </div> <!--column-->
       </div> <!--row-->

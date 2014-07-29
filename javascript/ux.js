@@ -43,10 +43,6 @@ app.controller('alertsController', function($scope) {
   // create a message to display in our view
 });
 
-app.controller('reviewsController', function($scope) {
-  // create a message to display in our view
-});
-
 app.controller('browseController', function($scope) {
   // create a message to display in our view
 });
