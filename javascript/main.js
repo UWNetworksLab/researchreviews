@@ -8,24 +8,23 @@ var userList = [];
 var messageList = []; 
 var username; 
 
-freedom.on('get-r-papers', function(pending) {
-  var promise = store.get(username + 'r_papers');
+freedom.on('get-reviews', function(pending) {
+  var promise = store.get(username + 'reviews');
   promise.then(function(val) {
-    var papers; 
+    var reviews; 
     try {
-      papers = JSON.parse(val);
+      reviews = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") papers = {}; 
+    if(!reviews || typeof reviews !== "object") reviews = {}; 
     
-    for (var key in papers){
-      if (papers[key].pending !== pending){
-        delete papers[key];
-      }
+    for (var key in reviews){
+      var rpending = (reviews[key].rstring) ? 1 : 0;
+      if (rpending !== pending) delete reviews[key];
     }
 
     freedom.emit('display-reviews', {
-      papers: papers
+      reviews: reviews
     }); 
   }); 
 }); 
@@ -48,21 +47,48 @@ freedom.on('load-alerts', function(data){
   freedom.emit('got-alerts', JSON.stringify(messageList));
 });
 
+/*backend storing review
+rkey,
+rstring,
+
+pkey,
+ptitle,
+author
+vnum */ 
+
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
-    messageList.push(parse); 
-    var promise = store.get(username + 'r_papers');
+
+    var review = {
+      ptitle: parse.title, 
+      pkey: parse.key,
+      author: parse.author,
+      vnum: parse.vnum, 
+      rkey: Math.random() + ""
+    };
+
+    //TODO: r_comments 
+    var alertmsg = {
+      action: 'invite-reviewer',
+      title: parse.title,
+      author: parse.author   
+    }; 
+
+    messageList.push(alertmsg);
+
+    var promise = store.get(username + 'reviews');
     promise.then(function(val) {
-      var papers; 
+      var reviews; 
       try {
-        papers = JSON.parse(val);
+        reviews = JSON.parse(val);
       } catch(e) {}
 
-      if(!papers || typeof papers !== "object") papers = []; 
-      parse.pending = 1;
-      papers.push(parse); 
-      store.set(username + 'r_papers', JSON.stringify(papers)); 
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      reviews[review.rkey] = review; 
+      //console.log("add reviews: " + JSON.stringify(parse));
+      store.set(username + 'reviews', JSON.stringify(reviews)); 
     });
   }
   else if(parse.action === 'allow-access') {

@@ -1,16 +1,19 @@
 app.controller('reviewsController', function($scope, $modal) {
 	$scope.reviewKey; 
+	$scope.reviews = {}; 
+
+	window.freedom.emit('get-reviews', 1); 
 
 	$scope.getPendingReviews = function() {
-		console.log("get pending");
 		$("#pendingBtn").attr('class', "btn btn-default active"); 
   		$("#pastBtn").attr('class', "btn btn-default"); 
+  		window.freedom.emit('get-reviews', 1); 
 	};
 
 	$scope.getPastReviews = function() {
-		console.log("get past");
 		$("#pastBtn").attr('class', "btn btn-default active"); 
   		$("#pendingBtn").attr('class', "btn btn-default"); 
+  		window.freedom.emit('get-reviews', 0); 
 	}; 
 
 	$scope.addReview = function() {
@@ -63,4 +66,35 @@ app.controller('reviewsController', function($scope, $modal) {
 	  };
 	};
 
+	window.freedom.on('display-reviews', function(data) {
+		$scope.reviews = data.reviews; 
+
+
+	 /* for (var x = 0; x < papers.length; x++){
+	    paper_table = papers[x];
+	    //deleting all
+	    console.log("DATA PAPERS LENGTH " + data.papers.length);
+	    for (var i = paper_table.rows.length - 1; i >=0 ; i--){
+	      paper_table.removeChild(paper_table.rows[i]);
+	    }
+	    for (var i = 0; i < data.papers.length; i++){
+	        var p = document.createElement('tr');
+	        p.innerHTML = '<th onclick="freedom.emit(\'get-pending-r-view\','+ 
+	        '{key:' + data.papers[i].key + ', vnum : ' + data.papers[i].vnum + ', username: \'' + 
+	        data.papers[i].author +'\'})">' + data.papers[i].title + ' by ' + data.papers[i].author + "</th>";
+	        paper_table.appendChild(p);
+	    }
+
+	    if (data.papers.length){
+	      window.freedom.emit('get-pending-r-view', {
+	        key : data.papers[0].key,
+	        vnum: data.papers[0].vnum,
+	        username: data.papers[0].author
+	      });
+	    }
+	    else {
+	      updateReviewView();
+	    }    
+	  }*/ 
+	});
 });
