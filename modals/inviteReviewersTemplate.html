@@ -1,0 +1,23 @@
+            <div class='modal-container'> 
+              <h3>Invite Reviewers</h3>             
+
+<h4 id = "privacy-heading"> {{privacyHeading}} </h4> 
+<input  type="text" 
+        id = "reviewer-input-2" 
+        ng-model="selected" 
+        typeahead="state for state in states | filter:$viewValue | limitTo:10" 
+        typeahead-on-select="selectMatch(selected); selected='';" 
+        class="form-control">
+<hr>
+
+<table>
+  <tr ng-repeat="alert in alerts"> 
+    <td class='col-md-10'> {{alert.msg}} </td> 
+    <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class = 'glyphicon glyphicon-remove'></span> </td> 
+  </tr> 
+</table>
+
+      <button type="button" class="btn btn-success" ng-click="invite()">invite</button>
+      <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+    </div>
+  </div> 

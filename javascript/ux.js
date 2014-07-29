@@ -1,7 +1,14 @@
 //interactions
 var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
-var username; 
+var username;
+var userList = [];
 var alertNum = 0;
+
+window.freedom.on('new-user', function(newUser){
+  userList.push(newUser); //TODO: check if this works?? 
+  //I think it would be better to just emit changes to userlist instead of 
+  //accessing it each time we want to do something with it (in modals)
+});
 
 app.config(function($routeProvider) {
   $routeProvider
@@ -28,7 +35,7 @@ app.config(function($routeProvider) {
     .when('/profilepage', {
       templateUrl : 'pages/profilepage.html',
       controller  : 'profileController'
-    }); 
+    });
 });
 
 app.controller('alertsController', function($scope) {
@@ -52,6 +59,7 @@ app.controller('papersController', function($scope, $modal) {
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
 
+<<<<<<< HEAD
   $scope.downloadVersion = function() {
     var file = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
     var ab = str2ab(file.binaryString);
@@ -62,6 +70,16 @@ app.controller('papersController', function($scope, $modal) {
     saveAs(blob, file.title);
   }; 
 
+=======
+  function openModal(url, controller){
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/' + url,
+      windowClass:'normal',
+      controller: controller,
+      backdrop: 'static', 
+    });    
+  }
+>>>>>>> b1d7df9e60af965b152c286fdcb341bf3685ecd6
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
     $scope.showPaperView($scope.viewKey, $scope.currVersion)
@@ -73,9 +91,7 @@ app.controller('papersController', function($scope, $modal) {
       (data.papers).forEach(function(paper) {
         $scope.papers[paper.key] = paper; 
       }); 
-
       $scope.$apply(); 
-
       if(data.viewKey) 
         $scope.showPaperView(data.viewKey); 
     }); 
@@ -115,14 +131,15 @@ app.controller('papersController', function($scope, $modal) {
   });
 
   $scope.addVersion = function() {
-    window.freedom.emit('get-users', 'add-version')
+    openModal('addVersionTemplate.html', addVersionCtrl);
   };
 
   $scope.addPaper = function() {
-    window.freedom.emit('get-users', 'add-paper'); 
+    openModal('addPaperTemplate.html', addPaperCtrl);
   };
 
   $scope.inviteReviewers = function() {
+<<<<<<< HEAD
     window.freedom.emit('get-users', 'invite-reviewers'); 
   }; 
 
@@ -176,8 +193,13 @@ app.controller('papersController', function($scope, $modal) {
       });   
     }
   });      
+=======
+    openModal('inviteReviewersTemplate.html', inviteReviewersCtrl);
+  };
+>>>>>>> b1d7df9e60af965b152c286fdcb341bf3685ecd6
 
-  var addPaperCtrl = function ($scope, $modalInstance, userList) {
+  var addPaperCtrl = function ($scope, $modalInstance) {
+    console.log("USERLIST: " + userList);
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -251,7 +273,40 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
-  var addVersionCtrl = function ($scope, $modalInstance, userList, key) {
+  var inviteReviewersCtrl = function ($scope, $modalInstance) {
+    $scope.states = userList; 
+    $scope.selected = undefined;
+    $scope.alerts = [];   
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push({msg: selection});
+      $scope.selected = '';
+    }; 
+    $scope.closeAlert = function(index) {
+      $scope.alerts.splice(index, 1);
+    };
+    $scope.invite = function () {
+      var msg = {
+        title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
+        action: 'invite-reviewer',
+        key: currPaper.key,
+        author: username,
+        vnum: currPaper.vnum
+      };
+
+      for(var i = 0; i < $scope.alerts.length; i++) {
+        freedom.emit('send-message', {
+          to: $scope.alerts[i].msg,
+          msg: JSON.stringify(msg)
+        });
+      }
+    $modalInstance.dismiss('cancel');
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  var addVersionCtrl = function ($scope, $modalInstance, key) {
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -424,17 +479,13 @@ app.controller('profileController', function($scope) {
 });
 
 app.controller('mainController', function($scope) {
-  $scope.username_fixed = "testing"; 
   $scope.username = "testing"; 
-
   // Display our own userId when we get it
   window.freedom.on('recv-uid', function(data) {
-    if(data.onLogin)
-      $scope.username_fixed = data.id; 
-    $scope.username = data.id; 
-    username = data.id; 
+    if(data.onLogin) $scope.username = data.id; 
+    username = data.id;
+    userList = data.userList;
     $scope.$apply();
-
-    //show profile page
+    //TODO: show profile page
   });
 });
