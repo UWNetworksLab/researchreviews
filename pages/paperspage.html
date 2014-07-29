@@ -17,7 +17,7 @@
           <h1 align="center"> {{viewTitle}} </h1> 
           <div>
             <div class="btn-group" dropdown is-open="status.isopen">
-              <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="disabled">
+              <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!viewKey">
                 Options <span class="caret">
               </button>
               <ul class="dropdown-menu" role="menu">
