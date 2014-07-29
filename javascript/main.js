@@ -16,14 +16,14 @@ freedom.on('get-r-papers', function(pending) {
       papers = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") papers = []; 
-    var i = papers.length;
-    while (i--){
-      if (papers[i].pending !== pending){
-        console.log("PENDING NOT MATCH " + i);
-        papers.splice(i, 1);
+    if(!papers || typeof papers !== "object") papers = {}; 
+    
+    for (var key in papers){
+      if (papers[key].pending !== pending){
+        delete papers[key];
       }
     }
+
     freedom.emit('display-reviews', {
       papers: papers
     }); 
@@ -72,13 +72,13 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       try {
         papers = JSON.parse(val);
       } catch(e) {}
-     if(!papers || typeof papers !== "object") papers = []; 
-      papers.push(parse); 
+     if(!papers || typeof papers !== "object") papers = {}; 
+      papers[parse.key] = parse; 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
   }
   else if(parse.action === 'add-coauthor') {
-    messageList.push(parse); 
+    messageList.push(parse); //TODO: don't push the entire parse?? check if this is the case 
     //make sure coauthor is added to author[] in new paper 
   }
   else if (parse.action === "get-profile"){
@@ -428,14 +428,14 @@ freedom.on('get-papers', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      papers = []; 
+      papers = {}; 
     }
 
     var msg = { 
       papers: papers 
     }; 
 
-    if(papers.length > 0)
+    if(Object.keys(papers).length > 0)
       msg.viewKey = papers[papers.length-1].key; 
 
     freedom.emit('display-papers', msg);
@@ -479,7 +479,7 @@ freedom.on('load-papers', function(data) {
       papers = JSON.parse(val);
     } catch(e) {}
 
-  if(!papers || typeof papers !== "object") papers = []; 
+  if(!papers || typeof papers !== "object") papers = {}; 
       freedom.emit('display-table-and-view', papers); 
     }); 
 });
@@ -492,12 +492,7 @@ freedom.on('delete-paper', function(key){
       papers = JSON.parse(val);
     } catch(e) {}
 
-    for(var i = 0; i < papers.length; i++){
-      if(papers[i].key == key) {
-        papers.splice(i, 1);
-        break;
-      }
-    }
+    delete papers[key];
 
     //to send to publicstorage
     var paper ={
