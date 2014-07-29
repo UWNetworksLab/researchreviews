@@ -241,9 +241,11 @@ app.controller('papersController', function($scope, $modal) {
       $scope.alerts.push({msg: selection});
       $scope.selected = '';
     }; 
+
     $scope.closeAlert = function(index) {
       $scope.alerts.splice(index, 1);
     };
+
     $scope.invite = function () {
       var msg = {
         title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
@@ -341,6 +343,27 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
+  $scope.downloadVersion = function () {
+    var file = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
+    var ab = str2ab(file.binaryString);
+    var reader = new FileReader();
+    var blob = new Blob([ab], {type:'application/pdf'});
+
+    reader.readAsArrayBuffer(blob);
+    saveAs(blob, file.title);
+  }
+
+  //TODO: this should be temporary
+  function str2ab(str) {
+    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i<strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
+  //TODO: this should be temporary
   function ab2str(buf) {
     return String.fromCharCode.apply(null, new Uint8Array(buf));
   }
