@@ -200,6 +200,36 @@ social.on('onUserProfile', function(data) {
   freedom.emit('send-users', msg);
 });*/
 
+freedom.on('edit-privacy', function(msg) {
+  data = JSON.parse(msg); 
+ var promise = store.get(username + 'papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      papers = []; 
+    } 
+
+    papers.forEach(function(paper) {
+      if(paper.key == data.key) {
+        if(data.action === 'toPublic') { //change to public
+          paper.versions[data.vnum].viewList = false; 
+          paper.versions[data.vnum].privateSetting = false; 
+        }
+        else if(data.action === 'toPrivate'){ //change to private
+          paper.versions[data.vnum].viewList = paper.versions[data.vnum].alertList; 
+          paper.versions[data.vnum].privateSetting = true; 
+        }
+      }
+    });
+
+    store.set(username + 'papers', JSON.stringify(papers));  
+  });  
+});
+
 freedom.on('edit-profile', function(data) {
   var promise = store.get(username + 'profile');
   promise.then(function(val) {
@@ -258,38 +288,6 @@ freedom.on('load-profile', function(data) {
       freedom.emit("recv-err", err);
     });
   }
-});
-
-freedom.on('edit-privacy', function(data) {
-  var parse = JSON.parse(data); 
-
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    if(!papers || typeof papers !== "object") {
-      papers = []; 
-    }
-
-    papers.forEach(function(paper) {
-      if(paper.key == parse.key) {
-        if(parse.publicSetting) { //change to public
-          paper.versions[parse.vnum].viewList = false; 
-          console.log("change private to public.... viewList: " + paper.versions[parse.vnum].viewList + " alertList " + paper.versions[parse.vnum].alertList);
-        }
-        else { //change to private
-          console.log("got here: " + paper.versions[0].title + data.vnum);
-          console.log("change public to private.... viewList: " + JSON.stringify(paper.versions[parse.vnum].viewList) + " alertList " + JSON.stringify(paper.versions[parse.vnum].alertList));
-          paper.versions[parse.vnum].viewList = paper.versions[parse.vnum].alertList; 
-        }
-      }
-    });
-
-    store.set(username + 'papers', JSON.stringify(papers));  
-  }); 
 });
 
 freedom.on('add-version', function(data) {

@@ -6,7 +6,7 @@ var alertNum = 0;
 
 window.freedom.on('new-user', function(newUser){
   if(newUser !== 'publicstorage' && newUser !== username)
-  userList.push(newUser); 
+    userList.push(newUser); 
 });
 
 app.config(function($routeProvider) {
@@ -131,6 +131,26 @@ app.controller('papersController', function($scope, $modal) {
     }); 
   };
 
+  $scope.editPrivacy = function() {
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/editPrivacyTemplate.html',
+      windowClass:'normal',
+      controller: editPrivacyCtrl,
+      backdrop: 'static', 
+      resolve: {
+        key: function() {
+          return $scope.viewKey; 
+        },
+        privateSetting: function() {
+          return $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].privateSetting; 
+        },
+        vnum: function() {
+          return $scope.currVersion-1;  
+        }
+      }
+    });   
+  }
+
   $scope.inviteReviewers = function() {
     var modalInstance = $modal.open({
       templateUrl: '/modals/inviteReviewersTemplate.html',
@@ -146,6 +166,32 @@ app.controller('papersController', function($scope, $modal) {
         }
       }
     }); 
+  };
+
+  var editPrivacyCtrl = function ($scope, $modalInstance, key, vnum, privateSetting) {
+    $scope.currSetting = privateSetting? "private" : "public"; 
+
+    $scope.save = function () { 
+      var msg = {
+        key: key, 
+        vnum: vnum
+      }; 
+
+      if($("#addPaperPublic2").is(':checked') && privateSetting) { //private to public
+        msg.action = "toPublic"; 
+        window.freedom.emit('edit-privacy', JSON.stringify(msg));
+      }
+      else if($('#addPaperPrivate2').is(':checked') && !privateSetting) { //public to private
+        msg.action = "toPrivate"; 
+        window.freedom.emit('edit-privacy', JSON.stringify(msg));
+      }
+
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
   };
 
   var addPaperCtrl = function ($scope, $modalInstance) {
@@ -226,16 +272,7 @@ app.controller('papersController', function($scope, $modal) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
-    $scope.privacyHeading = "Invite reviewers"; 
-
-    function init() {
-      if(privateSetting)
-        $scope.privacyHeading = "Select users to view this paper"; 
-      else
-        $scope.privacyHeading = "Invite reviewers"; 
-    }
-
-    init(); 
+    $scope.privacyHeading = privateSetting? "Select users to view this paper" : "Invite reviewers";  
 
     $scope.selectMatch = function(selection) {
       $scope.alerts.push({msg: selection});
