@@ -125,6 +125,10 @@ app.controller('papersController', function($scope, $modal) {
     openModal('addPaperTemplate.html', addPaperCtrl);
   };
 
+  $scope.inviteReviewers = function() {
+    openModal('inviteReviewersTemplate.html', inviteReviewersCtrl);
+  };
+
   var addPaperCtrl = function ($scope, $modalInstance) {
     console.log("USERLIST: " + userList);
     $scope.states = userList; 
@@ -199,7 +203,40 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
-  var addVersionCtrl = function ($scope, $modalInstance, userList, key) {
+  var inviteReviewersCtrl = function ($scope, $modalInstance) {
+    $scope.states = userList; 
+    $scope.selected = undefined;
+    $scope.alerts = [];   
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push({msg: selection});
+      $scope.selected = '';
+    }; 
+    $scope.closeAlert = function(index) {
+      $scope.alerts.splice(index, 1);
+    };
+    $scope.invite = function () {
+      var msg = {
+        title: document.getElementById("paper-view-container").getElementsByTagName("h1")[0].innerHTML,
+        action: 'invite-reviewer',
+        key: currPaper.key,
+        author: username,
+        vnum: currPaper.vnum
+      };
+
+      for(var i = 0; i < $scope.alerts.length; i++) {
+        freedom.emit('send-message', {
+          to: $scope.alerts[i].msg,
+          msg: JSON.stringify(msg)
+        });
+      }
+    $modalInstance.dismiss('cancel');
+    };
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+  var addVersionCtrl = function ($scope, $modalInstance, key) {
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
