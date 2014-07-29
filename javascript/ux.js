@@ -67,6 +67,7 @@ app.controller('papersController', function($scope, $modal) {
       backdrop: 'static', 
     });    
   }
+  
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
     $scope.showPaperView($scope.viewKey, $scope.currVersion)
@@ -203,7 +204,7 @@ app.controller('papersController', function($scope, $modal) {
     };
   };
 
-  var inviteReviewersCtrl = function ($scope, $modalInstance) {
+ var inviteReviewersCtrl = function ($scope, $modalInstance) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
