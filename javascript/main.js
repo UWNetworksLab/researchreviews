@@ -5,7 +5,6 @@ var social = freedom.socialprovider();
 var myClientState = null;
 
 var userList = []; 
-var messageList = []; 
 var username; 
 
 freedom.on('get-reviews', function(pending) {
@@ -36,10 +35,6 @@ freedom.on('get-r-paper', function(data){
   });
 });
 
-freedom.on('load-alerts', function(data){
-  freedom.emit('got-alerts', JSON.stringify(messageList));
-});
-
 /*backend storing review
 rkey,
 rstring,
@@ -66,9 +61,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       action: 'invite-reviewer',
       title: parse.title,
       author: parse.author   
-    }; 
-
-    messageList.push(alertmsg);
+    };
+    freedom.emit('alert', alertmsg);
 
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
@@ -94,10 +88,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       papers[parse.key] = parse; 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
-  }
-  else if(parse.action === 'add-coauthor') {
-    messageList.push(parse); //TODO: don't push the entire parse?? check if this is the case 
-    //make sure coauthor is added to author[] in new paper 
   }
   else if (parse.action === "get-profile"){
     var promise = store.get(username + 'profile');
@@ -140,7 +130,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-review'){
-    messageList.push(parse); //TODO: don't push everything onto messagelist
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {

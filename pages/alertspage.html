@@ -1,7 +1,9 @@
   <div>
     <div class="view-container">
         <table id="alerts-table" class="table table-hover">
-          <tbody></tbody>
+            <tr ng-repeat="alert in alerts"> 
+              <td> {{ alert }} </td> 
+            </tr>
         </table> 
     </div> 
   </div>  

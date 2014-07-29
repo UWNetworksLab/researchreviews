@@ -5,6 +5,8 @@ var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
 var username;
 var userList = [];
 var alertNum = 0;
+var messageList;
+
 //we have to make it an array, not associative array: it won't be in order unless we give an index.
 window.freedom.on('new-user', function(newUser){
   if(newUser !== 'publicstorage' && newUser !== username)
@@ -39,10 +41,6 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('alertsController', function($scope) {
-  // create a message to display in our view
-});
-
 app.controller('browseController', function($scope) {
   // create a message to display in our view
 });
@@ -52,11 +50,22 @@ app.controller('profileController', function($scope) {
 });
 
 app.controller('mainController', function($scope) {
+  $scope.numAlerts = "";
   $scope.username = "testing"; 
   // Display our own userId when we get it
+
+  window.freedom.on('alert', function(msg){
+    console.log("ALERT IN UX");
+    if (!messageList) messageList=[];
+    messageList.push(msg);
+    $scope.numAlerts = messageList.length;
+
+    $scope.$apply();
+  });
+
   window.freedom.on('recv-uid', function(data) {
-    if(data.onLogin) $scope.username = data.id; 
     username = data.id;
+    if(data.onLogin) $scope.username = username; 
     userList = data.userList;
     $scope.$apply();
     //TODO: show profile page
