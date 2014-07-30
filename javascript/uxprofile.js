@@ -1,10 +1,12 @@
 app.controller('profileController', function($scope, $modal, $location) {
   	$scope.description = "No description added yet."; 
   	$scope.papers; 
+  	$scope.reviews; 
   	$scope.showNav = true; 
 
   	window.freedom.emit('load-profile', 0);
   	window.freedom.emit('get-papers', 0);
+  	window.freedom.emit('get-reviews', 1);
 
 	window.freedom.on('display-profile', function(data) {
 	  if(data.string === "" && data.description === "") {
@@ -24,6 +26,13 @@ app.controller('profileController', function($scope, $modal, $location) {
 		$scope.papers = data.papers; 
 		$scope.$apply(); 
 	}); 
+
+	window.freedom.on('display-reviews', function(data) {
+		for(var key in data.reviews) 
+			data.reviews[key].date = new Date(data.reviews[key].date); 		
+		$scope.reviews = data.reviews;
+		$scope.$apply(); 
+	});
 
 	 $scope.changeView = function(view){
 	    $location.path(view);  
