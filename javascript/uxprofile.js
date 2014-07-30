@@ -33,12 +33,19 @@ app.controller('profileController', function($scope, $modal, $location) {
 	      templateUrl: '/modals/editProfileTemplate.html',
 	      windowClass:'normal',
 	      controller: editProfileCtrl,
-	      backdrop: 'static' 
+	      backdrop: 'static', 
+	      resolve: {
+       		 description: function() {
+          		return $scope.description; 
+        	} 
+          } 
 	    }); 
 	  };
 
-	 var editProfileCtrl = function ($scope, $modalInstance) {
+	 var editProfileCtrl = function ($scope, $modalInstance, description) {
 	  //TODO: get email 
+	  $scope.description = description; 
+
 	  $scope.upload = function () {
 	    var files = document.getElementById("addFile").files;
 
