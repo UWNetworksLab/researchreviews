@@ -8,6 +8,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
+		console.log("REVIEW KEY  " + $scope.reviewKey);
 		var msg = {
 			key: $scope.reviews[rkey].pkey,
 			vnum: $scope.reviews[rkey].vnum,
@@ -20,7 +21,6 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.on('recv-message', function(msg){
 		if (msg.action === 'send-r-paper') {
-			$scope.reviewKey = msg.rkey; 
 			$scope.currRPaper = msg.version;
 			$scope.$apply();
 		}
@@ -102,9 +102,10 @@ app.controller('reviewsController', function($scope, $modal) {
 		    var arrayBuffer = reader.result;
 		    var today = new Date();  
 		    var data = {
+		    	ptitle: $scope.currRPaper.title,
 		        author: $scope.currRPaper.author,
 		        pkey: $scope.currRPaper.key,
-		        rkey: Math.random() + "",
+		        rkey: $scope.reviewKey,
 		        vnum: $scope.currRPaper.vnum,
 		        string: ab2str(arrayBuffer),
 		        reviewer: username,

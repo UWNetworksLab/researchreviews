@@ -75,6 +75,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!reviews || typeof reviews !== "object") reviews = {}; 
 
       reviews[review.rkey] = review; 
+      console.log("RKEY OF INVITED REVIEWER " + review.rkey);
       store.set(username + 'reviews', JSON.stringify(reviews)); 
     });
   }
@@ -158,6 +159,7 @@ freedom.on('upload-review', function(parse){
     } catch(e) {}
 
     if(!reviews || typeof reviews !== "object") reviews = {}; 
+    console.log("RKEY OF UPLOADED REVIEW " + parse.rkey);
     reviews[parse.rkey] = parse;
     store.set(username + 'reviews', JSON.stringify(reviews));
   }); 
