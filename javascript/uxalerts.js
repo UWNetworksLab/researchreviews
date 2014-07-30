@@ -1,14 +1,22 @@
-app.controller('alertsController', function($scope) {
-	$scope.alerts = [];
+app.controller('alertsController', function($scope, $controller) {
+	console.log("NUM ALERTS " + $scope.numAlerts);
+	
+	$scope.alerts;
 	$scope.init = function(){
-		messageList.forEach(function(msg){
-			if (msg.action === 'invite-reviewer') 
-				$scope.alerts.push('You have been invited to review the paper ' + msg.title + ' by ' + msg.author);
-		});
-	};
+		$scope.alerts = oldMessageList;
 
+		messageList.forEach(function(msg){
+			if (msg.action === 'invite-reviewer') {
+				if (!$scope.alerts) $scope.alerts = [];
+				var alertMsg = 'You have been invited to review the paper ' + msg.title + ' by ' + msg.author;
+				oldMessageList.push(alertMsg);
+			}
+		});
+		messageList = [];
+	};
 	$scope.init(); 
-	console.log("MESSAGE LIST IN UX ALERTS" + JSON.stringify(messageList));
+	console.log("MESSAGE LIST IN UX ALERTS" + JSON.stringify($scope.alerts));
+
 
 /*  window.freedom.on('got-alerts', function(alerts){
   var badges = document.getElementsByClassName("badge"); 

@@ -5,7 +5,8 @@ var app = angular.module('researcherApp', ['ngRoute', 'ui.bootstrap']);
 var username;
 var userList = [];
 var alertNum = 0;
-var messageList;
+var messageList = [];
+var oldMessageList = [];
 
 //we have to make it an array, not associative array: it won't be in order unless we give an index.
 window.freedom.on('new-user', function(newUser){
@@ -54,12 +55,18 @@ app.controller('mainController', function($scope) {
   $scope.username = "testing"; 
   // Display our own userId when we get it
 
+  $scope.$watch(function(){
+    return messageList;
+  }, function(newList, oldList){
+
+    $scope.numAlerts = (newList.length === 0) ? "" : newList.length;
+  });
+
   window.freedom.on('alert', function(msg){
     console.log("ALERT IN UX");
     if (!messageList) messageList=[];
     messageList.push(msg);
     $scope.numAlerts = messageList.length;
-
     $scope.$apply();
   });
 
