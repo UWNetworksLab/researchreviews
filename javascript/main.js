@@ -144,6 +144,15 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       
       papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
       store.set(username + 'papers', JSON.stringify(papers)); 
+
+    //review alert
+      var alertmsg = {
+        action: 'add-review-on-author',
+        title: papers[parse.pkey].versions[parse.vnum].title,
+        date: parse.date,
+        reviewer: parse.reviewer   
+      };
+      freedom.emit('alert', alertmsg);
     });
   }
   freedom.emit('recv-message', parse);    
