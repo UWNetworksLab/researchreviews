@@ -22,6 +22,7 @@ freedom.on('get-reviews', function(pending) {
         delete reviews[key];
       } 
     }
+    console.log(JSON.stringify(reviews));
     freedom.emit('display-reviews', {
       reviews: reviews
     }); 

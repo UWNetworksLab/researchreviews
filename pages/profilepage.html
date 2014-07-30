@@ -37,10 +37,13 @@
             <a  ng-click="changeView('reviewspage')"  class="btn btn-link">Detailed View</a>
           </span>
         </h2>
-        <table class="table table-hover">
-          <tbody class= "r-table">
-          </tbody>
-        </table>
+          <table class="table table-hover">
+            <tr ng-repeat="review in reviews"> 
+              <td> My review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}} </td> 
+            </tr> 
+          </table>
       </div>
     </div>
   </div>
+
+
