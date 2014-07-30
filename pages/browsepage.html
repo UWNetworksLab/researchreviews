@@ -18,15 +18,19 @@
 
     <tabset>
       <tab heading="Public Papers" onclick="window.freedom.emit('load-public-storage', 0)">
-        <table id="browse-public-paper" class="table table-hover">
-          <tbody></tbody>
-        </table> 
+        <table class="table table-hover">
+          <tr ng-repeat="paper in papers"> 
+            <td> {{paper.title}} by {{paper.author}} </td> 
+          </tr> 
+        </table>
       </tab>
 
       <tab heading="Shared Private Papers" onclick="window.freedom.emit('load-private-papers', 0)">
-        <table id="browse-private-paper" class="table table-hover">
-          <tbody></tbody>
-        </table>     
+        <table class="table table-hover">
+          <tr ng-repeat="paper in papers"> 
+            <td> {{paper.title}} by {{paper.author}} </td> 
+          </tr> 
+        </table>   
       </tab>
     </tabset>
   </div> <!--browse-container-->

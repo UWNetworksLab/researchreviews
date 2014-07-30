@@ -10,7 +10,7 @@ app.controller('papersController', function($scope, $modal) {
   //for moving between versions
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
-  
+
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
     $scope.showPaperView($scope.viewKey, $scope.currVersion)
