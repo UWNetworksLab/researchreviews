@@ -4,7 +4,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	$scope.reviews = {}; 
 	$scope.currRPaper = {};
 
-	window.freedom.emit('get-reviews', 1); 
+	window.freedom.emit('get-reviews', 0); 
 
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
@@ -29,13 +29,13 @@ app.controller('reviewsController', function($scope, $modal) {
 	$scope.getPendingReviews = function() {
 		$("#pendingBtn").attr('class', "btn btn-default active"); 
   		$("#pastBtn").attr('class', "btn btn-default"); 
-  		window.freedom.emit('get-reviews', 1); 
+  		window.freedom.emit('get-reviews', 0); 
 	};
 
 	$scope.getPastReviews = function() {
 		$("#pastBtn").attr('class', "btn btn-default active"); 
   		$("#pendingBtn").attr('class', "btn btn-default"); 
-  		window.freedom.emit('get-reviews', 0); 
+  		window.freedom.emit('get-reviews', 1); 
 	}; 
 
 	$scope.addReview = function() {

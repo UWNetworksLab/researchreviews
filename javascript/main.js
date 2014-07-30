@@ -7,7 +7,7 @@ var myClientState = null;
 var userList = []; 
 var username; 
 
-freedom.on('get-reviews', function(pending) {
+freedom.on('get-reviews', function(past) {
 
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
@@ -17,8 +17,8 @@ freedom.on('get-reviews', function(pending) {
     } catch(e) {}
     if(!reviews || typeof reviews !== "object") reviews = {};     
     for (var key in reviews){
-      var rpending = (reviews[key].rstring) ? 0 : 1;
-      if (rpending !== pending){
+      var rpast = (reviews[key].string) ? 1 : 0;
+      if (rpast !== past){
         delete reviews[key];
       } 
     }
@@ -171,6 +171,7 @@ freedom.on('upload-review', function(parse){
     if(!reviews || typeof reviews !== "object") reviews = {}; 
     console.log("RKEY OF UPLOADED REVIEW " + parse.rkey);
     reviews[parse.rkey] = parse;
+    reviews[parse.rkey].past = 1; 
     store.set(username + 'reviews', JSON.stringify(reviews));
   }); 
 
