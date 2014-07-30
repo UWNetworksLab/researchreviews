@@ -1,4 +1,6 @@
 app.controller('papersController', function($scope, $modal) {
+  $scope.showNav = true; 
+
   //for paperTable
   $scope.papers = {}; 
 

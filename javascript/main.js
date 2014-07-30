@@ -86,6 +86,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
      if(!papers || typeof papers !== "object") papers = {}; 
+     console.log(parse);
       papers[parse.key] = parse; 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
@@ -460,19 +461,6 @@ freedom.on('load-public-storage', function(data){
   });
 });
 
-freedom.on('load-papers', function(data) {
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-  if(!papers || typeof papers !== "object") papers = {}; 
-      freedom.emit('display-table-and-view', papers); 
-    }); 
-});
-
 freedom.on('delete-paper', function(key){
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
@@ -517,6 +505,7 @@ social.login({
     };
     freedom.emit('recv-uid', data);
     freedom.emit('recv-status', "online");
+    freedom.emit('loginsuccess', 0);
        
   } else {
     freedom.emit('recv-status', "offline");

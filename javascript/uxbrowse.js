@@ -1,4 +1,5 @@
 app.controller('browseController', function($scope) {
+  $scope.showNav = true; 
 	$scope.papers; 
 
 	window.freedom.emit('load-public-storage', 0); 

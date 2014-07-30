@@ -1,4 +1,5 @@
 app.controller('alertsController', function($scope, $controller) {
+  $scope.showNav = true; 
 	console.log("NUM ALERTS " + $scope.numAlerts);
 	
 	$scope.alerts;

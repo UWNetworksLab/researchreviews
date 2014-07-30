@@ -42,14 +42,16 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('profileController', function($scope) {
-  // create a message to display in our view
-});
-
-app.controller('mainController', function($scope) {
+app.controller('mainController', function($scope, $location) {
   $scope.numAlerts = "";
   $scope.username = "testing"; 
-  // Display our own userId when we get it
+  $scope.showNav = false; 
+
+  window.freedom.on('loginsuccess', function(data) {
+    $scope.showNav= true; 
+    $location.path('profilepage'); 
+    $scope.$apply(); 
+  }); 
 
   $scope.$watch(function(){
     return messageList;
