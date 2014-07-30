@@ -42,10 +42,6 @@ app.config(function($routeProvider) {
     });
 });
 
-app.controller('profileController', function($scope) {
-  // create a message to display in our view
-});
-
 app.controller('mainController', function($scope) {
   $scope.numAlerts = "";
   $scope.username = "testing"; 

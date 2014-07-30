@@ -1,0 +1,13 @@
+            <div class='modal-container'> 
+              <h3>Edit Profile</h3>
+              <h4>Edit email: </h4> 
+              <div><textarea rows="1" class="form-control" placeholder="Example: jdoe@blizi.com"></textarea><div> 
+              <h4>Edit description: </h4> 
+              <div><textarea rows="4" class="form-control" id="profile_description_modal" placeholder="Your description here"></textarea></div> 
+              <h4>Upload profile pic: </h4> 
+              <div id="file-container">
+                <input type="file" accept="image/*" id="addFile"/>
+                <button type="button" class="btn btn-success" ng-click="upload()">upload</button>
+                <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+              </div>
+            </div> 
