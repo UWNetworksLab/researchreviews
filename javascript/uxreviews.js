@@ -40,11 +40,16 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	$scope.addReview = function() {
 		var modalInstance = $modal.open({
-	  	templateUrl: '/modals/addReviewTemplate.html',
-	  	windowClass:'normal',
-	  	controller: addReviewCtrl,
-	  	backdrop: 'static'
-	});
+		  	templateUrl: '/modals/addReviewTemplate.html',
+		  	windowClass:'normal',
+		  	controller: addReviewCtrl,
+		  	backdrop: 'static',
+		  	resolve: {
+		    	currRPaper: function() {
+			      	return $scope.currRPaper; 
+	    		}
+		 	}
+		});
 	};  
 
   //TODO: this should be temporary
@@ -62,10 +67,10 @@ app.controller('reviewsController', function($scope, $modal) {
     return String.fromCharCode.apply(null, new Uint8Array(buf));
   }
 
-	var addReviewCtrl = function ($scope, $modalInstance) {
+	var addReviewCtrl = function ($scope, $modalInstance, currRPaper) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
-	    $scope.alerts = [];
+	    $scope.alerts;
 	    $scope.privacySetting=true;
 
 	    $scope.selectMatch = function(selection) {
@@ -76,16 +81,42 @@ app.controller('reviewsController', function($scope, $modal) {
 	      $scope.alerts.splice(id, 1);
 	    };
 
-	  $scope.upload = function () {
+	  	$scope.upload = function () {
 	    var files = document.getElementById("addFile").files;
 	    
 	    if (files.length < 1) {
 	      alert("No files found.");
 	      return;
 	    }
+//TODO: don't let author appear in typeahead
 
-	    uploadReview(files[0]);
 
+	    var reader = new FileReader();
+	    reader.onload = function() {
+		    var arrayBuffer = reader.result;
+		    var today = new Date();  
+		    var data = {
+		    	ptitle: currRPaper.title,
+		        author: currRPaper.author,
+		        pkey: currRPaper.key,
+		        rkey: reviewKey,
+		        vnum: currRPaper.vnum,
+		        string: ab2str(arrayBuffer),
+		        reviewer: username,
+		        action: 'add-review',
+		        date: today
+		    };
+
+		if ($scope.privacySetting) {
+			$scope.alerts.push(username);
+			$scope.alerts.push(currRPaper.author);
+			data.accessList = $scope.alerts; 
+		}
+
+		console.log("REVIEW IN UPLOAD REVIEW "+ JSON.stringify(data));
+	    window.freedom.emit('upload-review', data);
+	    }
+	    reader.readAsArrayBuffer(file);
 	    $modalInstance.dismiss('cancel');
 	  };
 
@@ -94,30 +125,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	  };
 	};
 
-	function uploadReview(file){
-		console.log("UPLOAD REVIEW");
-
-	    var reader = new FileReader();
-	    reader.onload = function() {
-		    var arrayBuffer = reader.result;
-		    var today = new Date();  
-		    var data = {
-		    	ptitle: $scope.currRPaper.title,
-		        author: $scope.currRPaper.author,
-		        pkey: $scope.currRPaper.key,
-		        rkey: $scope.reviewKey,
-		        vnum: $scope.currRPaper.vnum,
-		        string: ab2str(arrayBuffer),
-		        reviewer: username,
-		        action: 'add-review',
-		        date: today 
-		    };
-
-		    console.log("REVIEW IN UPLOAD REVIEW "+ JSON.stringify(data));
-	      window.freedom.emit('upload-review', data);
-	    }
-	    reader.readAsArrayBuffer(file);
-	}
 
 	window.freedom.on('display-reviews', function(data) {
 		$scope.reviews = data.reviews;
