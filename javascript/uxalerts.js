@@ -7,11 +7,16 @@ app.controller('alertsController', function($scope, $controller) {
 		$scope.alerts = oldMessageList;
 
 		messageList.forEach(function(msg){
-			if (msg.action === 'invite-reviewer') {
-				if (!$scope.alerts) $scope.alerts = [];
-				var alertMsg = 'You have been invited to review the paper ' + msg.title + ' by ' + msg.author;
-				oldMessageList.push(alertMsg);
-			}
+      if (msg.action === 'invite-reviewer') {
+        if (!$scope.alerts) $scope.alerts = [];
+        var alertMsg = 'You have been invited to review the paper ' + msg.title + ' by ' + msg.author;
+        oldMessageList.push(alertMsg);
+      }
+      else if (msg.action === 'add-review-on-author') {
+        if (!$scope.alerts) $scope.alerts = [];
+        var alertMsg = msg.reviewer + ' reviewed your paper, ' + msg.title + ' on ' + msg.date;
+        oldMessageList.push(alertMsg);
+      }
 		});
 		messageList = [];
 	};
