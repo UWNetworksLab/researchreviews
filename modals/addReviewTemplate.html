@@ -6,16 +6,31 @@
   <h4>Privacy Settings</h4> 
   <div class="radio">
     <label>
-      <input type="radio" name="optionsRadios" id="addReviewPrivate" value="option1" checked>
+      <input type="radio" id="addReviewPrivate" ng-model = "privacySetting" value = "true" checked>
       Private (only co-authors and invited reviewers can see this)
     </label>
   </div>
   <div class="radio">
     <label>
-      <input type="radio" name="optionsRadios" id="addReviewPublic" value="option2">
+      <input type="radio" id="addReviewPublic" ng-model="privacySetting" value = "false">
       Public (everyone can see this)
     </label>
   </div>
+  <div ng-show="privacySetting" id = "reviewPrivacy">
+    <input  type="text" 
+            ng-model="selected" 
+            typeahead="state for state in states | filter:$viewValue | limitTo:10" 
+            typeahead-on-select="selectMatch(selected); selected='';" 
+            class="form-control">
+    <hr>
+  <table>
+    <tr ng-repeat="alert in alerts"> 
+      <td class='col-md-10'> {{alert.msg}} </td> 
+      <td class='col-md-2'> <span ng-click="deleteUser($index)" tooltip="remove user" class='glyphicon glyphicon-remove'></span> </td> 
+    </tr> 
+  </table>
+  </div>
+
   <div id="file-container">
     <input type="file" accept="text/plain" id="addFile"/>
     <button type="button" class="btn btn-success" ng-click="upload()">upload</button>

@@ -29,6 +29,7 @@ freedom.on('get-reviews', function(pending) {
 }); 
 
 freedom.on('get-r-paper', function(data){
+  console.log("SENDING R PAPER");
   social.sendMessage(data.to, JSON.stringify(data)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -129,46 +130,48 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
 
-  else if (parse.action === 'add-review'){
+  else if (parse.action === 'add-review-on-author'){
+    console.log("ADD REVIEW" + JSON.stringify(parse));
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
-      for(var i = 0; i < papers.length; i++){
-        if (papers[i].key.toString() === parse.key.toString()){
-          if(!papers[i].versions[parse.vnum].reviews)
-            papers[i].versions[parse.vnum].reviews = []; 
-          
-          papers[i].versions[parse.vnum].reviews.push(parse);
-          break;
-        }
-      }
+
+      if (!papers[parse.pkey].versions[parse.vnum].reviews)
+        papers[parse.pkey].versions[parse.vnum].reviews = [];
+      
+      papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
       store.set(username + 'papers', JSON.stringify(papers)); 
     });
   }
   freedom.emit('recv-message', parse);    
 });
 
-freedom.on('upload-review', function(data){
-  var parse = JSON.parse(data);
-  var promise = store.get(username + 'r_papers');
+freedom.on('upload-review', function(parse){
+  console.log("UPLOADED REVIEW" + parse.pkey);
+  var promise = store.get(username + 'reviews');
   promise.then(function(val) {
-    var papers; 
+    var reviews; 
     try {
-      papers = JSON.parse(val);
+      reviews = JSON.parse(val);
     } catch(e) {}
 
-  if(!papers || typeof papers !== "object") papers = []; 
-    for (var i = 0; i < papers.length; i++){
-      if (parse.key === papers[i].key){
-        papers[i].pending = 0;
-        break;
-      }
-    }
-    store.set(username + 'r_papers', JSON.stringify(papers));
+    if(!reviews || typeof reviews !== "object") reviews = {}; 
+    reviews[parse.rkey] = parse;
+    store.set(username + 'reviews', JSON.stringify(reviews));
   }); 
 
-  social.sendMessage(parse.author, data).then(function(ret) {
+//only info the author gets
+  var reviewForAuth = {
+    reviewer : parse.reviewer,
+    rkey: parse.rkey,
+    pkey: parse.pkey,
+    vnum: parse.vnum,
+    date: parse.date,
+    action: 'add-review-on-author'
+  };
+
+  social.sendMessage(parse.author, JSON.stringify(reviewForAuth)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });

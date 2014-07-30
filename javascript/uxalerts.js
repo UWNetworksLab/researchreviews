@@ -15,8 +15,6 @@ app.controller('alertsController', function($scope, $controller) {
 		messageList = [];
 	};
 	$scope.init(); 
-	console.log("MESSAGE LIST IN UX ALERTS" + JSON.stringify($scope.alerts));
-
 
 /*  window.freedom.on('got-alerts', function(alerts){
   var badges = document.getElementsByClassName("badge"); 

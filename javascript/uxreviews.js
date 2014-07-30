@@ -46,7 +46,35 @@ app.controller('reviewsController', function($scope, $modal) {
 	});
 	};  
 
+  //TODO: this should be temporary
+  function str2ab(str) {
+    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+    var bufView = new Uint8Array(buf);
+    for (var i=0, strLen=str.length; i<strLen; i++) {
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+
+  //TODO: this should be temporary
+  function ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint8Array(buf));
+  }
+
 	var addReviewCtrl = function ($scope, $modalInstance) {
+		$scope.states = userList; 
+	    $scope.selected = undefined;
+	    $scope.alerts = [];
+	    $scope.privacySetting=true;
+
+	    $scope.selectMatch = function(selection) {
+	      $scope.alerts.push({msg: selection});
+	    };
+
+	    $scope.deleteUser = function(id) {
+	      $scope.alerts.splice(id, 1);
+	    };
+
 	  $scope.upload = function () {
 	    var files = document.getElementById("addFile").files;
 	    
@@ -55,29 +83,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	      return;
 	    }
 
-	    var reader = new FileReader();
-	    reader.onload = function() {
-	      var arrayBuffer = reader.result;
-	      var today = new Date();  
-/*	      var dd = today.getDate();
-	      var mm = today.getMonth()+1; 
-	      var yyyy = today.getFullYear();
-	      today = yyyy+'-'+mm+'-'+dd; 
-*/
-	      /*var data = {
-	        author: currRPaper.author,
-	        key: currRPaper.key,
-	        vnum: currRPaper.vnum,
-	        string: ab2str(arrayBuffer),
-	        name: files[0].name,
-	        reviewer: username,
-	        action: 'add-review',
-	        date: today
-	      };
-
-	      window.freedom.emit('upload-review', JSON.stringify(data));*/ 
-	    }
-	    reader.readAsArrayBuffer(files[0]);    
+	    uploadReview(files[0]);
 
 	    $modalInstance.dismiss('cancel');
 	  };
@@ -86,6 +92,30 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $modalInstance.dismiss('cancel');
 	  };
 	};
+
+	function uploadReview(file){
+		console.log("UPLOAD REVIEW");
+
+	    var reader = new FileReader();
+	    reader.onload = function() {
+		    var arrayBuffer = reader.result;
+		    var today = new Date();  
+		    var data = {
+		        author: $scope.currRPaper.author,
+		        pkey: $scope.currRPaper.key,
+		        rkey: Math.random() + "",
+		        vnum: $scope.currRPaper.vnum,
+		        string: ab2str(arrayBuffer),
+		        reviewer: username,
+		        action: 'add-review',
+		        date: today 
+		    };
+
+		    console.log("REVIEW IN UPLOAD REVIEW "+ JSON.stringify(data));
+	      window.freedom.emit('upload-review', data);
+	    }
+	    reader.readAsArrayBuffer(file);
+	}
 
 	window.freedom.on('display-reviews', function(data) {
 		$scope.reviews = data.reviews;

@@ -42,7 +42,9 @@ app.controller('papersController', function($scope, $modal) {
     else {
       $scope.viewKey = key; 
       $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
-      $scope.viewComments = $scope.papers[key].versions[len-1].comments;  
+      $scope.viewComments = $scope.papers[key].versions[len-1].comments;
+      if ($scope.papers[key].versions[len-1].reviews) $scope.viewComments += "/n REVIEWS" 
+        + $scope.papers[key].versions[len-1].reviews[0].rkey ;
 
       $scope.currVersion = len; 
       $scope.totalVersion = len; 
