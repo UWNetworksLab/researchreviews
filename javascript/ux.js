@@ -10,6 +10,7 @@ var oldMessageList = [];
 
 //we have to make it an array, not associative array: it won't be in order unless we give an index.
 window.freedom.on('new-user', function(newUser){
+  console.log('new user');
   if(newUser !== 'publicstorage' && newUser !== username)
     userList.push(newUser); 
 });
@@ -45,13 +46,7 @@ app.config(function($routeProvider) {
 app.controller('mainController', function($scope, $location) {
   $scope.numAlerts = "";
   $scope.username = "testing"; 
-  $scope.showNav = false; 
-
-  window.freedom.on('loginsuccess', function(data) {
-    $scope.showNav= true; 
-    $location.path('profilepage'); 
-    $scope.$apply(); 
-  }); 
+  $scope.showNav = false;  
 
   $scope.$watch(function(){
     return messageList;
@@ -61,7 +56,6 @@ app.controller('mainController', function($scope, $location) {
   });
 
   window.freedom.on('alert', function(msg){
-    console.log("ALERT IN UX");
     if (!messageList) messageList=[];
     messageList.push(msg);
     $scope.numAlerts = messageList.length;
@@ -70,9 +64,9 @@ app.controller('mainController', function($scope, $location) {
 
   window.freedom.on('recv-uid', function(data) {
     username = data.id;
+    $scope.showNav = true; 
     if(data.onLogin) $scope.username = username; 
-    userList = data.userList;
+    $location.path('profilepage'); 
     $scope.$apply();
-    //TODO: show profile page
   });
 });

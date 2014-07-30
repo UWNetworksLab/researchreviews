@@ -505,7 +505,6 @@ social.login({
     };
     freedom.emit('recv-uid', data);
     freedom.emit('recv-status', "online");
-    freedom.emit('loginsuccess', 0);
        
   } else {
     freedom.emit('recv-status', "offline");
