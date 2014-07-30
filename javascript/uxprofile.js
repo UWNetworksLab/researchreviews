@@ -1,6 +1,7 @@
 app.controller('profileController', function($scope, $modal, $location) {
   	$scope.description = "No description added yet."; 
   	$scope.papers; 
+  	$scope.showNav = true; 
 
   	window.freedom.emit('load-profile', 0);
   	window.freedom.emit('get-papers', 0);

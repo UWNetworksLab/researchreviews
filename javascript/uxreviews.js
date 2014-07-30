@@ -1,4 +1,5 @@
 app.controller('reviewsController', function($scope, $modal) {
+	$scope.showNav = true; 
 	$scope.reviewKey; 
 	$scope.reviews = {}; 
 	$scope.currRPaper = {};
