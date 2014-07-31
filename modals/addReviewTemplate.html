@@ -6,13 +6,13 @@
   <h4>Privacy Settings</h4> 
   <div class="radio">
     <label>
-      <input type="radio" id="addReviewPrivate" ng-model = "privacySetting" value = "true" checked>
-      Private (only co-authors and invited reviewers can see this)
+      <input type="radio" id="radio1" ng-model="privacySetting" ng-change="setPrivate()" value="true" ng-class="{active: privacySetting == true}">
+      Private (only author and invited reviewers can see this)
     </label>
   </div>
   <div class="radio">
     <label>
-      <input type="radio" id="addReviewPublic" ng-model="privacySetting" value = "false">
+      <input type="radio" ng-model="privacySetting" ng-change="setPublic()" value="false" ng-class="{active: privacySetting == false}">
       Public (everyone can see this)
     </label>
   </div>

@@ -1,14 +1,18 @@
 app.controller('reviewsController', function($scope, $modal) {
 	$scope.showNav = true; 
-	$scope.reviewKey; 
 	$scope.reviews = {}; 
+
+	//for review view 
+	$scope.reviewKey; 
 	$scope.currRPaper = {};
+	$scope.currPaperReviews; 
 
 	window.freedom.emit('get-reviews', 0); 
 
+
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
-		console.log("REVIEW KEY  " + $scope.reviewKey);
+
 		var msg = {
 			key: $scope.reviews[rkey].pkey,
 			vnum: $scope.reviews[rkey].vnum,
@@ -19,10 +23,33 @@ app.controller('reviewsController', function($scope, $modal) {
 		window.freedom.emit('get-r-paper', msg);
 	}; 
 
+	window.freedom.on('got-paper-review', function(review) {
+		if(!$scope.currPaperReviews) $scope.currPaperReviews = []; 
+		var index = $scope.currPaperReviews.map(function(el) {
+		  return el.reviewer;
+		}).indexOf(review.reviewer);
+		if(index == -1) $scope.currPaperReviews.push(review); 
+		$scope.$apply(); 
+	});
+
 	window.freedom.on('recv-message', function(msg){
+		//show reviews of a paper that this reviewer is able to access
 		if (msg.action === 'send-r-paper') {
 			$scope.currRPaper = msg.version;
 			$scope.$apply();
+
+			var paperReviews = $scope.currRPaper.reviews; 
+		    for (var i = 0; i < paperReviews.length; i++) 
+		    	if(paperReviews[i].accessList.indexOf(username) != -1) {
+		    	 	var r_msg = {
+				        pkey: $scope.currRPaper.key,
+				        rkey: paperReviews[i].rkey,
+				        reviewer: paperReviews[i].reviewer,
+				        vnum: paperReviews[i].vnum,
+				        author: username
+		        	};
+		       	 	window.freedom.emit('get-paper-review', r_msg);
+		    	}
 		}
 	});
 
@@ -73,8 +100,15 @@ app.controller('reviewsController', function($scope, $modal) {
 	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
-	    $scope.alerts;
-	    $scope.privacySetting=true;
+	    $scope.alerts = [];
+	    $scope.privacySetting='true';
+
+	    $scope.init = function(author) {
+	    	$scope.states.splice($scope.states.indexOf(author), 1); 
+	    	$("#radio1").attr('checked', true); 
+	    }; 
+
+	    $scope.init(currRPaper.author); 
 
 	    $scope.selectMatch = function(selection) {
 	      $scope.alerts.push({msg: selection});
@@ -84,6 +118,14 @@ app.controller('reviewsController', function($scope, $modal) {
 	      $scope.alerts.splice(id, 1);
 	    };
 
+	    $scope.setPrivate = function() {
+	    	$scope.privacySetting = true;
+	    };
+
+	    $scope.setPublic = function() {
+	    	$scope.privacySetting = false; 
+	    };
+
 	  	$scope.upload = function () {
 	    var files = document.getElementById("addFile").files;
 	    
@@ -91,8 +133,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	      alert("No files found.");
 	      return;
 	    }
-//TODO: don't let author appear in typeahead
-
 
 	    var reader = new FileReader();
 	    reader.onload = function() {
@@ -107,18 +147,24 @@ app.controller('reviewsController', function($scope, $modal) {
 		        string: ab2str(arrayBuffer),
 		        reviewer: username,
 		        action: 'add-review',
-		        date: today
+		        date: today, 
+		        accessList: [] 
 		    };
 
-		if ($scope.privacySetting) {
-			if (!$scope.alerts) $scope.alerts = [];
-			$scope.alerts.push(username);
-			$scope.alerts.push(currRPaper.author);
-			data.accessList = $scope.alerts; 
-		}
+			if ($scope.privacySetting || $scope.privacySetting=='true') {
+				data.accessList.push(username);
+				data.accessList.push(currRPaper.author); 
+				for(var i = 0; i < $scope.alerts.length; i++)
+					data.accessList.push($scope.alerts[i].msg); 
+				window.freedom.emit('upload-review', data);
+			}
+			else {
+				data.accessList = "public"; 
+				window.freedom.emit('upload-review', data);
+			}
 
-	    window.freedom.emit('upload-review', data);
 	    }
+
 	    reader.readAsArrayBuffer(files[0]);
 	    $modalInstance.dismiss('cancel');
 	  };

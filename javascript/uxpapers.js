@@ -36,8 +36,6 @@ app.controller('papersController', function($scope, $modal) {
   loadPapersPage(); 
 
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
-    console.log('showpaperview');
-
     if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
       var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
       for (var i = 0; i < paperReviews.length; i++){
@@ -53,11 +51,12 @@ app.controller('papersController', function($scope, $modal) {
     }
 
     window.freedom.on('got-paper-review', function(review){
-      console.log("got-paperreview " + JSON.stringify(review));
-      if (!$scope.reviews) $scope.reviews=[];
-      $scope.reviews.push(review);
+      if(!$scope.reviews) $scope.reviews=[];
+      var index = $scope.reviews.map(function(el) {
+        return el.reviewer;
+      }).indexOf(review.reviewer);
+      if(index == -1) $scope.reviews.push(review);
       $scope.$apply();
-
     });
 
       var len = $scope.papers[key].versions.length;

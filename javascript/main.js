@@ -28,7 +28,6 @@ freedom.on('get-reviews', function(past) {
 }); 
 
 freedom.on('get-r-paper', function(data){
-  console.log("SENDING R PAPER");
   social.sendMessage(data.to, JSON.stringify(data)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -47,7 +46,6 @@ vnum */
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
-    console.log("GET PAPER REVIEW " + JSON.stringify(parse));
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -150,13 +148,14 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       var msg = {
         action: 'send-r-paper'
       };
+
       if (papers[parse.key]) msg.version = papers[parse.key].versions[parse.vnum];
+      console.log(JSON.stringify(msg.version));
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
 
   else if (parse.action === 'add-review-on-author'){
-    console.log("ADD REVIEW" + JSON.stringify(parse));
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
@@ -168,7 +167,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
       store.set(username + 'papers', JSON.stringify(papers)); 
 
-    //review alert
+      console.log("adding thsi review..." + JSON.stringify(papers[parse.pkey].versions[parse.vnum].reviews));
+
+    //alert author that their paper has been reviewed
       var alertmsg = {
         action: 'add-review-on-author',
         title: papers[parse.pkey].versions[parse.vnum].title,
@@ -190,28 +191,26 @@ freedom.on('get-paper-review', function(msg){
 });
 
 freedom.on('upload-review', function(parse){
-  console.log("UPLOADED REVIEW" + parse.pkey);
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
     var reviews; 
     try {
       reviews = JSON.parse(val);
     } catch(e) {}
-
     if(!reviews || typeof reviews !== "object") reviews = {}; 
-    console.log("RKEY OF UPLOADED REVIEW " + parse.rkey);
     reviews[parse.rkey] = parse;
     reviews[parse.rkey].past = 1; 
     store.set(username + 'reviews', JSON.stringify(reviews));
   }); 
 
-//only info the author gets
+  //only info the author gets
   var reviewForAuth = {
     reviewer : parse.reviewer,
     rkey: parse.rkey,
     pkey: parse.pkey,
     vnum: parse.vnum,
     date: parse.date,
+    accessList: parse.accessList, 
     action: 'add-review-on-author'
   };
 
