@@ -13,6 +13,11 @@ app.controller('profileController', function($scope, $modal, $location) {
   				to: $location.search().username, 
   				from: username 
   			}); 
+
+  			window.freedom.emit('get-other-papers', {
+  				to: $location.search().username, 
+  				from: username 
+  			}); 
   		}
   		else { //load own profile
   		  	$scope.ownProfile = true; 
@@ -29,6 +34,14 @@ app.controller('profileController', function($scope, $modal, $location) {
   		for(var key in reviews)
   			reviews[key].date = new Date(reviews[key].date);
   		$scope.reviews = reviews;
+  		$scope.$apply(); 
+  	}); 
+
+  	window.freedom.on('display-other-papers', function(papers) {
+  		$scope.ownProfile = $location.search().username; 
+  		for(var key in papers)
+  			papers[key].date = new Date(papers[key].date);
+  		$scope.papers = papers;
   		$scope.$apply(); 
   	}); 
 

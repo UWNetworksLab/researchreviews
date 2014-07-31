@@ -66,6 +66,27 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
   else if (parse.action === "got-paper-review"){
     freedom.emit('got-paper-review', parse);
+  } 
+  else if(parse.action === 'get-other-papers') {
+    var promise = store.get(username + 'papers'); 
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val); 
+      } catch(e) {} 
+
+      if(!papers || typeof papers !== "object") papers = {}; 
+
+      var msg = {
+        action: 'got-other-papers', 
+        papers: papers 
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    }); 
+  }
+  else if(parse.action === 'got-other-papers') {
+    freedom.emit('display-other-papers', parse.papers); 
   }
   else if(parse.action === 'get-other-reviews') {
     var promise = store.get(parse.to + 'reviews');
@@ -76,16 +97,16 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       } catch(e) {}
 
       if(!reviews || typeof reviews !== "object") reviews = {}; 
-
+      /*
       var allowReviews = []; 
       for(var key in reviews) {
         if(reviews[key].accessList.indexOf(parse.from) != -1)
           allowReviews.push(reviews[key]); 
-      }
+      }*/ 
 
       var msg = {
         action: 'got-other-reviews',
-        reviews: allowReviews 
+        reviews: reviews 
       };
 
       social.sendMessage(parse.from, JSON.stringify(msg));
@@ -214,6 +235,14 @@ freedom.on('get-paper-review', function(msg){
     freedom.emit("recv-err", err);
   });
 });
+
+freedom.on('get-other-papers', function(msg) {
+  msg.action = "get-other-papers"; 
+  social.sendMessage(msg.to, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+}); 
 
 freedom.on('get-other-reviews', function(msg) {
   msg.action = "get-other-reviews"; 
