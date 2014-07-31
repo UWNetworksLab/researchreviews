@@ -2,9 +2,9 @@
   <h3>Upload Review</h3>
   <div>
     <h4> Edit review </h4> 
-    <textarea rows="4" class="form-control" id="reviewText"></textarea>
+    <textarea rows="4" class="form-control" id="reviewText">{{reviewText}}</textarea>
   </div>
-  <h4>Privacy Settings</h4> 
+  <h4>Privacy Settings: currently {{privacyHeading}}</h4> 
   <div class="radio">
     <label>
       <input type="radio" id="radio1" ng-model="privacySetting" ng-change="setPrivate()" value="true" ng-class="{active: privacySetting == true}">

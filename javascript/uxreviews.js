@@ -7,6 +7,10 @@ app.controller('reviewsController', function($scope, $modal) {
 	$scope.currRPaper = {};
 	$scope.currPaperReviews; 
 
+	//for review modal
+	$scope.reviewText; 
+	$scope.privacyHeading; 
+
 	window.freedom.emit('get-reviews', 0); 
 
 	$scope.getReviewView = function(rkey){
@@ -20,11 +24,18 @@ app.controller('reviewsController', function($scope, $modal) {
 			action: 'get-r-paper'
 		};
 		window.freedom.emit('get-r-paper', msg);
+
+		window.freedom.emit('get-saved-review', rkey); 
 	}; 
 
-	window.freedom.on('got-paper-review', function(review) {
-		console.log("xxxxxx" + JSON.stringify(review));
+	window.freedom.on('display-saved-review', function(review) {
+		$scope.reviewText = review.text; 
+		if(review.accessList === 'public') $scope.privacyHeading = "public"; 
+		else $scope.privacyHeading = "private"; 
+		$scope.$apply(); 
+	}); 
 
+	window.freedom.on('got-paper-review', function(review) {
 		if(!$scope.currPaperReviews) $scope.currPaperReviews = []; 
 		var index = $scope.currPaperReviews.map(function(el) {
 		  return el.reviewer;
@@ -79,22 +90,29 @@ app.controller('reviewsController', function($scope, $modal) {
 	    		},
 	    		reviewKey: function(){
 	    			return $scope.reviewKey;
-	    		}
+	    		},
+	    		reviewText: function(){
+	    			return $scope.reviewText;
+	    		}, 
+	    		privacyHeading: function(){
+	    			return $scope.privacyHeading;
+	    		}	    		
 		 	}
 		});
 	};  
 
-	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey) {
+	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey, reviewText, privacyHeading) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
 	    $scope.alerts = [];
-	    $scope.privacySetting='true';
+	    $scope.privacySetting;
+	    $scope.reviewText = reviewText;
+	    $scope.privacyHeading = privacyHeading; 
+
+	    console.log(reviewText);
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
-	    	$("#radio1").attr('checked', true); 
-
-	    	//go through currRPaper reviews and add default text to reviewText
 	    }; 
 
 	    $scope.init(currRPaper.author); 

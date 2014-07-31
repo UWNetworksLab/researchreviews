@@ -30,6 +30,19 @@ freedom.on('get-reviews', function(past) {
   }); 
 }); 
 
+freedom.on('get-saved-review', function(rkey) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = {};   
+    freedom.emit('display-saved-review', reviews[rkey]); 
+  }); 
+}); 
+
 freedom.on('get-r-paper', function(data){
   social.sendMessage(data.to, JSON.stringify(data)).then(function(ret) {
   }, function(err) {
