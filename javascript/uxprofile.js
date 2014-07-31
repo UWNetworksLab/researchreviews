@@ -4,9 +4,18 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.reviews; 
   	$scope.showNav = true; 
 
-  	window.freedom.emit('load-profile', $location.search().username);
-  	window.freedom.emit('get-papers', 0);
-  	window.freedom.emit('get-reviews', 1);
+  	$scope.init = function() {
+  		if($location.search().username && $location.search().username !== username) { //load someone else's profile
+  			window.freedom.emit('load-profile', $location.search().username);  
+  		}
+  		else { //load own profile
+  		  	window.freedom.emit('load-profile', username);
+  		  	window.freedom.emit('get-papers', 0);
+  			window.freedom.emit('get-reviews', 1);
+  		}
+  	};
+
+  	$scope.init(); 
 
 	window.freedom.on('display-profile', function(data) {
 	  if(data.string === "" && data.description === "") {

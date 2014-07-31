@@ -8,7 +8,6 @@ var userList = [];
 var username; 
 
 freedom.on('get-reviews', function(past) {
-
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
     var reviews; 
@@ -46,7 +45,6 @@ author
 vnum */ 
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  console.log("MESSAGE  " + data.message);
   var parse = JSON.parse(data.message);
   if (parse.action === "invite-reviewer"){
 
@@ -268,7 +266,7 @@ freedom.on('edit-profile', function(data) {
 });
 
 freedom.on('load-profile', function(data) {
-  if (data === username || !data){
+  if (data === username){
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -290,6 +288,42 @@ freedom.on('load-profile', function(data) {
       };
       freedom.emit('recv-uid', msg); 
     });
+
+  /*var promise = store.get(username + 'papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+      if(!papers || typeof papers !== "object") {
+        papers = {}; 
+      }
+
+      var msg = { 
+        papers: papers 
+      }; 
+
+      freedom.emit('display-papers', msg);
+    });  */ 
+
+    /*var promise = store.get(username + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+      if(!reviews || typeof reviews !== "object") reviews = {};     
+      for (var key in reviews){
+        var rpast = (reviews[key].string) ? 1 : 0;
+        if (rpast !== past){
+          delete reviews[key];
+        } 
+      }
+      freedom.emit('display-reviews', {
+        reviews: reviews
+      }); 
+    }); */ 
   }
   else {
     var message = {

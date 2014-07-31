@@ -63,9 +63,9 @@ app.controller('mainController', function($scope, $location) {
   });
 
   window.freedom.on('recv-uid', function(data) {
-    username = data.id;
     $scope.showNav = true; 
     if(data.onLogin) {
+      username = data.id;
       console.log("on login");
       $scope.username_fixed = username; 
       $location.path('profilepage').search({username: username}); 
