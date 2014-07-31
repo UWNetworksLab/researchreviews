@@ -4,7 +4,7 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.reviews; 
   	$scope.showNav = true; 
 
-  	window.freedom.emit('load-profile', 0);
+  	window.freedom.emit('load-profile', $location.search().username);
   	window.freedom.emit('get-papers', 0);
   	window.freedom.emit('get-reviews', 1);
 
@@ -20,6 +20,7 @@ app.controller('profileController', function($scope, $modal, $location) {
 	  $scope.description = data.description; 
 	  var url = window.URL.createObjectURL(blob);
 	  $("#profile_pic").attr('src', url);
+	  $scope.$apply(); 
 	});
 
 	window.freedom.on('display-papers', function(data) {

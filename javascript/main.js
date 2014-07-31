@@ -22,7 +22,6 @@ freedom.on('get-reviews', function(past) {
         delete reviews[key];
       } 
     }
-    console.log(JSON.stringify(reviews));
     freedom.emit('display-reviews', {
       reviews: reviews
     }); 
@@ -47,6 +46,7 @@ author
 vnum */ 
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
+  console.log("MESSAGE  " + data.message);
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
     console.log("GET PAPER REVIEW " + JSON.stringify(parse));
@@ -116,6 +116,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if (parse.action === "get-profile"){
+    console.log("got here");
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -130,6 +131,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       }
       profile.action = 'got-profile'; 
       profile.username = username; 
+      console.log("send " + JSON.stringify(profile) + " to " + parse.from);
       social.sendMessage(parse.from, JSON.stringify(profile));
     });
   }
@@ -296,7 +298,7 @@ freedom.on('edit-profile', function(data) {
 });
 
 freedom.on('load-profile', function(data) {
-  if (data === 0){
+  if (data === username || !data){
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -310,7 +312,6 @@ freedom.on('load-profile', function(data) {
           description: ""
         }; 
       }
-
       profile.username = username; 
       freedom.emit('display-profile', profile);
       var msg = {

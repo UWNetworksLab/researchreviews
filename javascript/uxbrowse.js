@@ -1,6 +1,10 @@
-app.controller('browseController', function($scope) {
-  $scope.showNav = true; 
-	$scope.papers; 
+app.controller('browseController', function($scope, $location) {
+  	$scope.showNav = true; 
+  	$scope.papers; 
+
+	$scope.getProfile = function(username) {
+		$location.path('profilepage').search({'username' : username}); 
+	};
 
 	window.freedom.emit('load-public-storage', 0); 
 

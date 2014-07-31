@@ -20,7 +20,7 @@
       <tab heading="Public Papers" onclick="window.freedom.emit('load-public-storage', 0)">
         <table class="table table-hover">
           <tr ng-repeat="paper in papers"> 
-            <td> {{paper.title}} by {{paper.author}} </td> 
+            <td> {{paper.title}} by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> </td> 
           </tr> 
         </table>
       </tab>
