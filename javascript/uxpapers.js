@@ -12,10 +12,11 @@ app.controller('papersController', function($scope, $modal) {
   //for moving between versions
   $scope.currVersion = 1;
   $scope.totalVersion = 1;
+  $scope.reviews;
 
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
-    $scope.showPaperView($scope.viewKey, $scope.currVersion)
+    $scope.showPaperView($scope.viewKey, $scope.currVersion);
   }; 
 
   var loadPapersPage = function() {
@@ -34,8 +35,32 @@ app.controller('papersController', function($scope, $modal) {
 
   loadPapersPage(); 
 
-  $scope.showPaperView = function(key, vnum) {
-    var len = $scope.papers[key].versions.length;
+  $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
+    console.log('showpaperview');
+
+    if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
+      var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
+      for (var i = 0; i < paperReviews.length; i++){
+        var msg = {
+          pkey: key,
+          rkey: paperReviews[i].rkey,
+          reviewer: paperReviews[i].reviewer,
+          vnum: $scope.currVersion-1,
+          author: username
+        };
+        window.freedom.emit('get-paper-review', msg);
+      }    
+    }
+
+    window.freedom.on('got-paper-review', function(review){
+      console.log("got-paperreview " + JSON.stringify(review));
+      if (!$scope.reviews) $scope.reviews=[];
+      $scope.reviews.push(review);
+      $scope.$apply();
+
+    });
+
+      var len = $scope.papers[key].versions.length;
 
     if(vnum) {
       $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
@@ -45,9 +70,6 @@ app.controller('papersController', function($scope, $modal) {
       $scope.viewKey = key; 
       $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
       $scope.viewComments = $scope.papers[key].versions[len-1].comments;
-      if ($scope.papers[key].versions[len-1].reviews) $scope.viewComments += "/n REVIEWS" 
-        + $scope.papers[key].versions[len-1].reviews[0].rkey ;
-
       $scope.currVersion = len; 
       $scope.totalVersion = len; 
     }
