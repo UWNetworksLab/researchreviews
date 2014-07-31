@@ -17,7 +17,6 @@ freedom.on('get-reviews', function(past) {
 
     if(!reviews || typeof reviews !== "object") reviews = {};   
 
-    console.log(JSON.stringify(reviews));  
     for (var key in reviews){
       var rpast = (reviews[key].text) ? 1 : 0;
       if (rpast !== past){
@@ -317,7 +316,7 @@ social.on('onUserProfile', function(data) {
 });*/
 
 freedom.on('edit-privacy', function(msg) {
-  data = JSON.parse(msg); 
+ var data = JSON.parse(msg); 
  var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -326,21 +325,22 @@ freedom.on('edit-privacy', function(msg) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      papers = []; 
+      papers = {}; 
     } 
 
-    papers.forEach(function(paper) {
-      if(paper.key == data.key) {
+    for(key in papers) {
+      if(key == data.key) {
+        console.log(JSON.stringify(data));
         if(data.action === 'toPublic') { //change to public
-          paper.versions[data.vnum].viewList = false; 
-          paper.versions[data.vnum].privateSetting = false; 
+          papers[key].versions[data.vnum].viewList = false; 
+          papers[key].versions[data.vnum].privateSetting = false; 
         }
         else if(data.action === 'toPrivate'){ //change to private
-          paper.versions[data.vnum].viewList = paper.versions[data.vnum].alertList; 
-          paper.versions[data.vnum].privateSetting = true; 
+          papers[key].versions[data.vnum].viewList = papers[key].versions[data.vnum].alertList; 
+          papers[key].versions[data.vnum].privateSetting = true; 
         }
       }
-    });
+    }
 
     store.set(username + 'papers', JSON.stringify(papers));  
   });  
@@ -581,6 +581,8 @@ freedom.on('get-papers', function(data) {
     var msg = { 
       papers: papers 
     }; 
+
+    console.log(JSON.stringify(papers)); 
 
     freedom.emit('display-papers', msg);
   });  
