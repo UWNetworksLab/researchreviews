@@ -13,6 +13,25 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.emit('get-reviews', 0); 
 
+	//TODO: temporary. until storage buffer
+	function str2ab(str) {
+	  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+	  var bufView = new Uint8Array(buf);
+	  for (var i=0, strLen=str.length; i<strLen; i++) {
+	    bufView[i] = str.charCodeAt(i);
+	  }
+	  return buf;
+	}
+
+	$scope.downloadRPaper = function() {
+	  var ab = str2ab($scope.currRPaper.binaryString);
+	  var reader = new FileReader();
+
+	  var blob = new Blob([ab], {type:'text/plain'});
+	  reader.readAsArrayBuffer(blob);
+	  saveAs(blob, $scope.currRPaper.title); 
+	}; 
+
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
 

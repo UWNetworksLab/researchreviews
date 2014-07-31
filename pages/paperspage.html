@@ -17,27 +17,27 @@
           <h1 align="center"> {{viewTitle}} </h1> 
           <div>
             <div class="btn-group" dropdown is-open="status.isopen">
-              <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!viewKey">
+              <button type="button"  id = "options-butt" class="btn btn-default btn-sm dropdown-toggle" ng-hide="!viewKey">
                 Options <span class="caret">
               </button>
               <ul class="dropdown-menu" role="menu">
                 <li><a ng-click="downloadVersion()">Download This Version</a></li>
-                <li><a ng-click="inviteReviewers()">Invite Reviewers</a></li>
+                <li><a ng-click="inviteReviewers()"> Share paper </a></li>
                 <li><a ng-click="addVersion()">Add New Version</a></li>
                 <li><a ng-click="deletePaper()">Delete paper</a></li>
                 <li><a ng-click="editPrivacy()">Edit Privacy Settings</a></li>
               </ul>
             </div>
             <div class="btn-group pull-right">
-              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)">Previous</button>
-              <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)">Next</button>
+              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)" ng-hide="!viewKey">Previous</button>
+              <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)" ng-hide="!viewKey">Next</button>
             </div>
           </div>
-          <h4> Comments </h4>
-          <p> {{viewComments}}</p>
+          <h4 ng-hide="!viewKey"> Comments </h4>
+          <p ng-hide="!viewKey"> {{viewComments}}</p>
           <br>
-          <h4> Reviews </h4>
-          <accordion>
+          <h4 ng-hide="!viewKey"> Reviews </h4>
+          <accordion ng-hide="!viewKey">
             <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
           </accordion>
 

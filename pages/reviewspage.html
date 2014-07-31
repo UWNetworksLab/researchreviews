@@ -25,7 +25,7 @@
             <h1> {{ currRPaper.title }} </h1>
             <div id = "options-and-nav">
               <div class="btn-group" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle"> <!-- ng-disabled="!reviewKey">-->
+                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!reviewKey"> <!-- ng-disabled="!reviewKey">-->
                   Options <span class="caret">
                 </button>
                 <ul class="dropdown-menu" role="menu">
@@ -40,11 +40,11 @@
               </div>
 -->
             </div>
-            <h4> Comments </h4> 
+            <h4 ng-hide="!reviewKey"> Comments </h4> 
             {{ currRPaper.comments }} 
 
-            <h4> Reviews </h4> 
-            <accordion>
+            <h4 ng-hide="!reviewKey"> Reviews </h4> 
+            <accordion ng-hide="!reviewKey">
               <accordion-group ng-repeat="review in currPaperReviews" heading={{review.reviewer}}>{{review.text}}</accordion>
             </accordion>
           </div> <!--landing-container-->

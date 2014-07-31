@@ -130,6 +130,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if(parse.action === 'got-other-reviews') {
     freedom.emit('display-other-reviews', parse.reviews);
   }
+  else if(parse.action === 'delete-r-paper') {
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
+  }
   else if (parse.action === "invite-reviewer"){
 
     var review = {
@@ -214,7 +217,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
-
   else if (parse.action === 'add-review-on-author'){
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
@@ -392,42 +394,6 @@ freedom.on('load-profile', function(data) {
       };
       freedom.emit('recv-uid', msg); 
     });
-
-  /*var promise = store.get(username + 'papers');
-    promise.then(function(val) {
-      var papers; 
-      try {
-        papers = JSON.parse(val);
-      } catch(e) {}
-
-      if(!papers || typeof papers !== "object") {
-        papers = {}; 
-      }
-
-      var msg = { 
-        papers: papers 
-      }; 
-
-      freedom.emit('display-papers', msg);
-    });  */ 
-
-    /*var promise = store.get(username + 'reviews');
-    promise.then(function(val) {
-      var reviews; 
-      try {
-        reviews = JSON.parse(val);
-      } catch(e) {}
-      if(!reviews || typeof reviews !== "object") reviews = {};     
-      for (var key in reviews){
-        var rpast = (reviews[key].string) ? 1 : 0;
-        if (rpast !== past){
-          delete reviews[key];
-        } 
-      }
-      freedom.emit('display-reviews', {
-        reviews: reviews
-      }); 
-    }); */ 
   }
   else {
     var message = {
@@ -457,45 +423,6 @@ freedom.on('add-version', function(data) {
     papers[data.key].versions.push(data);
     freedom.emit('display-new-version', papers[data.key]);
 
-    //TODO: make sure sharing versions works
-    //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
-    /*var paper = {
-      title: newPaper.versions[0].title,
-      author: username,
-      key: data.key, 
-      action: 'add-paper'
-    };
-
-    if(!data.viewList) //public (send paper to public storage)
-      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
-    else { //private (send private paper to viewList) 
-      paper.action = 'allow-access';
-      for(var i = 0; i < data.viewList.length; i++) {
-        social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
-        }, function(err) {
-          freedom.emit("recv-err", err);
-        });
-      }
-    }
-
-    //SHARE PAPER WITH REVIEWERS
-    var msg = {
-      title: newPaper.versions[0].title, 
-      author: username, 
-      vnum: 0, 
-      key: data.key,
-      action: 'invite-reviewer' 
-    };
-
-    for(var i = 0; i < data.alertList.length; i++) {
-      social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
-    }*/ 
     store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
 }); 
@@ -625,17 +552,17 @@ freedom.on('delete-paper', function(key){
 
     delete papers[key];
 
-    //to send to publicstorage
-    var paper ={
-      key: key, 
-      action: 'delete-paper'
-    };
+      var paper ={
+        key: key, 
+        action: 'delete-paper'
+      };
 
-    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-    }, function(err) {
-      freedom.emit("recv-err", err);
-    });
+      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+      }, function(err) {
+        freedom.emit("recv-err", err);
+      });
 
+    
     store.set(username+'papers', JSON.stringify(papers)); 
     freedom.emit('display-delete-paper', key);
   }); 

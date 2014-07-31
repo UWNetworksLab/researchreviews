@@ -36,6 +36,8 @@ app.controller('papersController', function($scope, $modal) {
   loadPapersPage(); 
 
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
+    $scope.reviews = []; 
+
     if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
       var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
       for (var i = 0; i < paperReviews.length; i++){
@@ -277,8 +279,8 @@ app.controller('papersController', function($scope, $modal) {
       $scope.selected = '';
     }; 
 
-    $scope.closeAlert = function(index) {
-      $scope.alerts.splice(index, 1);
+    $scope.deleteUser = function(id) {
+      $scope.alerts.splice(id, 1);
     };
 
     $scope.invite = function () {
@@ -379,7 +381,6 @@ app.controller('papersController', function($scope, $modal) {
   };
 
   $scope.deletePaper = function() {
-    console.log("deletePaPER");
     window.freedom.emit('delete-paper', $scope.viewKey);
   };
   $scope.downloadVersion = function () {
