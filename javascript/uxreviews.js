@@ -9,7 +9,6 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.emit('get-reviews', 0); 
 
-
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
 
@@ -24,6 +23,8 @@ app.controller('reviewsController', function($scope, $modal) {
 	}; 
 
 	window.freedom.on('got-paper-review', function(review) {
+		console.log("xxxxxx" + JSON.stringify(review));
+
 		if(!$scope.currPaperReviews) $scope.currPaperReviews = []; 
 		var index = $scope.currPaperReviews.map(function(el) {
 		  return el.reviewer;
@@ -41,7 +42,7 @@ app.controller('reviewsController', function($scope, $modal) {
 			var paperReviews = $scope.currRPaper.reviews; 
 			if(paperReviews)
 			    for (var i = 0; i < paperReviews.length; i++) 
-			    	if(paperReviews[i].accessList.indexOf(username) != -1) {
+			    	if(paperReviews[i].accessList.indexOf(username) != -1 || paperReviews[i].accessList === 'public') {
 			    	 	var r_msg = {
 					        pkey: $scope.currRPaper.key,
 					        rkey: paperReviews[i].rkey,
@@ -83,21 +84,6 @@ app.controller('reviewsController', function($scope, $modal) {
 		});
 	};  
 
-  //TODO: this should be temporary
-  function str2ab(str) {
-    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-    var bufView = new Uint8Array(buf);
-    for (var i=0, strLen=str.length; i<strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-  }
-
-  //TODO: this should be temporary
-  function ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
-  }
-
 	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
@@ -107,6 +93,8 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
 	    	$("#radio1").attr('checked', true); 
+
+	    	//go through currRPaper reviews and add default text to reviewText
 	    }; 
 
 	    $scope.init(currRPaper.author); 
@@ -128,16 +116,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	    };
 
 	  	$scope.upload = function () {
-	    var files = document.getElementById("addFile").files;
-	    
-	    if (files.length < 1) {
-	      alert("No files found.");
-	      return;
-	    }
-
-	    var reader = new FileReader();
-	    reader.onload = function() {
-		    var arrayBuffer = reader.result;
 		    var today = new Date();  
 		    var data = {
 		    	ptitle: currRPaper.title,
@@ -145,7 +123,7 @@ app.controller('reviewsController', function($scope, $modal) {
 		        pkey: currRPaper.key,
 		        rkey: reviewKey,
 		        vnum: currRPaper.vnum,
-		        string: ab2str(arrayBuffer),
+		        text: $("#reviewText").val(),
 		        reviewer: username,
 		        action: 'add-review',
 		        date: today, 
@@ -163,18 +141,13 @@ app.controller('reviewsController', function($scope, $modal) {
 				data.accessList = "public"; 
 				window.freedom.emit('upload-review', data);
 			}
-
-	    }
-
-	    reader.readAsArrayBuffer(files[0]);
-	    $modalInstance.dismiss('cancel');
+		    $modalInstance.dismiss('cancel');
 	  };
 
 	  $scope.cancel = function () {
 	    $modalInstance.dismiss('cancel');
 	  };
 	};
-
 
 	window.freedom.on('display-reviews', function(data) {
 		$scope.reviews = data.reviews;

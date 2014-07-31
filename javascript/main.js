@@ -14,9 +14,12 @@ freedom.on('get-reviews', function(past) {
     try {
       reviews = JSON.parse(val);
     } catch(e) {}
-    if(!reviews || typeof reviews !== "object") reviews = {};     
+
+    if(!reviews || typeof reviews !== "object") reviews = {};   
+
+    console.log(JSON.stringify(reviews));  
     for (var key in reviews){
-      var rpast = (reviews[key].string) ? 1 : 0;
+      var rpast = (reviews[key].text) ? 1 : 0;
       if (rpast !== past){
         delete reviews[key];
       } 
@@ -44,7 +47,6 @@ author
 vnum */ 
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
-  
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
     var promise = store.get(username + 'reviews');
@@ -58,9 +60,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       var msg = {
         action: 'got-paper-review',
-        string: reviews[parse.rkey].string,
+        text: reviews[parse.rkey].text,
         reviewer: parse.reviewer
       };
+
       social.sendMessage(parse.author, JSON.stringify(msg));
     });
   }
@@ -196,7 +199,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       };
 
       if (papers[parse.key]) msg.version = papers[parse.key].versions[parse.vnum];
-      console.log(JSON.stringify(msg.version));
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
@@ -212,8 +214,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       
       papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
       store.set(username + 'papers', JSON.stringify(papers)); 
-
-      console.log("adding thsi review..." + JSON.stringify(papers[parse.pkey].versions[parse.vnum].reviews));
 
     //alert author that their paper has been reviewed
       var alertmsg = {
