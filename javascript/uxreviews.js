@@ -39,17 +39,18 @@ app.controller('reviewsController', function($scope, $modal) {
 			$scope.$apply();
 
 			var paperReviews = $scope.currRPaper.reviews; 
-		    for (var i = 0; i < paperReviews.length; i++) 
-		    	if(paperReviews[i].accessList.indexOf(username) != -1) {
-		    	 	var r_msg = {
-				        pkey: $scope.currRPaper.key,
-				        rkey: paperReviews[i].rkey,
-				        reviewer: paperReviews[i].reviewer,
-				        vnum: paperReviews[i].vnum,
-				        author: username
-		        	};
-		       	 	window.freedom.emit('get-paper-review', r_msg);
-		    	}
+			if(paperReviews)
+			    for (var i = 0; i < paperReviews.length; i++) 
+			    	if(paperReviews[i].accessList.indexOf(username) != -1) {
+			    	 	var r_msg = {
+					        pkey: $scope.currRPaper.key,
+					        rkey: paperReviews[i].rkey,
+					        reviewer: paperReviews[i].reviewer,
+					        vnum: paperReviews[i].vnum,
+					        author: username
+			        	};
+			       	 	window.freedom.emit('get-paper-review', r_msg);
+			    	}
 		}
 	});
 

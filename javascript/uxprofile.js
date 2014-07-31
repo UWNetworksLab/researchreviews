@@ -3,12 +3,19 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.papers; 
   	$scope.reviews; 
   	$scope.showNav = true; 
+  	$scope.ownProfile = true; 
 
   	$scope.init = function() {
   		if($location.search().username && $location.search().username !== username) { //load someone else's profile
+  			$scope.ownProfile = $location.search().username; 
   			window.freedom.emit('load-profile', $location.search().username);  
+  			window.freedom.emit('get-other-reviews', {
+  				to: $location.search().username, 
+  				from: username 
+  			}); 
   		}
   		else { //load own profile
+  		  	$scope.ownProfile = true; 
   		  	window.freedom.emit('load-profile', username);
   		  	window.freedom.emit('get-papers', 0);
   			window.freedom.emit('get-reviews', 1);
@@ -16,6 +23,14 @@ app.controller('profileController', function($scope, $modal, $location) {
   	};
 
   	$scope.init(); 
+
+  	window.freedom.on('display-other-reviews', function(reviews) {
+  		$scope.ownProfile = $location.search().username; 
+  		for(var key in reviews)
+  			reviews[key].date = new Date(reviews[key].date);
+  		$scope.reviews = reviews;
+  		$scope.$apply(); 
+  	}); 
 
 	window.freedom.on('display-profile', function(data) {
 	  if(data.string === "" && data.description === "") {

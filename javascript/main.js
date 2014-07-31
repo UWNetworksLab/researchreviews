@@ -44,6 +44,7 @@ author
 vnum */ 
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
+  
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
     var promise = store.get(username + 'reviews');
@@ -65,6 +66,33 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
   else if (parse.action === "got-paper-review"){
     freedom.emit('got-paper-review', parse);
+  }
+  else if(parse.action === 'get-other-reviews') {
+    var promise = store.get(parse.to + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      var allowReviews = []; 
+      for(var key in reviews) {
+        if(reviews[key].accessList.indexOf(parse.from) != -1)
+          allowReviews.push(reviews[key]); 
+      }
+
+      var msg = {
+        action: 'got-other-reviews',
+        reviews: allowReviews 
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    });
+  }
+  else if(parse.action === 'got-other-reviews') {
+    freedom.emit('display-other-reviews', parse.reviews);
   }
   else if (parse.action === "invite-reviewer"){
 
@@ -94,7 +122,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!reviews || typeof reviews !== "object") reviews = {}; 
 
       reviews[review.rkey] = review; 
-      console.log("RKEY OF INVITED REVIEWER " + review.rkey);
       store.set(username + 'reviews', JSON.stringify(reviews)); 
     });
   }
@@ -112,7 +139,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if (parse.action === "get-profile"){
-    console.log("got here");
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -127,7 +153,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       }
       profile.action = 'got-profile'; 
       profile.username = username; 
-      console.log("send " + JSON.stringify(profile) + " to " + parse.from);
       social.sendMessage(parse.from, JSON.stringify(profile));
     });
   }
@@ -189,6 +214,14 @@ freedom.on('get-paper-review', function(msg){
     freedom.emit("recv-err", err);
   });
 });
+
+freedom.on('get-other-reviews', function(msg) {
+  msg.action = "get-other-reviews"; 
+  social.sendMessage(msg.to, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+}); 
 
 freedom.on('upload-review', function(parse){
   var promise = store.get(username + 'reviews');
