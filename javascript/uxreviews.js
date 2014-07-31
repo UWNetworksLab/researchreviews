@@ -47,6 +47,9 @@ app.controller('reviewsController', function($scope, $modal) {
 		  	resolve: {
 		    	currRPaper: function() {
 			      	return $scope.currRPaper; 
+	    		},
+	    		reviewKey: function(){
+	    			return $scope.reviewKey;
 	    		}
 		 	}
 		});
@@ -67,7 +70,7 @@ app.controller('reviewsController', function($scope, $modal) {
     return String.fromCharCode.apply(null, new Uint8Array(buf));
   }
 
-	var addReviewCtrl = function ($scope, $modalInstance, currRPaper) {
+	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
 	    $scope.alerts;
@@ -108,15 +111,15 @@ app.controller('reviewsController', function($scope, $modal) {
 		    };
 
 		if ($scope.privacySetting) {
+			if (!$scope.alerts) $scope.alerts = [];
 			$scope.alerts.push(username);
 			$scope.alerts.push(currRPaper.author);
 			data.accessList = $scope.alerts; 
 		}
 
-		console.log("REVIEW IN UPLOAD REVIEW "+ JSON.stringify(data));
 	    window.freedom.emit('upload-review', data);
 	    }
-	    reader.readAsArrayBuffer(file);
+	    reader.readAsArrayBuffer(files[0]);
 	    $modalInstance.dismiss('cancel');
 	  };
 
