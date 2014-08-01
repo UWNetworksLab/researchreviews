@@ -13,7 +13,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="review in reviews"> 
-              <td ng-click="getReviewView(review.rkey)"> {{ review.ptitle }} by {{ review.author }} </td> 
+              <td ng-click="getReviewView(review.rkey)"> {{ review.ptitle }} v.{{review.vnum}} by {{ review.author }} </td> 
             </tr> 
           </table>
 

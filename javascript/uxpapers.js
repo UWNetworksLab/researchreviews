@@ -38,6 +38,20 @@ app.controller('papersController', function($scope, $modal) {
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
     $scope.reviews = []; 
 
+    var len = $scope.papers[key].versions.length;
+
+    if(vnum) {
+      $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[vnum-1].comments;  
+    }
+    else {
+      $scope.viewKey = key; 
+      $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
+      $scope.viewComments = $scope.papers[key].versions[len-1].comments;
+      $scope.currVersion = len; 
+      $scope.totalVersion = len; 
+    }
+
     if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
       var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
       for (var i = 0; i < paperReviews.length; i++){
@@ -60,20 +74,6 @@ app.controller('papersController', function($scope, $modal) {
       if(index == -1) $scope.reviews.push(review);
       $scope.$apply();
     });
-
-      var len = $scope.papers[key].versions.length;
-
-    if(vnum) {
-      $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
-      $scope.viewComments = $scope.papers[key].versions[vnum-1].comments;  
-    }
-    else {
-      $scope.viewKey = key; 
-      $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
-      $scope.viewComments = $scope.papers[key].versions[len-1].comments;
-      $scope.currVersion = len; 
-      $scope.totalVersion = len; 
-    }
 
     if(!$scope.$$phase) {
       $scope.$apply(); 
@@ -99,8 +99,10 @@ app.controller('papersController', function($scope, $modal) {
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
+    $scope.reviews = []; 
     $scope.papers[newVersion.key] = newVersion; 
     $scope.showPaperView(newVersion.key); 
+    $scope.$apply(); 
   });
 
   $scope.addVersion = function() {

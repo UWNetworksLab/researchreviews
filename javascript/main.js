@@ -147,7 +147,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     var alertmsg = {
       action: 'invite-reviewer',
       title: parse.title,
-      author: parse.author   
+      author: parse.author,
+      vnum: parse.vnum  
     };
     freedom.emit('alert', alertmsg);
 
@@ -234,6 +235,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         action: 'add-review-on-author',
         title: papers[parse.pkey].versions[parse.vnum].title,
         date: parse.date,
+        vnum: parse.vnum, 
         reviewer: parse.reviewer   
       };
       freedom.emit('alert', alertmsg);
@@ -421,8 +423,49 @@ freedom.on('add-version', function(data) {
     
     data.vnum = papers[data.key].versions.length;
     papers[data.key].versions.push(data);
-    freedom.emit('display-new-version', papers[data.key]);
 
+  //SHARE PAPER WITH USERS ALLOWED TO VIEW IT TODO: make this work for versioning
+      var paper = {
+        title: data.title,
+        author: username,
+        key: data.key, 
+        vnum: data.vnum, 
+        action: 'add-paper'
+      };
+
+      if(!data.privateSetting) //public (send paper to public storage) 
+        social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+
+      else { //private (send private paper to viewList) 
+        paper.action = 'allow-access';
+        for(var i = 0; i < data.viewList.length; i++) {
+          social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
+          }, function(err) {
+            freedom.emit("recv-err", err);
+          });
+        }
+      }
+
+      //SHARE PAPER WITH REVIEWERS
+      var msg = {
+        title: data.title, 
+        author: username, 
+        vnum: data.vnum, 
+        key: data.key,
+        action: 'invite-reviewer' 
+      };
+
+      for(var i = 0; i < data.alertList.length; i++) {
+        social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+      }
+
+    freedom.emit('display-new-version', papers[data.key]);
     store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
 }); 
@@ -508,8 +551,6 @@ freedom.on('get-papers', function(data) {
     var msg = { 
       papers: papers 
     }; 
-
-    console.log(JSON.stringify(papers)); 
 
     freedom.emit('display-papers', msg);
   });  

@@ -34,6 +34,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	$scope.getReviewView = function(rkey){
 		$scope.reviewKey = rkey;
+		$scope.currPaperReviews = []; 
 
 		var msg = {
 			key: $scope.reviews[rkey].pkey,
