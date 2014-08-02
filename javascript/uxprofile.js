@@ -82,6 +82,11 @@ app.controller('profileController', function($scope, $modal, $location) {
 	 };
 
 	  $scope.editProfile = function() {
+	  	if($scope.ownProfile != true) {
+	  		alert("You don't have permission to edit this profile.");
+	  		return; 
+	  	}
+
 	    var modalInstance = $modal.open({
 	      templateUrl: '/modals/editProfileTemplate.html',
 	      windowClass:'normal',
