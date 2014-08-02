@@ -29,6 +29,11 @@ app.controller('profileController', function($scope, $modal, $location) {
 
   	$scope.init(); 
 
+  	$scope.displayDetailedPapers = function() {
+  		if($scope.ownProfile == true) $scope.changeView('paperspage');
+  		else if($scope.ownProfile != true) $location.path('paperspage').search({username: $scope.ownProfile}); 	
+  	}; 
+
   	window.freedom.on('display-other-reviews', function(reviews) {
   		$scope.ownProfile = $location.search().username; 
   		for(var key in reviews)

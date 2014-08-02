@@ -1,9 +1,24 @@
 app.controller('browseController', function($scope, $location) {
   	$scope.showNav = true; 
-  	$scope.papers; 
+  	$scope.papers;
+  	$scope.currBPaper;  
 
 	$scope.getProfile = function(username) {
 		$location.path('profilepage').search({'username' : username}); 
+	};
+
+	$scope.getPaper = function(paper) {
+		var msg = {
+			title: paper.title,
+			author: paper.author,
+			key: paper.key,
+			from: username
+		};
+		window.freedom.emit('get-browse-paper', msg); 
+		window.freedom.on('display-browse-paper', function(paper) {
+			$scope.currBPaper = paper.versions[paper.versions.length-1];
+			$scope.$apply(); 
+		}); 
 	};
 
 	window.freedom.emit('load-public-storage', 0); 
@@ -17,5 +32,5 @@ app.controller('browseController', function($scope, $location) {
 		console.log(JSON.stringify(data));
 		$scope.papers = data; 
 		$scope.$apply(); 
-	});
+	}); 
 });

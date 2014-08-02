@@ -17,15 +17,38 @@ freedom.on('get-reviews', function(past) {
 
     if(!reviews || typeof reviews !== "object") reviews = {};   
 
+    console.log(JSON.stringify(reviews));
+
     for (var key in reviews){
       var rpast = (reviews[key].text) ? 1 : 0;
       if (rpast !== past){
         delete reviews[key];
       } 
     }
+
     freedom.emit('display-reviews', {
       reviews: reviews
     }); 
+  }); 
+}); 
+
+freedom.on('get-saved-review-pp', function(pkey) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = {};  
+
+    var index = -1; 
+    for(key in reviews) {
+      if(reviews[key].pkey == pkey)
+        index = key; 
+    }
+
+    freedom.emit('display-saved-review', reviews[index]); 
   }); 
 }); 
 
@@ -48,6 +71,23 @@ freedom.on('get-r-paper', function(data){
     freedom.emit("recv-err", err);
   });
 });
+
+freedom.on('add-review', function(review) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+    reviews[review.rkey] = review; 
+    store.set(username + 'reviews', JSON.stringify(reviews));
+    console.log(JSON.stringify(reviews));
+    freedom.emit('go-to-reviews', 0);
+  });
+}); 
 
 /*backend storing review
 rkey,
@@ -79,6 +119,28 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       social.sendMessage(parse.author, JSON.stringify(msg));
     });
   }
+  else if (parse.action === "get-other-paper-review"){
+    var promise = store.get(username + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      var msg = {
+        action: 'got-paper-review',
+        text: reviews[parse.rkey].text,
+        reviewer: parse.reviewer
+      };
+
+      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.from) == -1)
+        msg.text = "You do not have access to this review."; 
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    });
+  }
   else if (parse.action === "got-paper-review"){
     freedom.emit('got-paper-review', parse);
   } 
@@ -100,8 +162,29 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       social.sendMessage(parse.from, JSON.stringify(msg));
     }); 
   }
+  else if(parse.action === 'get-browse-paper') {
+    var promise = store.get(username + 'papers'); 
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val); 
+      } catch(e) {} 
+
+      if(!papers || typeof papers !== "object") papers = {}; 
+
+      var msg = {
+        action: 'got-browse-paper', 
+        paper: papers[parse.key]
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    }); 
+  }
   else if(parse.action === 'got-other-papers') {
     freedom.emit('display-other-papers', parse.papers); 
+  }
+  else if(parse.action === 'got-browse-paper') {
+    freedom.emit('display-browse-paper', parse.paper);
   }
   else if(parse.action === 'get-other-reviews') {
     var promise = store.get(parse.to + 'reviews');
@@ -252,6 +335,14 @@ freedom.on('get-paper-review', function(msg){
   });
 });
 
+freedom.on('get-other-paper-review', function(msg){
+  msg.action = "get-other-paper-review";
+  social.sendMessage(msg.reviewer, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
+
 freedom.on('get-other-papers', function(msg) {
   msg.action = "get-other-papers"; 
   social.sendMessage(msg.to, JSON.stringify(msg)).then(function(ret) {
@@ -259,6 +350,14 @@ freedom.on('get-other-papers', function(msg) {
     freedom.emit("recv-err", err);
   });
 }); 
+
+freedom.on('get-browse-paper', function(msg) {
+  msg.action = 'get-browse-paper'; 
+  social.sendMessage(msg.author, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });  
+});
 
 freedom.on('get-other-reviews', function(msg) {
   msg.action = "get-other-reviews"; 
@@ -279,6 +378,7 @@ freedom.on('upload-review', function(parse){
     reviews[parse.rkey] = parse;
     reviews[parse.rkey].past = 1; 
     store.set(username + 'reviews', JSON.stringify(reviews));
+    freedom.emit('update-my-review', JSON.stringify(parse));
   }); 
 
   //only info the author gets

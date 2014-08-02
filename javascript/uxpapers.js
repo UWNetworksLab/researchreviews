@@ -1,4 +1,4 @@
-app.controller('papersController', function($scope, $modal) {
+app.controller('papersController', function($scope, $modal, $location) {
   $scope.showNav = true; 
 
   //for paperTable
@@ -14,23 +14,56 @@ app.controller('papersController', function($scope, $modal) {
   $scope.totalVersion = 1;
   $scope.reviews;
 
+  //for looking at someone else's papers
+  $scope.accessBtn = true;
+  $scope.accessAddBtn = true;   
+
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
     $scope.showPaperView($scope.viewKey, $scope.currVersion);
   }; 
 
-  var loadPapersPage = function() {
-    window.freedom.emit('get-papers', 0); 
-    window.freedom.on('display-papers', function(data) {
-      if(Object.keys(data.papers).length > 0) {
-        for(var key in data.papers) {
-          $scope.papers[key] = data.papers[key]; 
-        }
-      }
-      $scope.$apply(); 
+  $scope.addReview = function() {
+    var msg = {
+      ptitle: $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].title,
+      pkey: $scope.viewKey,
+      author: $location.search().username,
+      vnum: $scope.currVersion-1,
+      rkey: Math.random() + ""
+    }; 
+    window.freedom.emit('add-review', msg);
+    window.freedom.on('go-to-reviews', function(data) {
+      $location.path('reviewspage');  
     }); 
-    $scope.viewTitle = "Please choose a paper.";
-    $scope.viewComments = ""; 
+  }; 
+
+  var loadPapersPage = function() {
+    if($location.search().username && $location.search().username !== username) { //load someone else's papers 
+      window.freedom.emit('get-other-papers', {
+        to: $location.search().username, 
+        from: username 
+      }); 
+      window.freedom.on('display-other-papers', function(papers) {
+        for(var key in papers) $scope.papers[key] = papers[key]; 
+        $scope.viewTitle = "Please choose a paper.";
+        $scope.viewComments = "";  
+        $scope.accessAddBtn = false; 
+        $scope.$apply(); 
+      });
+    }
+    else { //load own papers
+      window.freedom.emit('get-papers', 0); 
+      window.freedom.on('display-papers', function(data) {
+        if(Object.keys(data.papers).length > 0) {
+          for(var key in data.papers) {
+            $scope.papers[key] = data.papers[key]; 
+          }
+        }
+        $scope.$apply(); 
+      }); 
+      $scope.viewTitle = "Please choose a paper.";
+      $scope.viewComments = ""; 
+    }
   };  
 
   loadPapersPage(); 
@@ -52,17 +85,42 @@ app.controller('papersController', function($scope, $modal) {
       $scope.totalVersion = len; 
     }
 
-    if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
+    if($location.search().username && $location.search().username !== username) { //load someone else's paper 
+      $scope.accessBtn = false;
+      if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
+        var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
+
+        for (var i = 0; i < paperReviews.length; i++){
+          if($location.search().username && $location.search().username !== username) 
+            if(paperReviews[i].accessList !== "public" && paperReviews[i].accessList.indexOf(username) == -1)
+              continue; 
+
+          var msg = {
+            pkey: key,
+            rkey: paperReviews[i].rkey,
+            reviewer: paperReviews[i].reviewer,
+            vnum: $scope.currVersion-1,
+            author: $location.search().username, 
+            from: username 
+          };
+
+          window.freedom.emit('get-other-paper-review', msg);
+        }    
+      }
+    }
+    else if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
       var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
+
       for (var i = 0; i < paperReviews.length; i++){
-        var msg = {
-          pkey: key,
-          rkey: paperReviews[i].rkey,
-          reviewer: paperReviews[i].reviewer,
-          vnum: $scope.currVersion-1,
-          author: username
-        };
-        window.freedom.emit('get-paper-review', msg);
+          var msg = {
+            pkey: key,
+            rkey: paperReviews[i].rkey,
+            reviewer: paperReviews[i].reviewer,
+            vnum: $scope.currVersion-1,
+            author: username
+          };
+
+          window.freedom.emit('get-paper-review', msg);
       }    
     }
 
@@ -72,6 +130,7 @@ app.controller('papersController', function($scope, $modal) {
         return el.reviewer;
       }).indexOf(review.reviewer);
       if(index == -1) $scope.reviews.push(review);
+      else $scope.reviews[index] = review; 
       $scope.$apply();
     });
 
@@ -118,6 +177,7 @@ app.controller('papersController', function($scope, $modal) {
       }
     }); 
   };
+
 
   $scope.addPaper = function() {
     var modalInstance = $modal.open({
@@ -386,7 +446,14 @@ app.controller('papersController', function($scope, $modal) {
     window.freedom.emit('delete-paper', $scope.viewKey);
   };
   $scope.downloadVersion = function () {
-    console.log("HERE");
+    if($location.search().username && $location.search().username !== username) { 
+      //check user access before they download someone else's paper version 
+      var version = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
+      if(version.privateSetting && version.viewList.indexOf(username) == -1){
+        alert("You do not have access to this version of the paper.");
+        return; 
+      }
+    }
     var file = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
     var ab = str2ab(file.binaryString);
     var reader = new FileReader();

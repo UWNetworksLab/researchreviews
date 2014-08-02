@@ -13,6 +13,11 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.emit('get-reviews', 0); 
 
+	window.freedom.on('update-my-review', function(review) {
+		$scope.reviews[review.rkey] = review;
+		$scope.$apply(); 
+	}); 
+
 	//TODO: temporary. until storage buffer
 	function str2ab(str) {
 	  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
@@ -128,8 +133,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $scope.privacySetting;
 	    $scope.reviewText = reviewText;
 	    $scope.privacyHeading = privacyHeading; 
-
-	    console.log(reviewText);
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
