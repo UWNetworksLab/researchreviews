@@ -24,6 +24,14 @@ app.controller('papersController', function($scope, $modal, $location) {
   }; 
 
   $scope.addReview = function() {
+    if($location.search().username && $location.search().username !== username) { 
+      //check user access before they review this paper version
+      var version = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
+      if(version.privateSetting && version.viewList.indexOf(username) == -1){
+        alert("You do not have permission to review this paper.");
+        return; 
+      }
+    } 
     var msg = {
       ptitle: $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].title,
       pkey: $scope.viewKey,
