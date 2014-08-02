@@ -17,8 +17,6 @@ freedom.on('get-reviews', function(past) {
 
     if(!reviews || typeof reviews !== "object") reviews = {};   
 
-    console.log(JSON.stringify(reviews));
-
     for (var key in reviews){
       var rpast = (reviews[key].text) ? 1 : 0;
       if (rpast !== past){
@@ -84,7 +82,6 @@ freedom.on('add-review', function(review) {
 
     reviews[review.rkey] = review; 
     store.set(username + 'reviews', JSON.stringify(reviews));
-    console.log(JSON.stringify(reviews));
     freedom.emit('go-to-reviews', 0);
   });
 }); 
@@ -137,6 +134,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.from) == -1)
         msg.text = "You do not have access to this review."; 
+
+      console.log("xxx got here");
 
       social.sendMessage(parse.from, JSON.stringify(msg));
     });

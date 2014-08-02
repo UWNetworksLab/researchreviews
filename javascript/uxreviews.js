@@ -13,9 +13,14 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.emit('get-reviews', 0); 
 
-	window.freedom.on('update-my-review', function(review) {
+	window.freedom.on('update-my-review', function(data) {
+		var review = JSON.parse(data); 
+		console.log(JSON.stringify(review));
+		console.log($scope.reviews[review.rkey]);
 		$scope.reviews[review.rkey] = review;
 		$scope.$apply(); 
+
+		console.log(JSON.stringify($scope.reviews));
 	}); 
 
 	//TODO: temporary. until storage buffer

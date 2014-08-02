@@ -44,6 +44,7 @@ app.controller('browseController', function($scope, $location) {
 			$scope.currVersion = paper.versions.length; 
 			$scope.totalVersion = paper.versions.length; 
 			var len = paper.versions.length; 
+
 			$scope.viewTitle = paper.versions[len-1].title + " v." + len + " of " + len; 
 			$scope.viewComments = paper.versions[len-1].comments; 
 			$scope.$apply(); 
@@ -52,21 +53,24 @@ app.controller('browseController', function($scope, $location) {
 	};
 
 	$scope.getReviews = function() {
-		var paperReviews = $scope.currBPaper.versions[$scope.currVersion-1].reviews;
-		for(var i = 0; i < paperReviews.length; i++) {
-			if(paperReviews[i].accessList !== 'public' && paperReviews[i].accessList.indexOf(username) == -1)
-				continue;
+		$scope.reviews = []; 
 
-			var msg = {
-				pkey: $scope.currBPaper.key,
-				rkey: paperReviews[i].rkey,
-				reviewer: paperReviews[i].reviewer,
-				vnum: $scope.currVersion-1,
-				author: $scope.currBPaper.versions[$scope.currVersion-1].author,
-				from: username 
-			}; 
-			window.freedom.emit('get-other-paper-review', msg);
-		} 
+		var paperReviews = $scope.currBPaper.versions[$scope.currVersion-1].reviews;
+		console.log(JSON.stringify($scope.currBPaper.versions[$scope.currVersion-1]));
+
+		if(paperReviews)
+			for(var i = 0; i < paperReviews.length; i++) {
+				var msg = {
+					pkey: $scope.currBPaper.key,
+					rkey: paperReviews[i].rkey,
+					reviewer: paperReviews[i].reviewer,
+					vnum: $scope.currVersion-1,
+					author: $scope.currBPaper.versions[$scope.currVersion-1].author,
+					from: username 
+				}; 
+
+				window.freedom.emit('get-other-paper-review', msg);
+			} 
 	};
 
     window.freedom.on('got-paper-review', function(review){
@@ -81,7 +85,7 @@ app.controller('browseController', function($scope, $location) {
 
 	$scope.displayVersion = function(offset) {
 		$scope.currVersion = $scope.currVersion + offset; 
-		$scope.viewTitle = $scope.currBPaper.versions[$scope.currVersion-1] + " v." + $scope.currVersion + " of " + $scope.totalVersion; 
+		$scope.viewTitle = $scope.currBPaper.versions[$scope.currVersion-1].title + " v." + $scope.currVersion + " of " + $scope.totalVersion; 
 		$scope.viewComments = $scope.currBPaper.versions[$scope.currVersion-1].comments; 
 
 		$scope.getReviews(); 
