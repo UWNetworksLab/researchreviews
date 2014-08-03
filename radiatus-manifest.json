@@ -12,9 +12,13 @@
       "node_modules/jquery/dist/cdn/jquery-2.1.1.min.js",
       "javascript/ui-bootstrap-tpls-0.11.0.min.js",
       "node_modules/bootstrap/js/tooltip.js",
-      "./javascript/FileSaver.js",
-      "./javascript/ux.js",
-      "./square.png"
+      "javascript/FileSaver.js",
+      "javascript/ux.js",
+      "square.png",
+      "glyphicons-halflings-regular.eot",
+      "glyphicons-halflings-regular.ttf",
+      "glyphicons-halflings-regular.svg",
+      "fonts/glyphicons-halflings-regular.woff"
     ]
   },
   "dependencies": {
