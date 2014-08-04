@@ -129,6 +129,8 @@ app.controller('papersController', function($scope, $modal, $location) {
     }
 
     window.freedom.on('got-paper-review', function(review){
+      console.log("getting review in papers page.... " + JSON.stringify(review));
+
       if(!$scope.reviews) $scope.reviews=[];
       var index = $scope.reviews.map(function(el) {
         return el.reviewer;
