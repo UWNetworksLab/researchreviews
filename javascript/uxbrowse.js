@@ -21,9 +21,10 @@ app.controller('browseController', function($scope, $location) {
 		window.freedom.emit('load-public-storage', 0)
 	};
 
-	  $scope.getPublicPapers(); 
+	 $scope.getPublicPapers(); 
 
 	$scope.getPrivatePapers = function() {
+		console.log("getting private papers");
 		$("#privateBtn").attr('class', "btn btn-default active"); 
   		$("#publicBtn").attr('class', "btn btn-default"); 
   		$scope.publicSetting = false; 
@@ -156,7 +157,7 @@ app.controller('browseController', function($scope, $location) {
 	}); 
 
 	window.freedom.on('send-private-papers', function(data) {
-		console.log(JSON.stringify(data));
+		console.log("sent private papers...." + JSON.stringify(data));
 		$scope.papers = data; 
 		$scope.$apply(); 
 	}); 
