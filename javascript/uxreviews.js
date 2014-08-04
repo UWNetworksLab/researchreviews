@@ -76,20 +76,18 @@ app.controller('reviewsController', function($scope, $modal) {
 		//show reviews of a paper that this reviewer is able to access
 		$scope.currRPaper = msg;
 
-		console.log("xxxxx " + JSON.stringify(msg));
 		var paperReviews = $scope.currRPaper.reviews; 
 		if(paperReviews)
-		    for (var i = 0; i < paperReviews.length; i++) 
-		    	if(paperReviews[i].accessList.indexOf(username) != -1 || paperReviews[i].accessList === 'public') {
-		    	 	var r_msg = {
-				        pkey: $scope.currRPaper.key,
-				        rkey: paperReviews[i].rkey,
-				        reviewer: paperReviews[i].reviewer,
-				        vnum: paperReviews[i].vnum,
-				        author: username
-		        	};
-		       	 	window.freedom.emit('get-paper-review', r_msg);
-		    	}	
+		    for (var i = 0; i < paperReviews.length; i++){
+	    	 	var r_msg = {
+			        pkey: $scope.currRPaper.key,
+			        rkey: paperReviews[i].rkey,
+			        reviewer: paperReviews[i].reviewer,
+			        vnum: paperReviews[i].vnum,
+			        author: username
+	        	};
+	       	 	window.freedom.emit('get-paper-review', r_msg);
+		    }	
 
 		$scope.$apply();
 	});

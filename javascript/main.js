@@ -113,6 +113,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         reviewer: parse.reviewer
       };
 
+      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.author) == -1)
+        msg.text = "You do not have access to this review"; 
+
       social.sendMessage(parse.author, JSON.stringify(msg));
     });
   }
