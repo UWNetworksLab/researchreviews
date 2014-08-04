@@ -7,6 +7,7 @@ app.controller('alertsController', function($scope, $controller) {
 		$scope.alerts = oldMessageList;
 
 		messageList.forEach(function(msg){
+
       if (msg.action === 'invite-reviewer') {
         if (!$scope.alerts) $scope.alerts = [];
         var alertMsg = 'You have been invited to review the paper ' + msg.title + ' v.' + msg.vnum + ' by ' + msg.author;
