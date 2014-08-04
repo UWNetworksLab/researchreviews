@@ -28,8 +28,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       };
 
       social.sendMessage(parse.username, JSON.stringify(msg)).then(function(ret) {
-        console.log('sent message back to ' + parse.username + JSON.stringify(msg));
-        //Fulfill - sendMessage succeeded
       }, function(err) {
         freedom.emit("recv-err", err);
       });
@@ -37,7 +35,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-paper'){
-    console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -45,8 +42,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
 
+      console.log(JSON.stringify(papers));
+
      if(!papers || typeof papers !== "object") {
-        console.log("nothing in papers");
         papers = []; 
       }
       papers.push(parse);
@@ -55,7 +53,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'delete-paper'){
-    console.log("public storage got here!!!!!!!!!!!!!!!!!!!!! " + data.message);
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -64,7 +61,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       } catch(e) {}
 
      if(!papers || typeof papers !== "object") {
-        console.log("nothing in papers");
         papers = []; 
       }
       
@@ -74,20 +70,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           break; 
         }
 
-      console.log(papers.length);
-
       store.set('public-papers', JSON.stringify(papers)); 
     });
   }
-
 });
-
-/*social.sendMessage(val.to, val.msg).then(function(ret) {
-  console.log(val.to + val.from + val.msg);
-  //Fulfill - sendMessage succeeded
-}, function(err) {
-  freedom.emit("recv-err", err);å
-});*/ 
 
 social.login({
   agent: 'rr', 
@@ -96,7 +82,7 @@ social.login({
   interactive: false,
   rememberLogin: false
 }).then(function(ret) {
-  console.log("public storage logging in");
+  console.log("public storage logging in"); 
 }, function(err) {
   freedom.emit("recv-err", err);
 });

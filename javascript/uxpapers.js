@@ -368,6 +368,17 @@ app.controller('papersController', function($scope, $modal, $location) {
           msg: JSON.stringify(msg)
         });
       }
+
+    if(papers[key].versions[vnum].privateSetting) {
+      msg.action = 'allow-access'; 
+
+      for(var i = 0; i < $scope.alerts.length; i++) 
+        freedom.emit('send-message', {
+          to: $scope.alerts[i].msg,
+          msg: JSON.stringify(msg)
+        });      
+    }
+
     $modalInstance.dismiss('cancel');
     };
     $scope.cancel = function () {

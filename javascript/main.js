@@ -217,7 +217,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     //console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
   }
   else if (parse.action === "invite-reviewer"){
-
     var review = {
       ptitle: parse.title, 
       pkey: parse.key,
