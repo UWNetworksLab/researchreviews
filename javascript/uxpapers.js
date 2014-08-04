@@ -67,7 +67,8 @@ app.controller('papersController', function($scope, $modal, $location) {
       window.freedom.on('display-papers', function(data) {
         if(Object.keys(data.papers).length > 0) {
           for(var key in data.papers) {
-            console.log(JSON.stringify(data.papers[key]));
+            for(var i = 0; i  < data.papers[key].versions.length; i++)
+              data.papers[key].versions[i].date = new Date(data.papers[key].versions[i].date);  
             $scope.papers[key] = data.papers[key]; 
           }
         }
