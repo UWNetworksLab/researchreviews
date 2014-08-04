@@ -59,6 +59,7 @@ app.controller('mainController', function($scope, $location) {
     if (!messageList) messageList=[];
     messageList.push(msg);
     $scope.numAlerts = messageList.length;
+    alertNum = $scope.numAlerts; 
     $scope.$apply();
   });
 
