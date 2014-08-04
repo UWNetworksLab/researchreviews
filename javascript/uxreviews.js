@@ -75,8 +75,8 @@ app.controller('reviewsController', function($scope, $modal) {
 	window.freedom.on('send-r-paper', function(msg){
 		//show reviews of a paper that this reviewer is able to access
 		$scope.currRPaper = msg.version;
-		$scope.$apply();
 
+		console.log("xxxxx " + JSON.stringify(msg.version));
 		var paperReviews = $scope.currRPaper.reviews; 
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++) 
@@ -90,6 +90,8 @@ app.controller('reviewsController', function($scope, $modal) {
 		        	};
 		       	 	window.freedom.emit('get-paper-review', r_msg);
 		    	}	
+
+		$scope.$apply();
 	});
 
 	$scope.getPendingReviews = function() {
