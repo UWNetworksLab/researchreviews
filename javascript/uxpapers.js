@@ -54,7 +54,6 @@ app.controller('papersController', function($scope, $modal, $location) {
       window.freedom.on('display-other-papers', function(papers) {
         for(var key in papers) {
           $scope.papers[key] = papers[key];
-          $scope.papers[key].date = new Date(papers[key].date); 
         } 
         $scope.viewTitle = "Please choose a paper.";
         $scope.viewComments = "";  
@@ -67,6 +66,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       window.freedom.on('display-papers', function(data) {
         if(Object.keys(data.papers).length > 0) {
           for(var key in data.papers) {
+            console.log(JSON.stringify(data.papers[key]));
             $scope.papers[key] = data.papers[key]; 
           }
         }
