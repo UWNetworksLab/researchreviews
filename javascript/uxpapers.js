@@ -79,7 +79,8 @@ app.controller('papersController', function($scope, $modal, $location) {
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
     $scope.reviews = []; 
 
-    var len = $scope.papers[key].versions.length;
+    if($scope.papers[key].versions)
+      var len = $scope.papers[key].versions.length;
 
     if(vnum) {
       $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
