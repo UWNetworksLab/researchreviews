@@ -43,8 +43,8 @@
             <h4 ng-hide="!reviewKey"> Comments </h4> 
             {{ currRPaper.comments }} 
 
-            <h4 ng-hide="!reviewKey"> Reviews </h4> 
-            <accordion ng-hide="!reviewKey">
+            <h4> Reviews </h4> 
+            <accordion>
               <accordion-group ng-repeat="review in currPaperReviews" heading={{review.reviewer}}>{{review.text}}</accordion>
             </accordion>
           </div> <!--landing-container-->
