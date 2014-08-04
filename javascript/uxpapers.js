@@ -99,10 +99,6 @@ app.controller('papersController', function($scope, $modal, $location) {
         var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
 
         for (var i = 0; i < paperReviews.length; i++){
-          if($location.search().username && $location.search().username !== username) 
-            if(paperReviews[i].accessList !== "public" && paperReviews[i].accessList.indexOf(username) == -1)
-              continue; 
-
           var msg = {
             pkey: key,
             rkey: paperReviews[i].rkey,
