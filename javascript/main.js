@@ -116,6 +116,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       social.sendMessage(parse.author, JSON.stringify(msg));
     });
   }
+  else if(parse.action === 'get-public-papers') {
+    freedom.emit('got-public-papers', parse.papers);
+  }
   else if (parse.action === "get-other-paper-review"){
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
@@ -134,8 +137,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.from) == -1)
         msg.text = "You do not have access to this review."; 
-
-      console.log("xxx got here");
 
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
@@ -213,7 +214,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('display-other-reviews', parse.reviews);
   }
   else if(parse.action === 'delete-r-paper') {
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
+    //console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
   }
   else if (parse.action === "invite-reviewer"){
 
@@ -255,7 +256,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
      if(!papers || typeof papers !== "object") papers = {}; 
-     console.log(parse);
       papers[parse.key] = parse; 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
@@ -433,7 +433,6 @@ freedom.on('edit-privacy', function(msg) {
 
     for(key in papers) {
       if(key == data.key) {
-        console.log(JSON.stringify(data));
         if(data.action === 'toPublic') { //change to public
           papers[key].versions[data.vnum].viewList = false; 
           papers[key].versions[data.vnum].privateSetting = false; 
@@ -676,6 +675,7 @@ freedom.on('load-public-storage', function(data){
     username: username,
     action: 'get-public-papers'
   };
+
   social.sendMessage("publicstorage", JSON.stringify(message)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);

@@ -3,6 +3,7 @@ app.controller('browseController', function($scope, $location) {
 
   	//for browse paper table
   	$scope.papers;
+  	$scope.publicSetting = true; 
 
   	//for browse paper view
   	$scope.currBPaper; 
@@ -16,12 +17,16 @@ app.controller('browseController', function($scope, $location) {
 	$scope.getPublicPapers = function() {
 		$("#publicBtn").attr('class', "btn btn-default active"); 
   		$("#privateBtn").attr('class', "btn btn-default"); 
+  		$scope.publicSetting = true; 
 		window.freedom.emit('load-public-storage', 0)
 	};
+
+	  $scope.getPublicPapers(); 
 
 	$scope.getPrivatePapers = function() {
 		$("#privateBtn").attr('class', "btn btn-default active"); 
   		$("#publicBtn").attr('class', "btn btn-default"); 
+  		$scope.publicSetting = false; 
 		window.freedom.emit('load-private-papers', 0) 
 	}; 
 
@@ -48,6 +53,10 @@ app.controller('browseController', function($scope, $location) {
 			$scope.viewTitle = paper.versions[len-1].title + " v." + len + " of " + len; 
 			$scope.viewComments = paper.versions[len-1].comments; 
 			$scope.$apply(); 
+			if($scope.publicSetting) 
+				$scope.getPublicPapers(); 
+			else 
+				$scope.getPrivatePapers(); 
 			$scope.getReviews(); 
 		}); 
 	};
@@ -56,7 +65,6 @@ app.controller('browseController', function($scope, $location) {
 		$scope.reviews = []; 
 
 		var paperReviews = $scope.currBPaper.versions[$scope.currVersion-1].reviews;
-		console.log(JSON.stringify($scope.currBPaper.versions[$scope.currVersion-1]));
 
 		if(paperReviews)
 			for(var i = 0; i < paperReviews.length; i++) {
@@ -72,6 +80,12 @@ app.controller('browseController', function($scope, $location) {
 				window.freedom.emit('get-other-paper-review', msg);
 			} 
 	};
+
+	window.freedom.on('got-public-papers', function(papers) {
+		$scope.papers = papers; 
+		$scope.$apply(); 
+		console.log(JSON.stringify($scope.papers));
+	}); 
 
     window.freedom.on('got-paper-review', function(review){
       if(!$scope.reviews) $scope.reviews=[];
@@ -134,8 +148,6 @@ app.controller('browseController', function($scope, $location) {
 	    reader.readAsArrayBuffer(blob);
 	    saveAs(blob, file.title);
 	}; 
-
-	window.freedom.emit('load-public-storage', 0); 
 
 	window.freedom.on('recv-message', function(data) {
 		$scope.papers = data.papers; 

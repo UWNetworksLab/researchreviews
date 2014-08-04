@@ -13,7 +13,9 @@
 
     <table class="table table-hover">
       <tr ng-repeat="paper in papers"> 
-        <td> <a ng-click="getPaper(paper)">{{paper.title}}</a> by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> </td> 
+        <td> 
+          <a ng-click="getPaper(paper)">{{paper.title}}</a> by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> 
+        </td> 
       </tr> 
     </table> 
 
