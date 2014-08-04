@@ -96,7 +96,7 @@ social.login({
   interactive: false,
   rememberLogin: false
 }).then(function(ret) {
-
+  console.log("public storage logging in");
 }, function(err) {
   freedom.emit("recv-err", err);
 });
