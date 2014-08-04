@@ -17,9 +17,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       } catch(e) {}
 
       if(!papers || typeof papers !== "object") {
-        console.log("nothing in papers");
         papers = []; 
       }
+
+      console.log(JSON.stringify(papers));
 
       var msg = {
         papers: papers,
