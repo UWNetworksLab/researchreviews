@@ -4,6 +4,8 @@ var store = freedom.localstorage();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
 
+  console.log(data.message);
+
   if (parse.action === 'get-public-papers'){
     console.log('get-public-papers');
 
