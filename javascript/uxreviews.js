@@ -76,7 +76,7 @@ app.controller('reviewsController', function($scope, $modal) {
 		//show reviews of a paper that this reviewer is able to access
 		$scope.currRPaper = msg.version;
 
-		console.log("xxxxx " + JSON.stringify(msg.version));
+		console.log("xxxxx " + JSON.stringify(msg));
 		var paperReviews = $scope.currRPaper.reviews; 
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++) 
