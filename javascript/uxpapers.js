@@ -52,7 +52,10 @@ app.controller('papersController', function($scope, $modal, $location) {
         from: username 
       }); 
       window.freedom.on('display-other-papers', function(papers) {
-        for(var key in papers) $scope.papers[key] = papers[key]; 
+        for(var key in papers) {
+          $scope.papers[key] = papers[key];
+          $scope.papers[key].date = new Date(papers[key].date); 
+        } 
         $scope.viewTitle = "Please choose a paper.";
         $scope.viewComments = "";  
         $scope.accessAddBtn = false; 
