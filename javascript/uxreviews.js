@@ -74,7 +74,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.on('send-r-paper', function(msg){
 		//show reviews of a paper that this reviewer is able to access
-		$scope.currRPaper = msg.version;
+		$scope.currRPaper = msg;
 
 		console.log("xxxxx " + JSON.stringify(msg));
 		var paperReviews = $scope.currRPaper.reviews; 
