@@ -8,8 +8,6 @@ var alertNum = 0;
 var messageList = [];
 var oldMessageList = [];
 
-console.log(userList);
-
 //we have to make it an array, not associative array: it won't be in order unless we give an index.
 window.freedom.on('new-user', function(newUser){
   if(newUser !== 'publicstorage' && newUser !== username)

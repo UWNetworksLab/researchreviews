@@ -46,6 +46,7 @@ app.controller('browseController', function($scope, $location) {
 		window.freedom.emit('get-browse-paper', msg); 
 		window.freedom.on('display-browse-paper', function(paper) {
 			$scope.currBPaper = paper;
+			console.log("xxxxxx" + JSON.stringify(paper));
 			$scope.currVersion = paper.versions.length; 
 			$scope.totalVersion = paper.versions.length; 
 			var len = paper.versions.length; 
