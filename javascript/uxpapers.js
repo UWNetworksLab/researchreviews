@@ -503,10 +503,6 @@ app.controller('papersController', function($scope, $modal, $location) {
     reader.onload = function() {
       var arrayBuffer = reader.result;
       var today = new Date();  
-      var dd = today.getDate();
-      var mm = today.getMonth()+1; 
-      var yyyy = today.getFullYear();
-      today = yyyy+'-'+mm+'-'+dd; 
 
       msg.title = newFile.name; 
       msg.date = today;
