@@ -44,8 +44,10 @@ app.controller('profileController', function($scope, $modal, $location) {
 
   	window.freedom.on('display-other-papers', function(papers) {
   		$scope.ownProfile = $location.search().username; 
-  		for(var key in papers)
-  			papers[key].date = new Date(papers[key].date);
+  		for(var key in papers) 
+  			for(var i = 0; i < papers[key].versions.length; i++)
+  				papers[key].versions[i].date = new Date(papers[key].versions[i].date); 
+  		
   		$scope.papers = papers;
   		$scope.$apply(); 
   	}); 
@@ -66,6 +68,10 @@ app.controller('profileController', function($scope, $modal, $location) {
 	});
 
 	window.freedom.on('display-papers', function(data) {
+		for(key in data.papers) {
+			for(var i = 0; i < data.papers[key].versions.length; i++)
+				data.papers[key].versions[i].date = new Date(data.papers[key].versions[i].date); 
+		}
 		$scope.papers = data.papers; 
 		$scope.$apply(); 
 	}); 
