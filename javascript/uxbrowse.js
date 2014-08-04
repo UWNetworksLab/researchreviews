@@ -21,7 +21,7 @@ app.controller('browseController', function($scope, $location) {
 		window.freedom.emit('load-public-storage', 0)
 	};
 
-	 $scope.getPublicPapers(); 
+	$scope.getPublicPapers(); 
 
 	$scope.getPrivatePapers = function() {
 		console.log("getting private papers");
@@ -83,6 +83,7 @@ app.controller('browseController', function($scope, $location) {
 			} 
 	};
 
+	//recv message
 	window.freedom.on('got-public-papers', function(papers) {
 		$scope.papers = papers; 
 		$scope.$apply(); 
@@ -150,11 +151,6 @@ app.controller('browseController', function($scope, $location) {
 	    reader.readAsArrayBuffer(blob);
 	    saveAs(blob, file.title);
 	}; 
-
-	window.freedom.on('recv-message', function(data) {
-		$scope.papers = data.papers; 
-		$scope.$apply(); 
-	}); 
 
 	window.freedom.on('send-private-papers', function(data) {
 		console.log("sent private papers...." + JSON.stringify(data));

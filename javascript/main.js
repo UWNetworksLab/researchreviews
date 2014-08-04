@@ -299,6 +299,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
+  else if(parse.action === 'send-r-paper') {
+    freedom.emit('send-r-paper', parse.version);
+  }
   else if (parse.action === 'add-review-on-author'){
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
@@ -321,8 +324,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       };
       freedom.emit('alert', alertmsg);
     });
-  }
-  freedom.emit('recv-message', parse);    
+  }  
 });
 
 freedom.on('get-paper-review', function(msg){
