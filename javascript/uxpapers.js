@@ -53,6 +53,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       }); 
       window.freedom.on('display-other-papers', function(papers) {
         for(var key in papers) {
+          console.log(JSON.stringify(papers[key]));
           $scope.papers[key] = papers[key];
         } 
         $scope.viewTitle = "Please choose a paper.";
