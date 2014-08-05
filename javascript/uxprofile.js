@@ -68,14 +68,12 @@ app.controller('profileController', function($scope, $modal, $location) {
 	});
 
 	window.freedom.on('display-papers', function(data) {
-		console.log(JSON.stringify(data.papers));
 		for(key in data.papers) {
 			for(var i = 0; i < data.papers[key].versions.length; i++)
 				data.papers[key].versions[i].date = new Date(data.papers[key].versions[i].date); 
 		}
 		$scope.papers = data.papers; 
 		$scope.$apply(); 
-		console.log(JSON.stringify($scope.papers));
 	}); 
 
 	window.freedom.on('display-reviews', function(data) {

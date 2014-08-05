@@ -300,13 +300,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       if (papers[parse.key]) msg.version = papers[parse.key].versions[parse.vnum];
 
-      console.log("sending... " + JSON.stringify(msg.version));
-
       social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
   else if(parse.action === 'send-r-paper') {
-    console.log("send r paper");
     freedom.emit('send-r-paper', parse.version);
   }
   else if (parse.action === 'add-review-on-author'){

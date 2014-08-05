@@ -2,7 +2,7 @@ app.controller('papersController', function($scope, $modal, $location) {
   $scope.showNav = true; 
 
   //for paperTable
-  $scope.papers = {}; 
+  $scope.papers = [];  
 
   //for paperView
   $scope.viewTitle = "";
@@ -17,6 +17,44 @@ app.controller('papersController', function($scope, $modal, $location) {
   //for looking at someone else's papers
   $scope.accessBtn = true;
   $scope.accessAddBtn = true;   
+
+  $scope.isopen = false; 
+
+  $scope.sortPapers = function(sortOpt) {
+    console.log("sorting by..." + sortOpt);
+
+    var tuples = [];
+
+    if(sortOpt === 'title') {
+      for (var key in $scope.papers) {
+        var versions = $scope.papers[key].versions; 
+        console.log("xx" + versions[versions.length-1].title); 
+        tuples.push([key, $scope.papers[key]]);
+      }
+    }
+
+    tuples.sort(function(a, b) {
+        a = a[1];
+        b = b[1];
+        a = a.versions[a.versions.length-1].title.toUpperCase(); 
+        b = b.versions[b.versions.length-1].title.toUpperCase(); 
+        if(a < b)
+          console.log(a + " is smaller than " + b);
+        else if(a > b)
+          console.log(a + " is bigger than " + b);
+        else 
+          console.log(a + " is equal to " + b);
+        return a < b ? -1 : (a > b ? 1 : 0);
+    });
+
+    for (var i = 0; i < tuples.length; i++) {
+        var key = tuples[i][0];
+        var value = tuples[i][1];
+        console.log(key + " " + value.versions[value.versions.length-1].title);
+    }
+
+    console.log(JSON.stringify(tuples));
+  }
 
   $scope.displayVersion = function(offset) {
     $scope.currVersion = $scope.currVersion + offset; 
@@ -53,8 +91,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       }); 
       window.freedom.on('display-other-papers', function(papers) {
         for(var key in papers) {
-          console.log(JSON.stringify(papers[key]));
-          $scope.papers[key] = papers[key];
+          $scope.papers.push([key, papers[key]]); 
         } 
         $scope.viewTitle = "Please choose a paper.";
         $scope.viewComments = "";  
@@ -65,11 +102,12 @@ app.controller('papersController', function($scope, $modal, $location) {
     else { //load own papers
       window.freedom.emit('get-papers', 0); 
       window.freedom.on('display-papers', function(data) {
+        $scope.papers = []; 
         if(Object.keys(data.papers).length > 0) {
           for(var key in data.papers) {
             for(var i = 0; i  < data.papers[key].versions.length; i++)
               data.papers[key].versions[i].date = new Date(data.papers[key].versions[i].date);  
-            $scope.papers[key] = data.papers[key]; 
+            $scope.papers.push([key, data.papers[key]]);      
           }
         }
         $scope.$apply(); 
@@ -82,23 +120,30 @@ app.controller('papersController', function($scope, $modal, $location) {
   loadPapersPage(); 
 
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
+    //LOAD PAPER VIEW
+    for(var i = 0; i < $scope.papers.length; i++) 
+      if($scope.papers[i][0] == key) {
+        if(vnum) { //from version buttons
+          var len = $scope.papers[i][1].versions.length; 
+          $scope.viewTitle = $scope.papers[i][1].versions[vnum-1].title + " v." + vnum + " of " + len; 
+          $scope.viewComments = $scope.papers[i][1].versions[vnum-1].comments;  
+          $scope.totalVersion = len; 
+        }
+        else { //from paper table
+          $scope.viewKey = key; 
+          var len = $scope.papers[i][1].versions.length; 
+          $scope.viewTitle = $scope.papers[i][1].versions[len-1].title + " v." + len + " of " + len; 
+          $scope.viewComments = $scope.papers[i][1].versions[len-1].comments;
+          $scope.currVersion = len; 
+          $scope.totalVersion = len;        
+        }
+        break; 
+      }
+    
+    //LOAD REVIEWS
+    /*
     $scope.reviews = []; 
-
-    var len = $scope.papers[key].versions.length;
-
-    if(vnum) {
-      $scope.viewTitle = $scope.papers[key].versions[vnum-1].title + " v." + vnum + " of " + len; 
-      $scope.viewComments = $scope.papers[key].versions[vnum-1].comments;  
-    }
-    else {
-      $scope.viewKey = key; 
-      $scope.viewTitle = $scope.papers[key].versions[len-1].title + " v." + len + " of " + len; 
-      $scope.viewComments = $scope.papers[key].versions[len-1].comments;
-      $scope.currVersion = len; 
-      $scope.totalVersion = len; 
-    }
-
-    if($location.search().username && $location.search().username !== username) { //load someone else's paper 
+    if($location.search().username && $location.search().username !== username) { //load someone else's paper's reviews 
       $scope.accessBtn = false;
       if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
         var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
@@ -134,8 +179,6 @@ app.controller('papersController', function($scope, $modal, $location) {
     }
 
     window.freedom.on('got-paper-review', function(review){
-      console.log("getting review in papers page.... " + JSON.stringify(review));
-
       if(!$scope.reviews) $scope.reviews=[];
       var index = $scope.reviews.map(function(el) {
         return el.reviewer;
@@ -143,21 +186,24 @@ app.controller('papersController', function($scope, $modal, $location) {
       if(index == -1) $scope.reviews.push(review);
       else $scope.reviews[index] = review; 
       $scope.$apply();
-    });
+    });*/ 
 
     if(!$scope.$$phase) {
       $scope.$apply(); 
-    }
+    }    
   }; 
 
   window.freedom.on('display-delete-version', function(key) {
-    console.log("boajsodfijaisldjflj");
-
     $scope.viewTitle = "Your paper has been deleted.";
     $scope.viewComments = "";
 
     if($scope.currVersion-1 == 0) {
-      delete $scope.papers[$scope.viewKey]; 
+      for(var i = 0; i < $scope.papers.length; i++) 
+        if($scope.papers[i][0] == key) {
+          $scope.papers.splice(i, 1);
+          break; 
+        }
+      
       $scope.viewKey = false; 
       $scope.currVersion = 1;
       $scope.totalVersion = 1; 
@@ -178,13 +224,21 @@ app.controller('papersController', function($scope, $modal, $location) {
   });
 
   window.freedom.on('display-new-paper', function(newPaper) {
-    $scope.papers[newPaper.key] = newPaper;  
+    $scope.papers.push([newPaper.key, newPaper]); 
+    $scope.$apply(); 
     $scope.showPaperView(newPaper.key); 
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
     $scope.reviews = []; 
-    $scope.papers[newVersion.key] = newVersion; 
+    for(var i = 0; i < $scope.papers.length; i++) {
+      if($scope.papers[i][1].key == newVersion.key) {
+        $scope.papers[i][1] = newVersion; 
+        break; 
+      }
+    }
+
+   // $scope.papers[newVersion.key] = newVersion; 
     $scope.showPaperView(newVersion.key); 
     $scope.$apply(); 
   });
@@ -224,7 +278,9 @@ app.controller('papersController', function($scope, $modal, $location) {
           return $scope.viewKey; 
         },
         privateSetting: function() {
-          return $scope.papers[$scope.viewKey].versions[$scope.currVersion-1].privateSetting; 
+          for(var i = 0; i < $scope.papers.length; i++)
+            if($scope.papers[i][0] == $scope.viewKey) 
+              return $scope.papers[i][1].versions[$scope.currVersion-1].privateSetting; 
         },
         vnum: function() {
           return $scope.currVersion-1;  
@@ -359,7 +415,20 @@ app.controller('papersController', function($scope, $modal, $location) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
-    $scope.privacyHeading = papers[key].versions[vnum].privateSetting ? "Select users to view this paper" : "Invite reviewers";  
+    $scope.privacyHeading; 
+
+    $scope.init = function() {
+      var paper; 
+      //console.log(JSON.stringify(papers));
+      for(var i = 0; i < papers.length; i++)
+        if(papers[i][0] == key) {
+          paper = papers[i][1];
+          break; 
+        }
+      $scope.privacyHeading = paper.versions[vnum].privateSetting? "Select users to view this paper" : "Invite reviewers";  
+    };
+
+    $scope.init(); 
 
     $scope.selectMatch = function(selection) {
       $scope.alerts.push({msg: selection});
@@ -371,8 +440,15 @@ app.controller('papersController', function($scope, $modal, $location) {
     };
 
     $scope.invite = function () {
+      var paper; 
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i][0] == key) {
+          paper = papers[i][1]; 
+          break; 
+        }
+
       var msg = {
-        title: papers[key].versions[vnum].title,        
+        title:  paper.versions[vnum].title,        
         action: 'invite-reviewer',
         key: key,
         author: username,
@@ -386,7 +462,7 @@ app.controller('papersController', function($scope, $modal, $location) {
         });
       }
 
-    if(papers[key].versions[vnum].privateSetting) {
+    if(paper.versions[vnum].privateSetting) {
       msg.action = 'allow-access'; 
 
       for(var i = 0; i < $scope.alerts.length; i++) 
@@ -484,6 +560,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       vnum: $scope.currVersion-1 
     });
   };
+
   $scope.downloadVersion = function () {
     if($location.search().username && $location.search().username !== username) { 
       //check user access before they download someone else's paper version 
@@ -493,7 +570,14 @@ app.controller('papersController', function($scope, $modal, $location) {
         return; 
       }
     }
-    var file = $scope.papers[$scope.viewKey].versions[$scope.currVersion-1]; 
+
+    var file; 
+    for(var i = 0; i < $scope.papers.length; i++) 
+      if($scope.papers[i][0] == $scope.viewKey) {
+        file = $scope.papers[i][1].versions[$scope.currVersion-1]; 
+        break; 
+      }
+
     var ab = str2ab(file.binaryString);
     var reader = new FileReader();
     var blob = new Blob([ab], {type:'application/pdf'});
