@@ -21,39 +21,33 @@ app.controller('papersController', function($scope, $modal, $location) {
   $scope.isopen = false; 
 
   $scope.sortPapers = function(sortOpt) {
-    console.log("sorting by..." + sortOpt);
-
-    var tuples = [];
-
     if(sortOpt === 'title') {
-      for (var key in $scope.papers) {
-        var versions = $scope.papers[key].versions; 
-        console.log("xx" + versions[versions.length-1].title); 
-        tuples.push([key, $scope.papers[key]]);
-      }
-    }
-
-    tuples.sort(function(a, b) {
+      $scope.papers.sort(function(a, b) {
         a = a[1];
         b = b[1];
         a = a.versions[a.versions.length-1].title.toUpperCase(); 
         b = b.versions[b.versions.length-1].title.toUpperCase(); 
-        if(a < b)
-          console.log(a + " is smaller than " + b);
-        else if(a > b)
-          console.log(a + " is bigger than " + b);
-        else 
-          console.log(a + " is equal to " + b);
         return a < b ? -1 : (a > b ? 1 : 0);
-    });
-
-    for (var i = 0; i < tuples.length; i++) {
-        var key = tuples[i][0];
-        var value = tuples[i][1];
-        console.log(key + " " + value.versions[value.versions.length-1].title);
+      });
     }
-
-    console.log(JSON.stringify(tuples));
+    else if(sortOpt === 'newest') {
+      $scope.papers.sort(function(a, b) {
+        a = a[1];
+        b = b[1];
+        a = a.versions[a.versions.length-1].date; 
+        b = b.versions[b.versions.length-1].date; 
+        return a < b ? -1 : (a > b ? 1 : 0);
+      });     
+    }
+    else if(sortOpt === 'oldest') {
+      $scope.papers.sort(function(a, b) {
+        a = a[1];
+        b = b[1];
+        a = a.versions[a.versions.length-1].date; 
+        b = b.versions[b.versions.length-1].date; 
+        return a > b ? -1 : (a < b ? 1 : 0);
+      });
+    }
   }
 
   $scope.displayVersion = function(offset) {
@@ -111,9 +105,12 @@ app.controller('papersController', function($scope, $modal, $location) {
           }
         }
         $scope.$apply(); 
+
+        if($scope.papers.length > 0) {
+          $scope.sortPapers('newest');
+          $scope.showPaperView($scope.papers[0][0]);  
+        }
       }); 
-      $scope.viewTitle = "Please choose a paper.";
-      $scope.viewComments = ""; 
     }
   };  
 
