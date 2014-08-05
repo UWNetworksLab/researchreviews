@@ -3,11 +3,12 @@
     <div class="view-container">
       <!--Two Columns--papers, paper view-->
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
           <div style="margin-bottom:20px; margin-top:20px">
             <div class="btn-group">
               <button type="button" id="publicBtn" class="btn btn-default active" ng-click="getPublicPapers()">Public Papers</button>
               <button type="button" id="privateBtn" class="btn btn-default" ng-click="getPrivatePapers()">Shared Private Papers</button>
+              <button type="button" id="groupBtn" class="btn btn-default" ng-click="getGroupPapers()">Group Papers</button> 
             </div>
           </div>
 
@@ -15,14 +16,14 @@
       <tr ng-repeat="paper in papers"> 
         <td> 
           <a ng-click="getPaper(paper)">{{paper.title}}</a> by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> 
-        </td> 
+        </td>   
       </tr> 
     </table> 
 
         </div>
       
       <!--papers-->
-        <div class="col-md-8">
+        <div class="col-md-6">
           <div class="landing-container">
             <h1 align="center"> {{ viewTitle }} </h1>
             <div id = "options-and-nav">

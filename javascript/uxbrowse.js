@@ -14,9 +14,17 @@ app.controller('browseController', function($scope, $location) {
   	$scope.viewComments; 
   	$scope.reviews; 
 
+  	$scope.getGroupPapers = function() {
+		$("#publicBtn").attr('class', "btn btn-default"); 
+  		$("#privateBtn").attr('class', "btn btn-default"); 
+  		$("#groupBtn").attr('class', "btn btn-default active");  		
+  	}; 
+
 	$scope.getPublicPapers = function() {
 		$("#publicBtn").attr('class', "btn btn-default active"); 
   		$("#privateBtn").attr('class', "btn btn-default"); 
+    	$("#groupBtn").attr('class', "btn btn-default");  		
+
   		$scope.publicSetting = true; 
 		window.freedom.emit('load-public-storage', 0)
 	};
@@ -26,6 +34,8 @@ app.controller('browseController', function($scope, $location) {
 	$scope.getPrivatePapers = function() {
 		$("#privateBtn").attr('class', "btn btn-default active"); 
   		$("#publicBtn").attr('class', "btn btn-default"); 
+    	$("#groupBtn").attr('class', "btn btn-default");  
+    	
   		$scope.publicSetting = false; 
 		window.freedom.emit('load-private-papers', 0) 
 	}; 
