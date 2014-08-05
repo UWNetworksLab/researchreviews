@@ -1,0 +1,44 @@
+{
+  "name": "blizi",
+  "description": "Research paper review application for freedom.js",
+  "app": {
+    "script": "javascript/main.js",
+    "index": "index.html",
+    "static": [
+      "./css/bootstrap.min.css",
+      "./css/rrstyle.css",
+      "node_modules/angular/lib/angular.min.js",
+      "node_modules/angular/lib/angular.min.js.map",
+      "node_modules/jquery/dist/cdn/jquery-2.1.1.min.js",
+      "javascript/ui-bootstrap-tpls-0.11.0.min.js",
+      "node_modules/bootstrap/js/tooltip.js",
+      "javascript/FileSaver.js",
+      "javascript/ux.js",
+      "square.png",
+      "glyphicons-halflings-regular.eot",
+      "glyphicons-halflings-regular.ttf",
+      "glyphicons-halflings-regular.svg",
+      "fonts/glyphicons-halflings-regular.woff"
+    ]
+  },
+  "dependencies": {
+    "socialprovider": {
+      "url": "node_modules/freedom/providers/social/websocket-server/social.ws.json",
+      "api": "social"
+    }, 
+    "transport": {
+      "url": "node_modules/freedom/providers/transport/webrtc/transport.webrtc.json",
+      "api": "transport"
+    },
+    "localstorage": {
+      "url": "node_modules/freedom/providers/storage/shared/storage.shared.json",
+      "api": "storage"
+    }
+  },
+  "services": {
+    "publicstorage": {
+      "url": "javascript/publicstorage.json", 
+      "api": "social"
+    }
+  }
+}

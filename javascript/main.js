@@ -3,6 +3,7 @@
 var store = freedom.localstorage();
 var social = freedom.socialprovider(); 
 var myClientState = null;
+var username = null;
 
 var userList = []; 
 var username; 
@@ -418,7 +419,8 @@ freedom.on('send-message', function(val) {
 });
 
 social.on('onUserProfile', function(data) {
-  if(data.userId !== 'publicstorage' && data.userId !== username) 
+  if(data.userId !== 'publicstorage' && 
+    data.userId !== username) 
     userList.push(data.userId); 
   freedom.emit('new-user', data.userId);
 });
