@@ -26,6 +26,11 @@ app.config(function($routeProvider) {
       controller  : 'reviewsController'
     })
 
+    .when('/groupspage', {
+      templateUrl : 'pages/groupspage.html',
+      controller  : 'groupsController'
+    })
+
     .when('/paperspage', {
       templateUrl : 'pages/paperspage.html',
       controller  : 'papersController'
