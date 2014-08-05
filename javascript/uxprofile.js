@@ -5,7 +5,19 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.showNav = true; 
   	$scope.ownProfile = true; 
 
-  	$scope.groups = ["class1", "class2", "class3"];
+  	$scope.groups = [{
+	  		name: "class1",
+	  		users: ["a", "b", "c"] 
+  		}, 
+  		{
+  			name: "class2",
+  			users: ["d", "e"]
+  		}, 
+  		{
+  			name: "class3",
+  			users: "s"
+  		}
+  	];
 
   	$scope.init = function() {
   		if($location.search().username && $location.search().username !== username) { //load someone else's profile
@@ -55,7 +67,7 @@ app.controller('profileController', function($scope, $modal, $location) {
   	}); 
 
 	window.freedom.on('display-profile', function(data) {
-	  if(data.string === "" && data.description === "") {
+	  if((data.string === "" || data.string === undefined) && data.description === "") {
 	    $("#profile_pic").attr('src', "square.png"); 
 	    return; 
 	  }
@@ -85,28 +97,78 @@ app.controller('profileController', function($scope, $modal, $location) {
 		$scope.$apply(); 
 	});
 
-	 $scope.changeView = function(view){
-	    $location.path(view);  
-	 };
+	$scope.changeView = function(view){
+		$location.path(view);  
+	};
 
-	  $scope.editProfile = function() {
-	  	if($scope.ownProfile != true) {
-	  		alert("You don't have permission to edit this profile.");
-	  		return; 
-	  	}
+	$scope.editGroups = function() {
+		if($scope.ownProfile != true) {
+			alert("You don't have permission to edit these groups.");
+			return; 
+		}
 
-	    var modalInstance = $modal.open({
-	      templateUrl: '/modals/editProfileTemplate.html',
-	      windowClass:'normal',
-	      controller: editProfileCtrl,
-	      backdrop: 'static', 
-	      resolve: {
-       		 description: function() {
-          		return $scope.description; 
-        	} 
-          } 
-	    }); 
-	  };
+		var modalInstance = $modal.open({
+		  templateUrl: '/modals/editGroupsTemplate.html',
+		  windowClass:'normal',
+		  controller: editGroupsCtrl,
+		  backdrop: 'static', 
+		  resolve: {
+			groups: function() {
+		  		return $scope.groups; 
+			} 
+		  } 
+		}); 		
+	}; 
+
+	var editGroupsCtrl = function($scope, $modalInstance, groups) {
+		$scope.groups = groups; 
+		$scope.states = userList; 
+
+	    $scope.selected = undefined;
+	    $scope.alerts = [];
+
+
+	 	$scope.init = function() {
+	 		$scope.alerts.push({msg: username});
+	 	}; 
+
+	 	$scope.init(); 
+
+		$scope.deleteUser = function(id) {
+		  $scope.alerts.splice(id, 1);
+		};
+
+		$scope.selectMatch = function(selection) {
+		  $scope.alerts.push({msg: selection});
+		};
+
+		$scope.upload = function() {
+			$modalInstance.dismiss('cancel');
+		};
+
+		$scope.cancel = function() {
+			$modalInstance.dismiss('cancel');
+		};
+	}
+
+	$scope.editProfile = function() {
+		if($scope.ownProfile != true) {
+			alert("You don't have permission to edit this profile.");
+			return; 
+		}
+
+		var modalInstance = $modal.open({
+		  templateUrl: '/modals/editProfileTemplate.html',
+		  windowClass:'normal',
+		  controller: editProfileCtrl,
+		  backdrop: 'static', 
+		  resolve: {
+				 description: function() {
+		  		return $scope.description; 
+			} 
+		  } 
+		}); 
+	};
 
 	 var editProfileCtrl = function ($scope, $modalInstance, description) {
 	  //TODO: get email 

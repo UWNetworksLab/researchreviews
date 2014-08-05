@@ -8,9 +8,15 @@
           
           <p> {{description}} </p> 
 
+        <div class="panel panel-default" tooltip="edit groups" ng-click="editGroups()"> 
+          <div class="panel-heading">My Groups</div>
           <ul class="list-group">
-            <li class="list-group-item" ng-repeat="group in groups">{{ group }}</li>
+            <li class="list-group-item" ng-repeat="group in groups">{{ group.name }}</li>
           </ul>
+        </div> 
+
+
+
         </div>
       </div> <!--sidebar-->
     </div> <!--profile-->
