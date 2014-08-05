@@ -129,7 +129,7 @@ app.controller('profileController', function($scope, $modal, $location) {
 
 
 	 	$scope.init = function() {
-	 		$scope.alerts.push({msg: username});
+	 		$scope.alerts.push(username);
 	 	}; 
 
 	 	$scope.init(); 
@@ -139,10 +139,31 @@ app.controller('profileController', function($scope, $modal, $location) {
 		};
 
 		$scope.selectMatch = function(selection) {
-		  $scope.alerts.push({msg: selection});
+		  $scope.alerts.push(selection);
 		};
 
-		$scope.upload = function() {
+		$scope.save = function() {
+			var groupName = $("#group-name").val(); 
+
+			//TODO: not until oop
+			window.freedom.emit('edit-groups', {
+				name: groupName, 
+				users: $scope.alerts
+			});
+
+			var msg = {
+				action: 'invite-group',
+				name: groupName,
+				from: username
+			};
+
+			for(var i = 0; i < $scope.alerts.length; i++) 
+				if($scope.alerts[i] !== username)
+					freedom.emit('send-message', {
+					  to: $scope.alerts[i],
+					  msg: JSON.stringify(msg)
+					});
+			
 			$modalInstance.dismiss('cancel');
 		};
 

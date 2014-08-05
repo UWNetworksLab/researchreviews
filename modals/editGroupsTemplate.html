@@ -4,7 +4,7 @@
   <h4> Start new group <h4> 
 
     <h5> Name of group <font color="red">*</font></h5> 
-    <input type="text" class="form-control"> 
+    <input type="text" class="form-control" id="group-name"> 
 
     <br> 
 
@@ -17,7 +17,7 @@
 
   <table>
     <tr ng-repeat="alert in alerts"> 
-      <td class='col-md-11'> {{alert.msg}} </td> 
+      <td class='col-md-11'> {{alert}} </td> 
       <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class='glyphicon glyphicon-remove'></span> </td> 
     </tr> 
   </table>

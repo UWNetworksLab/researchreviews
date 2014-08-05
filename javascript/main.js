@@ -219,6 +219,14 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if(parse.action === 'delete-r-paper') {
     //console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
   }
+  else if(parse.action === 'invite-group') {
+    var alertmsg = {
+      groupName: parse.name, 
+      from: parse.from, 
+      action: 'invite-group'
+    };
+    freedom.emit('alert', alertmsg);
+  }
   else if (parse.action === "invite-reviewer"){
     var review = {
       ptitle: parse.title, 

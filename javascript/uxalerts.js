@@ -4,8 +4,6 @@ app.controller('alertsController', function($scope, $controller) {
   $scope.alertNum = alertNum; 
 
 	$scope.init = function(){
-		$scope.alerts = oldMessageList;
-
 		messageList.forEach(function(msg){
       if (msg.action === 'invite-reviewer') {
         if (!$scope.alerts) $scope.alerts = [];
@@ -20,7 +18,14 @@ app.controller('alertsController', function($scope, $controller) {
         if(oldMessageList.indexOf(alertMsg) == -1)
           oldMessageList.unshift(alertMsg);
       }
+      else if(msg.action === 'invite-group') {
+        if($scope.alerts) $scope.alerts = []; 
+        var alertMsg = "You have been invited by " + msg.from + " to join the group " + msg.groupName; 
+        if(oldMessageList.indexOf(alertMsg) == -1)
+          oldMessageList.unshift(alertMsg); 
+      }
 		});
+    $scope.alerts = oldMessageList;
 		messageList = [];
 	};
 	$scope.init(); 
