@@ -690,7 +690,7 @@ freedom.on('load-public-storage', function(data){
   });
 });
 
-freedom.on('delete-paper', function(key){
+freedom.on('delete-version', function(data){
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -698,21 +698,33 @@ freedom.on('delete-paper', function(key){
       papers = JSON.parse(val);
     } catch(e) {}
 
-    delete papers[key];
+    if(papers[data.key].versions.length == 1) {
+      delete papers[data.key]; 
+    }
+    else if(data.vnum == papers[data.key].versions.length-1) {
+      papers[data.key].versions.splice(data.vnum, 1); 
+    }
+    else {
+      var paper = papers[data.key].versions[data.vnum];
+      paper.comments = ""; 
+      paper.title = "Deleted."; 
+      paper.binaryString = ""; 
+      paper.reviews = []; 
+    }
 
-      var paper ={
-        key: key, 
-        action: 'delete-paper'
-      };
+    var paper ={
+      key: data.key, 
+      vnum: data.vnum, 
+      action: 'delete-paper'
+    };
 
-      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
+    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
 
-    
     store.set(username+'papers', JSON.stringify(papers)); 
-    freedom.emit('display-delete-paper', key);
+    freedom.emit('display-delete-version', data.key);
   }); 
 });
 

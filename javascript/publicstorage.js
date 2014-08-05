@@ -66,7 +66,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       
       for(var i = 0; i < papers.length; i++)
         if(papers[i].key == parse.key) {
-          papers.splice(i, 1);
+          var paper = papers[i].versions[parse.vnum]; 
+          paper.comments = ""; 
+          paper.title = "Deleted."; 
+          paper.binaryString = ""; 
+          paper.reviews = []; 
           break; 
         }
 
@@ -82,7 +86,6 @@ social.login({
   interactive: false,
   rememberLogin: false
 }).then(function(ret) {
-  console.log("public storage logging in"); 
 }, function(err) {
   freedom.emit("recv-err", err);
 });

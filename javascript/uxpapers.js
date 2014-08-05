@@ -150,17 +150,31 @@ app.controller('papersController', function($scope, $modal, $location) {
     }
   }; 
 
-  window.freedom.on('display-delete-paper', function(key) {
-    delete $scope.papers[$scope.viewKey];
-    $scope.viewTitle = "Paper deleted.";
+  window.freedom.on('display-delete-version', function(key) {
+    console.log("boajsodfijaisldjflj");
+
+    $scope.viewTitle = "Your paper has been deleted.";
     $scope.viewComments = "";
-    $scope.currVersion = 1;
-    $scope.totalVersion = 1;
-    $scope.viewKey = false;
+
+    if($scope.currVersion-1 == 0) {
+      delete $scope.papers[$scope.viewKey]; 
+      $scope.viewKey = false; 
+      $scope.currVersion = 1;
+      $scope.totalVersion = 1; 
+      return; 
+    }
+
+    if($scope.currVersion == $scope.totalVersion)
+      $scope.totalVersion = $scope.totalVersion-1; 
+
+    $scope.currVersion = $scope.currVersion-1; 
 
     if(!$scope.$$phase) {
       $scope.$apply(); 
     }
+
+    loadPapersPage(); 
+    $scope.showPaperView(key, $scope.currVersion);
   });
 
   window.freedom.on('display-new-paper', function(newPaper) {
@@ -464,8 +478,11 @@ app.controller('papersController', function($scope, $modal, $location) {
     };
   };
 
-  $scope.deletePaper = function() {
-    window.freedom.emit('delete-paper', $scope.viewKey);
+  $scope.deleteVersion = function() {
+    window.freedom.emit('delete-version', {
+      key: $scope.viewKey,
+      vnum: $scope.currVersion-1 
+    });
   };
   $scope.downloadVersion = function () {
     if($location.search().username && $location.search().username !== username) { 
