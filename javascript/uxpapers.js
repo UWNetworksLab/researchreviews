@@ -138,12 +138,20 @@ app.controller('papersController', function($scope, $modal, $location) {
       }
     
     //LOAD REVIEWS
-    /*
+    
     $scope.reviews = []; 
+    var paper; 
+    for(var i = 0; i < $scope.papers.length; i++)
+      if($scope.papers[i][0] == key) {
+        paper = $scope.papers[i][1]; 
+        break; 
+      }
+
     if($location.search().username && $location.search().username !== username) { //load someone else's paper's reviews 
       $scope.accessBtn = false;
-      if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
-        var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
+
+      if (paper.versions[$scope.currVersion-1].reviews){
+        var paperReviews = paper.versions[$scope.currVersion-1].reviews;
 
         for (var i = 0; i < paperReviews.length; i++){
           var msg = {
@@ -159,8 +167,8 @@ app.controller('papersController', function($scope, $modal, $location) {
         }    
       }
     }
-    else if ($scope.papers[key].versions[$scope.currVersion-1].reviews){
-      var paperReviews = $scope.papers[key].versions[$scope.currVersion-1].reviews;
+    else if (paper.versions[$scope.currVersion-1].reviews){
+      var paperReviews = paper.versions[$scope.currVersion-1].reviews;
 
       for (var i = 0; i < paperReviews.length; i++){
           var msg = {
@@ -183,7 +191,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       if(index == -1) $scope.reviews.push(review);
       else $scope.reviews[index] = review; 
       $scope.$apply();
-    });*/ 
+    });
 
     if(!$scope.$$phase) {
       $scope.$apply(); 

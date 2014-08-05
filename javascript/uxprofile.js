@@ -5,6 +5,8 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.showNav = true; 
   	$scope.ownProfile = true; 
 
+  	$scope.groups = ["class1", "class2", "class3"];
+
   	$scope.init = function() {
   		if($location.search().username && $location.search().username !== username) { //load someone else's profile
   			$scope.ownProfile = $location.search().username; 

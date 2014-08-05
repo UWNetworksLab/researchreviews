@@ -7,6 +7,10 @@
           <h3>{{ username }}</h3>
           
           <p> {{description}} </p> 
+
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="group in groups">{{ group }}</li>
+          </ul>
         </div>
       </div> <!--sidebar-->
     </div> <!--profile-->
