@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "socialprovider": {
-      "url": "node_modules/freedom/providers/social/websocket-server/social.ws.json",
+      "url": "node_modules/radiatus-providers/src/providers/social.radiatus.json",
       "api": "social"
     }, 
     "transport": {
