@@ -30,7 +30,7 @@ app.controller('papersController', function($scope, $modal, $location) {
         return a < b ? -1 : (a > b ? 1 : 0);
       });
     }
-    else if(sortOpt === 'newest') {
+    else if(sortOpt === 'oldest') {
       $scope.papers.sort(function(a, b) {
         a = a[1];
         b = b[1];
@@ -39,7 +39,7 @@ app.controller('papersController', function($scope, $modal, $location) {
         return a < b ? -1 : (a > b ? 1 : 0);
       });     
     }
-    else if(sortOpt === 'oldest') {
+    else if(sortOpt === 'newest') {
       $scope.papers.sort(function(a, b) {
         a = a[1];
         b = b[1];
@@ -104,6 +104,9 @@ app.controller('papersController', function($scope, $modal, $location) {
             $scope.papers.push([key, data.papers[key]]);      
           }
         }
+        if($scope.papers.length == 0)
+          $scope.viewTitle = "You currently have no papers."; 
+
         $scope.$apply(); 
 
         if($scope.papers.length > 0) {

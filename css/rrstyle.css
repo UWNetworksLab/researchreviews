@@ -42,9 +42,10 @@ textarea {
 .std-container {
     text-align: center;
     position: relative;
-    margin:20px;
     display: inline-block;
-
+    background-color: whitesmoke;
+    padding: 20px; 
+    border-radius: 20px;
 }
 
 .modal-container {
