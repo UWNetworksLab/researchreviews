@@ -6,65 +6,257 @@ var myClientState = null;
 var username = null;
 
 var userList = []; 
-var messageList = []; 
+var username; 
 
-//store.set('papers', []);
-
-freedom.on('get-r-papers', function(pending) {
-  var promise = store.get(username + 'r_papers');
+freedom.on('get-reviews', function(past) {
+  var promise = store.get(username + 'reviews');
   promise.then(function(val) {
-    var papers; 
+    var reviews; 
     try {
-      papers = JSON.parse(val);
+      reviews = JSON.parse(val);
     } catch(e) {}
 
-    if(!papers || typeof papers !== "object") papers = []; 
-    var i = papers.length;
-    while (i--){
-      if (papers[i].pending !== pending){
-        console.log("PENDING NOT MATCH " + i);
-        papers.splice(i, 1);
-      }
+    if(!reviews || typeof reviews !== "object") reviews = {};   
+
+    for (var key in reviews){
+      var rpast = (reviews[key].text) ? 1 : 0;
+      if (rpast !== past){
+        delete reviews[key];
+      } 
     }
+
     freedom.emit('display-reviews', {
-      papers: papers
+      reviews: reviews
     }); 
   }); 
 }); 
 
-freedom.on('get-pending-r-view', function(data){
-  var msg = {
-    action: 'get-r-paper',
-    key: data.key,
-    vnum: data.vnum,
-    from: username
-  };
+freedom.on('get-saved-review-pp', function(pkey) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
 
-  social.sendMessage(data.username, JSON.stringify(msg)).then(function(ret) {
+    if(!reviews || typeof reviews !== "object") reviews = {};  
+
+    var index = -1; 
+    for(key in reviews) {
+      if(reviews[key].pkey == pkey)
+        index = key; 
+    }
+
+    freedom.emit('display-saved-review', reviews[index]); 
+  }); 
+}); 
+
+freedom.on('get-saved-review', function(rkey) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = {};   
+    freedom.emit('display-saved-review', reviews[rkey]); 
+  }); 
+}); 
+
+freedom.on('get-r-paper', function(data){
+  social.sendMessage(data.to, JSON.stringify(data)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 });
 
-freedom.on('load-alerts', function(data){
-  freedom.emit('got-alerts', JSON.stringify(messageList));
-});
+freedom.on('add-review', function(review) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+    reviews[review.rkey] = review; 
+    store.set(username + 'reviews', JSON.stringify(reviews));
+    freedom.emit('go-to-reviews', 0);
+  });
+}); 
+
+/*backend storing review
+rkey,
+rstring,
+
+pkey,
+ptitle,
+author
+vnum */ 
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
-  if (parse.action === "invite-reviewer"){
-    messageList.push(parse); 
-    var promise = store.get(username + 'r_papers');
+  if (parse.action === "get-paper-review"){
+    var promise = store.get(username + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      var msg = {
+        action: 'got-paper-review',
+        text: reviews[parse.rkey].text,
+        reviewer: parse.reviewer
+      };
+
+      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.author) == -1)
+        msg.text = "You do not have access to this review"; 
+
+      social.sendMessage(parse.author, JSON.stringify(msg));
+    });
+  }
+  else if(parse.action === 'get-public-papers') {
+    freedom.emit('got-public-papers', parse.papers);
+  }
+  else if (parse.action === "get-other-paper-review"){
+    var promise = store.get(username + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      var msg = {
+        action: 'got-paper-review',
+        text: reviews[parse.rkey].text,
+        reviewer: parse.reviewer
+      };
+
+      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.from) == -1)
+        msg.text = "You do not have access to this review."; 
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    });
+  }
+  else if (parse.action === "got-paper-review"){
+    freedom.emit('got-paper-review', parse);
+  } 
+  else if(parse.action === 'get-other-papers') {
+    var promise = store.get(username + 'papers'); 
     promise.then(function(val) {
       var papers; 
       try {
-        papers = JSON.parse(val);
+        papers = JSON.parse(val); 
+      } catch(e) {} 
+
+      if(!papers || typeof papers !== "object") papers = {}; 
+
+      var msg = {
+        action: 'got-other-papers', 
+        papers: papers 
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    }); 
+  }
+  else if(parse.action === 'get-browse-paper') {
+    var promise = store.get(username + 'papers'); 
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val); 
+      } catch(e) {} 
+
+      if(!papers || typeof papers !== "object") papers = {}; 
+
+      var msg = {
+        action: 'got-browse-paper', 
+        paper: papers[parse.key]
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    }); 
+  }
+  else if(parse.action === 'got-other-papers') {
+    freedom.emit('display-other-papers', parse.papers); 
+  }
+  else if(parse.action === 'got-browse-paper') {
+    freedom.emit('display-browse-paper', parse.paper);
+  }
+  else if(parse.action === 'get-other-reviews') {
+    var promise = store.get(parse.to + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
       } catch(e) {}
 
-      if(!papers || typeof papers !== "object") papers = []; 
-      parse.pending = 1;
-      papers.push(parse); 
-      store.set(username + 'r_papers', JSON.stringify(papers)); 
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+      /*
+      var allowReviews = []; 
+      for(var key in reviews) {
+        if(reviews[key].accessList.indexOf(parse.from) != -1)
+          allowReviews.push(reviews[key]); 
+      }*/ 
+
+      var msg = {
+        action: 'got-other-reviews',
+        reviews: reviews 
+      };
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
+    });
+  }
+  else if(parse.action === 'got-other-reviews') {
+    freedom.emit('display-other-reviews', parse.reviews);
+  }
+  else if(parse.action === 'delete-r-paper') {
+    //console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
+  }
+  else if(parse.action === 'invite-group') {
+    var alertmsg = {
+      groupName: parse.name, 
+      from: parse.from, 
+      action: 'invite-group'
+    };
+    freedom.emit('alert', alertmsg);
+  }
+  else if (parse.action === "invite-reviewer"){
+    var review = {
+      ptitle: parse.title, 
+      pkey: parse.key,
+      author: parse.author,
+      vnum: parse.vnum, 
+      rkey: Math.random() + ""
+    };
+
+    //TODO: r_comments 
+    var alertmsg = {
+      action: 'invite-reviewer',
+      title: parse.title,
+      author: parse.author,
+      vnum: parse.vnum  
+    };
+    freedom.emit('alert', alertmsg);
+
+    var promise = store.get(username + 'reviews');
+    promise.then(function(val) {
+      var reviews; 
+      try {
+        reviews = JSON.parse(val);
+      } catch(e) {}
+
+      if(!reviews || typeof reviews !== "object") reviews = {}; 
+
+      reviews[review.rkey] = review; 
+      store.set(username + 'reviews', JSON.stringify(reviews)); 
     });
   }
   else if(parse.action === 'allow-access') {
@@ -74,18 +266,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       try {
         papers = JSON.parse(val);
       } catch(e) {}
-
-     if(!papers || typeof papers !== "object") {
-        console.log("nothing in papers");
-        papers = []; 
-      }
-      papers.push(parse); 
+     if(!papers || typeof papers !== "object") papers = {}; 
+      papers[parse.key] = parse; 
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
-  }
-  else if(parse.action === 'add-coauthor') {
-    messageList.push(parse); 
-    //make sure coauthor is added to author[] in new paper 
   }
   else if (parse.action === "get-profile"){
     var promise = store.get(username + 'profile');
@@ -118,73 +302,110 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
-      for(var i = 0; i < papers.length; i++){
-        if (papers[i].key.toString() === parse.key.toString()){
-          for (var j = 0; j < papers[i].versions.length; j++){
-            var msg = {
-              version: papers[i].versions[j],
-              action: 'send-r-paper'
-            };
-            social.sendMessage(parse.from, JSON.stringify(msg));
-            return;
-          }
-        }
-      }
-      var noPaper = {
-        version: [],
+
+      var msg = {
         action: 'send-r-paper'
       };
-      social.sendMessage(parse.from, JSON.stringify(noPaper));
+
+      if (papers[parse.key]) msg.version = papers[parse.key].versions[parse.vnum];
+
+      social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
-
-  else if (parse.action === 'send-r-paper'){
+  else if(parse.action === 'send-r-paper') {
+    freedom.emit('send-r-paper', parse.version);
   }
-
-  else if (parse.action === 'add-review'){
-    messageList.push(parse); 
+  else if (parse.action === 'add-review-on-author'){
     //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
-      for(var i = 0; i < papers.length; i++){
-        if (papers[i].key.toString() === parse.key.toString()){
-          if(!papers[i].versions[parse.vnum].reviews)
-            papers[i].versions[parse.vnum].reviews = []; 
-          
-          papers[i].versions[parse.vnum].reviews.push(parse);
-          break;
-        }
-      }
+
+      if (!papers[parse.pkey].versions[parse.vnum].reviews)
+        papers[parse.pkey].versions[parse.vnum].reviews = [];
+      
+      papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
       store.set(username + 'papers', JSON.stringify(papers)); 
+
+    //alert author that their paper has been reviewed
+      var alertmsg = {
+        action: 'add-review-on-author',
+        title: papers[parse.pkey].versions[parse.vnum].title,
+        date: parse.date,
+        vnum: parse.vnum, 
+        reviewer: parse.reviewer   
+      };
+      freedom.emit('alert', alertmsg);
     });
-  }
-  freedom.emit('recv-message', JSON.stringify(parse));    
+  }  
 });
 
-freedom.on('upload-review', function(data){
-  var parse = JSON.parse(data);
+freedom.on('get-paper-review', function(msg){
+  msg.action = "get-paper-review";
+  social.sendMessage(msg.reviewer, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
 
-//get papers and update them with pending = 0
-  var promise = store.get(username + 'r_papers');
+freedom.on('get-other-paper-review', function(msg){
+  msg.action = "get-other-paper-review";
+  social.sendMessage(msg.reviewer, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
+
+freedom.on('get-other-papers', function(msg) {
+  msg.action = "get-other-papers"; 
+  social.sendMessage(msg.to, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+}); 
+
+freedom.on('get-browse-paper', function(msg) {
+  msg.action = 'get-browse-paper'; 
+  social.sendMessage(msg.author, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });  
+});
+
+freedom.on('get-other-reviews', function(msg) {
+  msg.action = "get-other-reviews"; 
+  social.sendMessage(msg.to, JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+}); 
+
+freedom.on('upload-review', function(parse){
+  var promise = store.get(username + 'reviews');
   promise.then(function(val) {
-    var papers; 
+    var reviews; 
     try {
-      papers = JSON.parse(val);
+      reviews = JSON.parse(val);
     } catch(e) {}
-
-if(!papers || typeof papers !== "object") papers = []; 
-    for (var i = 0; i < papers.length; i++){
-      if (parse.key === papers[i].key){
-        papers[i].pending = 0;
-        break;
-      }
-    }
-    store.set(username + 'r_papers', JSON.stringify(papers));
+    if(!reviews || typeof reviews !== "object") reviews = {}; 
+    reviews[parse.rkey] = parse;
+    reviews[parse.rkey].past = 1; 
+    store.set(username + 'reviews', JSON.stringify(reviews));
+    freedom.emit('update-my-review', JSON.stringify(parse));
   }); 
 
-  social.sendMessage(parse.author, data).then(function(ret) {
-    //console.log
+  //only info the author gets
+  var reviewForAuth = {
+    reviewer : parse.reviewer,
+    rkey: parse.rkey,
+    pkey: parse.pkey,
+    vnum: parse.vnum,
+    date: parse.date,
+    accessList: parse.accessList, 
+    action: 'add-review-on-author'
+  };
+
+  social.sendMessage(parse.author, JSON.stringify(reviewForAuth)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -201,14 +422,45 @@ social.on('onUserProfile', function(data) {
   if(data.userId !== 'publicstorage' && 
     data.userId !== username) 
     userList.push(data.userId); 
+  freedom.emit('new-user', data.userId);
 });
  
-freedom.on('get-users', function(data) {
+/*freedom.on('get-users', function(data) {
   var msg = {
     action: data, 
     userList: userList
   };
   freedom.emit('send-users', msg);
+});*/
+
+freedom.on('edit-privacy', function(msg) {
+ var data = JSON.parse(msg); 
+ var promise = store.get(username + 'papers');
+  promise.then(function(val) {
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      papers = {}; 
+    } 
+
+    for(key in papers) {
+      if(key == data.key) {
+        if(data.action === 'toPublic') { //change to public
+          papers[key].versions[data.vnum].viewList = false; 
+          papers[key].versions[data.vnum].privateSetting = false; 
+        }
+        else if(data.action === 'toPrivate'){ //change to private
+          papers[key].versions[data.vnum].viewList = papers[key].versions[data.vnum].alertList; 
+          papers[key].versions[data.vnum].privateSetting = true; 
+        }
+      }
+    }
+
+    store.set(username + 'papers', JSON.stringify(papers));  
+  });  
 });
 
 freedom.on('edit-profile', function(data) {
@@ -235,7 +487,7 @@ freedom.on('edit-profile', function(data) {
 });
 
 freedom.on('load-profile', function(data) {
-  if (data === 0){
+  if (data === username){
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -249,7 +501,6 @@ freedom.on('load-profile', function(data) {
           description: ""
         }; 
       }
-
       profile.username = username; 
       freedom.emit('display-profile', profile);
       var msg = {
@@ -271,9 +522,7 @@ freedom.on('load-profile', function(data) {
   }
 });
 
-freedom.on('edit-privacy', function(data) {
-  var parse = JSON.parse(data); 
-
+freedom.on('add-version', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -282,26 +531,57 @@ freedom.on('edit-privacy', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      papers = []; 
+      papers = {}; 
     }
+    
+    data.vnum = papers[data.key].versions.length;
+    papers[data.key].versions.push(data);
 
-    papers.forEach(function(paper) {
-      if(paper.key == parse.key) {
-        if(parse.publicSetting) { //change to public
-          paper.versions[parse.vnum].viewList = false; 
-          console.log("change private to public.... viewList: " + paper.versions[parse.vnum].viewList + " alertList " + paper.versions[parse.vnum].alertList);
-        }
-        else { //change to private
-          console.log("got here: " + paper.versions[0].title + data.vnum);
-          console.log("change public to private.... viewList: " + JSON.stringify(paper.versions[parse.vnum].viewList) + " alertList " + JSON.stringify(paper.versions[parse.vnum].alertList));
-          paper.versions[parse.vnum].viewList = paper.versions[parse.vnum].alertList; 
+  //SHARE PAPER WITH USERS ALLOWED TO VIEW IT TODO: make this work for versioning
+      var paper = {
+        title: data.title,
+        author: username,
+        key: data.key, 
+        vnum: data.vnum, 
+        action: 'add-paper'
+      };
+
+      if(!data.privateSetting) //public (send paper to public storage) 
+        social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+
+      else { //private (send private paper to viewList) 
+        paper.action = 'allow-access';
+        for(var i = 0; i < data.viewList.length; i++) {
+          social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
+          }, function(err) {
+            freedom.emit("recv-err", err);
+          });
         }
       }
-    });
 
-    store.set(username + 'papers', JSON.stringify(papers));  
+      //SHARE PAPER WITH REVIEWERS
+      var msg = {
+        title: data.title, 
+        author: username, 
+        vnum: data.vnum, 
+        key: data.key,
+        action: 'invite-reviewer' 
+      };
+
+      for(var i = 0; i < data.alertList.length; i++) {
+        social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+        }, function(err) {
+          freedom.emit("recv-err", err);
+        });
+      }
+
+    freedom.emit('display-new-version', papers[data.key]);
+    store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
-});
+}); 
 
 freedom.on('add-paper', function(data) {
   var promise = store.get(username + 'papers');
@@ -312,76 +592,64 @@ freedom.on('add-paper', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      papers = []; 
+      papers = {}; 
     }
+    
+    data.vnum = 0;
+    data.key = Math.random() + ""; 
+    var newPaper = {
+      key: data.key, 
+      versions: [data] 
+    };
 
-    if(data.key) { //add new version //TODO: make sure version works for sharing papers
-      for(var i = 0; i < papers.length; i++)
-        if(papers[i].key == data.key) {
-          data.vnum = papers[i].versions.length; 
-          papers[i].versions.push(data); 
-          break;
-        }
-      freedom.emit("display-new-version", papers[i]);
-    }
-    else { //add new paper
-      data.vnum = 0;
-      data.key = Math.random() + ""; 
-      var newPaper = {
-        key: data.key, 
-        versions: [data] 
-      };
+    papers[data.key] = newPaper; 
 
-      papers.push(newPaper); 
+    //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
+    var paper = {
+      title: newPaper.versions[0].title,
+      author: username,
+      key: data.key, 
+      action: 'add-paper'
+    };
 
-      //to send to publicstorage
-      var paper = {
-        title: newPaper.versions[0].title,
-        author: username,
-        key: data.key, 
-        action: 'add-paper'
-      };
+    if(!data.privateSetting) //public (send paper to public storage) 
+      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+      }, function(err) {
+        freedom.emit("recv-err", err);
+      });
 
-      if(!data.viewList) //publicly shared
-        social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-        }, function(err) {
-          freedom.emit("recv-err", err);
-        });
-      else { //send private paper to viewList
-        paper.action = 'allow-access';
-        for(var i = 0; i < data.viewList.length; i++) {
-          social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
-          }, function(err) {
-            freedom.emit("recv-err", err);
-          });
-        }
-      }
-
-      var msg = {
-        title: newPaper.versions[0].title, 
-        author: username, 
-        vnum: 0, 
-        key: data.key,
-        action: 'invite-reviewer' 
-      };
-
-      console.log(JSON.stringify(data.alertList));
-
-      for(var i = 0; i < data.alertList.length; i++) {
-        console.log("trying to send to " + data.alertList[i]);
-        social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+    else { //private (send private paper to viewList) 
+      paper.action = 'allow-access';
+      for(var i = 0; i < data.viewList.length; i++) {
+        social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
       }
-
-      freedom.emit('display-new-paper', newPaper);
     }
+
+    //SHARE PAPER WITH REVIEWERS
+    var msg = {
+      title: newPaper.versions[0].title, 
+      author: username, 
+      vnum: 0, 
+      key: data.key,
+      action: 'invite-reviewer' 
+    };
+
+    for(var i = 0; i < data.alertList.length; i++) {
+      social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+      }, function(err) {
+        freedom.emit("recv-err", err);
+      });
+    }
+
+    freedom.emit('display-new-paper', newPaper);
     store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
 });
 
-freedom.on('get-paper-view', function(data) {
+freedom.on('get-papers', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -390,36 +658,18 @@ freedom.on('get-paper-view', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      console.log("nothing in papers");
-      papers = []; 
+      papers = {}; 
     }
-   for(var i = 0; i < papers.length; i++){
-      if(papers[i].key == data.key) {
-        if(data.vnum == -1) { //from clicking paper table
-          var action = 1;
-          if (papers[i].versions.length == 1) action = 0;
-          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: action});
-        }
 
-        //all from clicking prev and next? action is disabling prev and next buttons
-        //TODO: make this cleaner?
-        else if(data.vnum > 0 && data.vnum < papers[i].versions.length-1) { //clicking prev and next, version exists
-          freedom.emit("got-paper-view", {version: papers[i].versions[data.vnum]});
-        }
-        else if(data.vnum == 0) { //if number disable
-          freedom.emit("got-paper-view", {version: papers[i].versions[0], action: -1});
-        }
-        else if(data.vnum >= papers[i].versions.length-1){
-          freedom.emit("got-paper-view", {version: papers[i].versions[papers[i].versions.length-1], action: 1});          
-        }
-        break;
-      }
-    }
+    var msg = { 
+      papers: papers 
+    }; 
+
+    freedom.emit('display-papers', msg);
   });  
 });
 
 freedom.on('load-private-papers', function(data) {
-  console.log("got here");
   var promise = store.get(username+'private-papers');
   promise.then(function(val) {
     var papers; 
@@ -428,7 +678,6 @@ freedom.on('load-private-papers', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      console.log("nothing in papers");
       papers = []; 
     }
 
@@ -441,15 +690,14 @@ freedom.on('load-public-storage', function(data){
     username: username,
     action: 'get-public-papers'
   };
+
   social.sendMessage("publicstorage", JSON.stringify(message)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 });
 
-freedom.on('load-papers', function(data) {
-  console.log('loading papers for ' + username);
-
+freedom.on('delete-version', function(data){
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
     var papers; 
@@ -457,29 +705,23 @@ freedom.on('load-papers', function(data) {
       papers = JSON.parse(val);
     } catch(e) {}
 
-  if(!papers || typeof papers !== "object") papers = []; 
-      freedom.emit('display-table-and-view', papers); 
-    }); 
-});
-
-freedom.on('delete-paper', function(key){
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    for(var i = 0; i < papers.length; i++){
-      if(papers[i].key == key) {
-        papers.splice(i, 1);
-        break;
-      }
+    if(papers[data.key].versions.length == 1) {
+      delete papers[data.key]; 
+    }
+    else if(data.vnum == papers[data.key].versions.length-1) {
+      papers[data.key].versions.splice(data.vnum, 1); 
+    }
+    else {
+      var paper = papers[data.key].versions[data.vnum];
+      paper.comments = ""; 
+      paper.title = "Deleted."; 
+      paper.binaryString = ""; 
+      paper.reviews = []; 
     }
 
-    //to send to publicstorage
     var paper ={
-      key: key, 
+      key: data.key, 
+      vnum: data.vnum, 
       action: 'delete-paper'
     };
 
@@ -489,7 +731,7 @@ freedom.on('delete-paper', function(key){
     });
 
     store.set(username+'papers', JSON.stringify(papers)); 
-    freedom.emit('display-delete-paper', key);
+    freedom.emit('display-delete-version', data.key);
   }); 
 });
 
@@ -506,7 +748,8 @@ social.login({
   if (ret.status == social.STATUS["ONLINE"]) {
     var data = {
       id: ret.userId, 
-      onLogin: true
+      onLogin: true,
+      userList: userList
     };
     freedom.emit('recv-uid', data);
     freedom.emit('recv-status', "online");

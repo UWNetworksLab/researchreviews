@@ -6,10 +6,16 @@
 }
 
 
+ul
+{
+    list-style-type: none;
+}
+
 h1,h2,h3,h4,h5{
     font-family:'Times', sans-serif;
     font-style: italic;
 }
+
 .page {
     display : none;
 }

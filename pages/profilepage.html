@@ -1,0 +1,69 @@
+  <div>
+    <!--Three Columns--profile, papers, reviews-->
+    <div class="col-md-2">
+      <div class="sidebar">
+        <div class="std-container">
+          <img id="profile_pic" height="150" width="150" src="square.png" tooltip="edit profile" ng-click="editProfile()"/>
+          <h3>{{ username }}</h3>
+          
+          <p> {{description}} </p> 
+
+        <div class="panel panel-default" tooltip="edit groups" ng-click="editGroups()"> 
+          <div class="panel-heading">My Groups</div>
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="group in groups">{{ group.name }}</li>
+          </ul>
+        </div> 
+
+
+
+        </div>
+      </div> <!--sidebar-->
+    </div> <!--profile-->
+    
+    <!--papers-->
+    <div class="col-md-5">
+      <div class="landing-container">
+        <h2> 
+         <span ng-if="ownProfile== true"> My Papers </span> 
+         <span ng-if="ownProfile != true"> {{ownProfile}}'s Papers </span> 
+          <span>
+            <a ng-click="displayDetailedPapers()" class="btn btn-link">Detailed View</a>
+          </span>
+        </h2>
+
+          <table class="table table-hover">
+            <tr ng-repeat="paper in papers"> 
+              <td ng-click="displayDetailedPapers()"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
+            </tr> 
+          </table>
+
+      </div> <!--landing-container-->
+    </div> 
+
+    <div class="col-md-5">
+      <div class="landing-container">
+        <h2>
+         <span ng-if="ownProfile== true"> My Reviews </span> 
+         <span ng-if="ownProfile != true"> {{ownProfile}}'s Reviews </span> 
+          <span>
+            <a  ng-click="changeView('reviewspage')"  class="btn btn-link">Detailed View</a>
+          </span>
+        </h2>
+      <table class="table table-hover">
+          <tr ng-repeat="review in reviews" >
+              <td>
+                  <div ng-if="ownProfile == true">
+My review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}} 
+                  </div>
+                  <div ng-if="ownProfile != true">
+                    {{review.reviewer}}'s review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}}
+                  </div>
+              </td>       
+          </tr>
+      </table>
+      </div>
+    </div>
+  </div>
+
+

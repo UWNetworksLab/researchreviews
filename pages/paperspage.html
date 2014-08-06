@@ -1,0 +1,67 @@
+<div>
+  <div class="view-container">
+    <!--Two Columns--papers, paper view-->
+    <div class="row">
+      <div class="col-md-4">
+        <div style="margin-bottom:20px; margin-top:20px">
+          <button class="btn btn-success" ng-click="addPaper()" ng-show="accessAddBtn">add paper</button>
+
+            <!-- Simple dropdown -->
+              <span class="dropdown pull-right">
+                <a href class="btn btn-primary dropdown-toggle">
+                  <i> sort by </i>  <span class="caret">
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a ng-click="sortPapers('title')">Title</a></li>
+                  <li><a ng-click="sortPapers('oldest')">Oldest First</a></li>
+                  <li><a ng-click="sortPapers('newest')">Newest First</a></li>
+                </ul>
+              </span>
+
+          <table class="table table-hover">
+            <tr ng-repeat="paper in papers"> 
+              <td ng-click="showPaperView(paper[1].key)"> {{paper[1].versions[paper[1].versions.length-1].title}} by {{paper[1].versions[paper[1].versions.length-1].author}} on {{paper[1].versions[paper[1].versions.length-1].date.getFullYear()}}-{{paper[1].versions[paper[1].versions.length-1].date.getMonth()+1}}-{{paper[1].versions[paper[1].versions.length-1].date.getDate()}} </td> 
+            </tr> 
+          </table>
+        </div><!--add paper button and modal-->
+      </div>
+      <div class="col-md-8">
+        <div class="landing-container">
+          <h1 align="center"> {{viewTitle}} </h1> 
+          <div>
+            <div class="btn-group" dropdown is-open="isopen">
+              <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!viewKey">
+                Options <span class="caret">
+              </button>
+              <ul class="dropdown-menu" role="menu" ng-if="accessBtn">
+                <li><a ng-click="downloadVersion()">Download this version</a></li>
+                <li><a ng-click="inviteReviewers()"> Share paper </a></li>
+                <li><a ng-click="addVersion()">Add new version</a></li>
+                <li><a ng-click="deleteVersion()">Delete this version</a></li>
+                <li><a ng-click="editPrivacy()">Edit privacy settings</a></li>
+              </ul>
+              <ul class="dropdown-menu" role="menu" ng-if="!accessBtn">
+                <li><a ng-click="downloadVersion()">Download This Version</a></li>
+                <li><a ng-click="addReview()"> Add Review </a></li>
+              </ul>
+            </div>
+
+            <div class="btn-group pull-right">
+              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)" ng-hide="!viewKey">Previous</button>
+              <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)" ng-hide="!viewKey">Next</button>
+            </div>
+          </div>
+          <h4 ng-hide="!viewKey"> Comments </h4>
+          <p ng-hide="!viewKey"> {{viewComments}}</p>
+          <br>
+          <h4 ng-hide="!viewKey"> Reviews </h4>
+          <accordion ng-hide="!viewKey">
+            <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+          </accordion>
+
+          <p></p>
+        </div> <!--landing-container-->
+      </div> <!--column-->
+    </div> <!--row-->
+  </div>
+</div> 

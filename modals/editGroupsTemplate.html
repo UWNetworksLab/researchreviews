@@ -1,0 +1,48 @@
+<div class='modal-container'> 
+  <h3 align="center">Manage my groups</h3>
+
+  <h4> Start new group <h4> 
+
+    <h5> Name of group <font color="red">*</font></h5> 
+    <input type="text" class="form-control" id="group-name"> 
+
+    <br> 
+
+    <h5> Add users </h5> 
+    <input type="text" 
+          ng-model="selected" 
+          typeahead="state for state in states | filter:$viewValue | limitTo:10" 
+          typeahead-on-select="selectMatch(selected); selected='';" 
+          class="form-control">
+
+  <table>
+    <tr ng-repeat="alert in alerts"> 
+      <td class='col-md-11'> {{alert}} </td> 
+      <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class='glyphicon glyphicon-remove'></span> </td> 
+    </tr> 
+  </table>
+
+  <hr>
+
+  <h4> Groups I'm currently in </h4> 
+  <table>
+    <tr ng-repeat="group in groups"> 
+            <td class='col-md-10'> 
+              <accordion>
+                <accordion-group heading={{group.name}}>
+                  <ul ng-repeat="user in group.users">
+                    <li>{{user}}</li>
+                  </ul>
+                </accordion>
+              </accordion> 
+          </td> 
+      <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove myself from group" class='glyphicon glyphicon-eject'></span> </td> 
+    </tr> 
+  </table>
+
+
+  <div id="file-container">
+    <button type="button" class="btn btn-success" ng-click="save()">save</button>
+    <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
+  </div>
+</div> 

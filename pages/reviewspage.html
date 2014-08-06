@@ -1,0 +1,54 @@
+ <div>
+
+    <div class="view-container">
+      <!--Two Columns--papers, paper view-->
+      <div class="row">
+        <div class="col-md-4">
+          <div style="margin-bottom:20px; margin-top:20px">
+            <div class="btn-group">
+              <button type="button" id="pastBtn" class="btn btn-default" ng-click="getPastReviews()">Past Reviews</button>
+              <button type="button" id="pendingBtn" class="btn btn-default active" ng-click="getPendingReviews()">Pending Reviews</button>
+            </div>
+          </div>
+
+          <table class="table table-hover">
+            <tr ng-repeat="review in reviews"> 
+              <td ng-click="getReviewView(review.rkey)"> {{ review.ptitle }} v.{{review.vnum}} by {{ review.author }} </td> 
+            </tr> 
+          </table>
+
+        </div>
+      
+      <!--papers-->
+        <div class="col-md-8">
+          <div id = "review-view-container" class="landing-container">
+            <h1 align="center"> {{ currRPaper.title }} </h1>
+            <div id = "options-and-nav">
+              <div class="btn-group" dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!reviewKey"> <!-- ng-disabled="!reviewKey">-->
+                  Options <span class="caret">
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a ng-click="addReview()">Upload Review</a></li>
+                  <li><a ng-click="downloadRPaper()">Download this paper</a></li>
+                </ul>
+              </div>
+<!--
+              <div class="btn-group pull-right">
+                <button type="button" class="btn btn-default">Previous</button>
+                <button type="button" class="btn btn-default">Next</button>
+              </div>
+-->
+            </div>
+            <h4 ng-hide="!reviewKey"> Comments </h4> 
+            {{ currRPaper.comments }} 
+
+            <h4> Reviews </h4> 
+            <accordion>
+              <accordion-group ng-repeat="review in currPaperReviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+            </accordion>
+          </div> <!--landing-container-->
+        </div> <!--column-->
+      </div> <!--row-->
+    </div>
+  </div> 
