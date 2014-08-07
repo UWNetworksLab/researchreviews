@@ -610,6 +610,10 @@ freedom.on('add-paper', function(data) {
   freedom.emit('display-new-paper', data);
 });
 
+freedom.on('set-papers', function(papers) {
+  store.set(username+'papers', JSON.stringify(papers)); 
+}); 
+
 freedom.on('get-papers', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
@@ -619,14 +623,12 @@ freedom.on('get-papers', function(data) {
     } catch(e) {}
 
     if(!papers || typeof papers !== "object") {
-      papers = {}; 
+      papers = []; 
     }
 
-    var msg = { 
-      papers: papers 
-    }; 
+    console.log("asdfasdfadsfasdfasdfasdf " + JSON.stringify(papers));
 
-    freedom.emit('display-papers', msg);
+    freedom.emit('display-papers', papers);
   });  
 });
 

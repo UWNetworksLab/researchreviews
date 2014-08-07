@@ -28,6 +28,7 @@
       <div class="col-md-8">
         <div class="landing-container">
           <h1 align="center" ng-show="currPaper"> {{currPaper.versions[currVnum-1].title}} v. {{currVnum}} of {{currPaper.versions.length}} </h1> 
+          <h1 align="center" ng-show="papers.length===0"> You haven't added any papers yet. </h1>
           <div>
             <div class="btn-group" dropdown is-open="isopen">
               <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper">
