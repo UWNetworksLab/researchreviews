@@ -16,6 +16,7 @@
     },
     "localstorage": {
       "url": "node_modules/freedom/providers/storage/shared/storage.shared.json",
+      "url_": "node_modules/freedom/providers/storage/isolated/storage.isolated.json",
       "api": "storage"
     },
     "publicstorage": {

@@ -20,7 +20,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              <td ng-click="showPaperView(paper[1].key)"> {{paper[1].versions[paper[1].versions.length-1].title}} by {{paper[1].versions[paper[1].versions.length-1].author}} on {{paper[1].versions[paper[1].versions.length-1].date.getFullYear()}}-{{paper[1].versions[paper[1].versions.length-1].date.getMonth()+1}}-{{paper[1].versions[paper[1].versions.length-1].date.getDate()}} </td> 
+              <td ng-click="showPaperView(paper[1].pkey)"> {{paper[1].versions[paper[1].versions.length-1].title}} by {{paper[1].versions[paper[1].versions.length-1].author}} on {{paper[1].versions[paper[1].versions.length-1].date.getFullYear()}}-{{paper[1].versions[paper[1].versions.length-1].date.getMonth()+1}}-{{paper[1].versions[paper[1].versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
         </div><!--add paper button and modal-->

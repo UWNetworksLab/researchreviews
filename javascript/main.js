@@ -584,27 +584,8 @@ freedom.on('add-version', function(data) {
 }); 
 
 freedom.on('add-paper', function(data) {
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
 
-    if(!papers || typeof papers !== "object") {
-      papers = {}; 
-    }
-    
-    data.vnum = 0;
-    data.key = Math.random() + ""; 
-    var newPaper = {
-      key: data.key, 
-      versions: [data] 
-    };
-
-    papers[data.key] = newPaper; 
-
-    //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
+/*    //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
     var paper = {
       title: newPaper.versions[0].title,
       author: username,
@@ -647,6 +628,8 @@ freedom.on('add-paper', function(data) {
     freedom.emit('display-new-paper', newPaper);
     store.set(username + 'papers', JSON.stringify(papers)); 
   }); 
+
+*/
 });
 
 freedom.on('get-papers', function(data) {

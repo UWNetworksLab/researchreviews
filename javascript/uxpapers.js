@@ -108,7 +108,7 @@ app.controller('papersController', function($scope, $modal, $location) {
 
         if($scope.papers.length > 0) {
           $scope.sortPapers('newest');
-          $scope.showPaperView($scope.papers[0][0]);  
+          $scope.showPaperView($scope.papers[0][0]);
         }
       }); 
     }
@@ -118,6 +118,8 @@ app.controller('papersController', function($scope, $modal, $location) {
 
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
     //LOAD PAPER VIEW
+    console.log("KEY "  + JSON.stringify($scope.papers));
+
     for(var i = 0; i < $scope.papers.length; i++) 
       if($scope.papers[i][0] == key) {
         if(vnum) { //from version buttons
@@ -140,13 +142,18 @@ app.controller('papersController', function($scope, $modal, $location) {
     //LOAD REVIEWS
     
     $scope.reviews = []; 
+
     var paper; 
-    for(var i = 0; i < $scope.papers.length; i++)
+    for(var i = 0; i < $scope.papers.length; i++){
+      console.log("KEY " + $scope.papers[i][0] + ", key2 " + key );
+
       if($scope.papers[i][0] == key) {
         paper = $scope.papers[i][1]; 
         break; 
       }
+    }
 
+    console.log("PAPER " + JSON.stringify(paper));
     if($location.search().username && $location.search().username !== username) { //load someone else's paper's reviews 
       $scope.accessBtn = false;
 
@@ -269,6 +276,11 @@ app.controller('papersController', function($scope, $modal, $location) {
       windowClass:'normal',
       controller: addPaperCtrl,
       backdrop: 'static', 
+      resolve:{
+        papers: function(){
+          return $scope.papers;
+        }
+      }
     }); 
   };
 
@@ -340,7 +352,7 @@ app.controller('papersController', function($scope, $modal, $location) {
     };
   };
 
-  var addPaperCtrl = function ($scope, $modalInstance) {
+  var addPaperCtrl = function ($scope, $modalInstance, papers) {
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -379,33 +391,29 @@ app.controller('papersController', function($scope, $modal, $location) {
 
     $scope.upload = function () {
       var files = document.getElementById("addFile").files;
-      var comments = document.getElementById("add-paper-comments").value;
-
-      var alertList = [];
-      for(var i = 0; i < $scope.alerts.length; i++) 
-        alertList.push($scope.alerts[i].msg); 
-
-      var paper = {
-        comments: comments,
-        privateSetting: $scope.privatePaper 
-      };
-
       if (files.length < 1) {
         alert("No files found.");
         return;
       }
 
+      var comments = document.getElementById("add-paper-comments").value;
+      var alertList = [];
+      for(var i = 0; i < $scope.alerts.length; i++) 
+        alertList.push($scope.alerts[i].msg); 
+
+      var viewList;
       if(!$scope.privatePaper) { //publicly shared
-        paper.viewList = false; 
-        paper.alertList = alertList; 
-        uploadFile(files, paper);
+        viewList = false; 
       }
       else { //privately shared
-        paper.viewList = alertList; 
-        paper.alertList = $scope.checkList; 
-        uploadFile(files, paper);
+        viewList = alertList; 
+        alertList = $scope.checkList; 
       }
 
+      var newPaper = new Paper(files[0], viewList, alertList, $scope.privatePaper, comments);
+      papers.push([newPaper.pkey, newPaper]);
+
+      console.log("NEW PAPER IN UX PAPERS " + JSON.stringify(newPaper));
       $modalInstance.dismiss('cancel');
     };
 
@@ -543,12 +551,12 @@ app.controller('papersController', function($scope, $modal, $location) {
       if(!$scope.privatePaper) { //publicly shared
         paper.viewList = false; 
         paper.alertList = alertList; 
-        uploadFile(files, paper);
+//        uploadFile(files, paper);
       }
       else { //privately shared
         paper.viewList = alertList;
         paper.alertList = $scope.checkList; 
-        uploadFile(files, paper);
+//        uploadFile(files, paper);
       }
 
       $modalInstance.dismiss('cancel');
@@ -592,39 +600,4 @@ app.controller('papersController', function($scope, $modal, $location) {
   }
 
   //TODO: this should be temporary
-  function str2ab(str) {
-    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-    var bufView = new Uint8Array(buf);
-    for (var i=0, strLen=str.length; i<strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
-  }
-
-  //TODO: this should be temporary
-  function ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
-  }
-
-  //msg is paper or version to be uploaded
-  function uploadFile(files, msg) {
-    var newFile = files[0];
-    var reader = new FileReader();
-
-    reader.onload = function() {
-      var arrayBuffer = reader.result;
-      var today = new Date();  
-
-      msg.title = newFile.name; 
-      msg.date = today;
-      msg.author = username; 
-      msg.binaryString = ab2str(arrayBuffer); 
-
-      if(msg.key)
-        window.freedom.emit('add-version', msg);
-      else 
-        window.freedom.emit('add-paper', msg);
-    }
-    reader.readAsArrayBuffer(newFile);
-  }
 });
