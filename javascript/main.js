@@ -584,52 +584,43 @@ freedom.on('add-version', function(data) {
 }); 
 
 freedom.on('add-paper', function(data) {
+  console.log("DATA IN MAIN  ");
+  //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
+  var paper = {
+    title: data.versions[0].title,
+    author: username,
+    key: data.pkey, 
+    vnum: 0,
+    action: 'add-paper'
+  };
 
-/*    //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
-    var paper = {
-      title: newPaper.versions[0].title,
-      author: username,
-      key: data.key, 
-      action: 'add-paper'
-    };
+  if(!data.versions[0].privateSetting) //public (send paper to public storage) 
+    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
 
-    if(!data.privateSetting) //public (send paper to public storage) 
-      social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
-
-    else { //private (send private paper to viewList) 
-      paper.action = 'allow-access';
-      for(var i = 0; i < data.viewList.length; i++) {
-        social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
-        }, function(err) {
-          freedom.emit("recv-err", err);
-        });
-      }
-    }
-
-    //SHARE PAPER WITH REVIEWERS
-    var msg = {
-      title: newPaper.versions[0].title, 
-      author: username, 
-      vnum: 0, 
-      key: data.key,
-      action: 'invite-reviewer' 
-    };
-
-    for(var i = 0; i < data.alertList.length; i++) {
-      social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
+  else { //private (send private paper to viewList) 
+    paper.action = 'allow-access';
+    for(var i = 0; i < data.versions[0].viewList.length; i++) {
+      social.sendMessage(data.versions[0].viewList[i], JSON.stringify(paper)).then(function(ret) {
       }, function(err) {
         freedom.emit("recv-err", err);
       });
     }
+  }
 
-    freedom.emit('display-new-paper', newPaper);
-    store.set(username + 'papers', JSON.stringify(papers)); 
-  }); 
+  //SHARE PAPER WITH REVIEWERS
+  paper.action = 'invite-reviewer';
 
-*/
+  for(var i = 0; i < data.versions[0].alertList.length; i++) {
+    social.sendMessage(data.versions[0].alertList[i], JSON.stringify(paper)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
+  }
+
+  freedom.emit('display-new-paper', data);
 });
 
 freedom.on('get-papers', function(data) {

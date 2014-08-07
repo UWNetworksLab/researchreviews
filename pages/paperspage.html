@@ -27,7 +27,7 @@
       </div>
       <div class="col-md-8">
         <div class="landing-container">
-          <h1 align="center"> {{viewTitle}} </h1> 
+          <h1 align="center"> {{currPaper.title}} {{viewTitle}}</h1> 
           <div>
             <div class="btn-group" dropdown is-open="isopen">
               <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!viewKey">
@@ -52,7 +52,7 @@
             </div>
           </div>
           <h4 ng-hide="!viewKey"> Comments </h4>
-          <p ng-hide="!viewKey"> {{viewComments}}</p>
+          <p ng-hide="!viewKey"> {{currPaper.comments}} {{viewComments}}</p>
           <br>
           <h4 ng-hide="!viewKey"> Reviews </h4>
           <accordion ng-hide="!viewKey">

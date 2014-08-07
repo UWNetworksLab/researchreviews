@@ -8,6 +8,7 @@ app.controller('papersController', function($scope, $modal, $location) {
   $scope.viewTitle = "";
   $scope.viewComments = ""; 
   $scope.viewKey; 
+  $scope.currPaper;
 
   //for moving between versions
   $scope.currVersion = 1;
@@ -51,7 +52,11 @@ app.controller('papersController', function($scope, $modal, $location) {
   }
 
   $scope.displayVersion = function(offset) {
-    $scope.currVersion = $scope.currVersion + offset; 
+    $scope.currVersion = $scope.currVersion + offset;
+    for (var i = 0; i < $scope.papers.length; i++){
+      if ($scope.papers[i][0] == $scope.viewKey)
+        $scope.currPaper = $scope.papers[i][1].versions[$scope.currVersion-1];
+    }
     $scope.showPaperView($scope.viewKey, $scope.currVersion);
   }; 
 
@@ -108,6 +113,7 @@ app.controller('papersController', function($scope, $modal, $location) {
 
         if($scope.papers.length > 0) {
           $scope.sortPapers('newest');
+          $scope.currPaper = $scope.papers[0][1];
           $scope.showPaperView($scope.papers[0][0]);
         }
       }); 
@@ -118,10 +124,12 @@ app.controller('papersController', function($scope, $modal, $location) {
 
   $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
     //LOAD PAPER VIEW
-    console.log("KEY "  + JSON.stringify($scope.papers));
+    console.log("SHOW PAPER VIEW");
 
     for(var i = 0; i < $scope.papers.length; i++) 
       if($scope.papers[i][0] == key) {
+//        console.log($scope.currVersion);
+        $scope.currPaper = $scope.papers[i][1].versions[$scope.currVersion-1];
         if(vnum) { //from version buttons
           var len = $scope.papers[i][1].versions.length; 
           $scope.viewTitle = $scope.papers[i][1].versions[vnum-1].title + " v." + vnum + " of " + len; 
@@ -144,6 +152,7 @@ app.controller('papersController', function($scope, $modal, $location) {
     $scope.reviews = []; 
 
     var paper; 
+    console.log(JSON.stringify($scope.papers));
     for(var i = 0; i < $scope.papers.length; i++){
       console.log("KEY " + $scope.papers[i][0] + ", key2 " + key );
 
@@ -152,8 +161,6 @@ app.controller('papersController', function($scope, $modal, $location) {
         break; 
       }
     }
-
-    console.log("PAPER " + JSON.stringify(paper));
     if($location.search().username && $location.search().username !== username) { //load someone else's paper's reviews 
       $scope.accessBtn = false;
 
@@ -236,9 +243,10 @@ app.controller('papersController', function($scope, $modal, $location) {
   });
 
   window.freedom.on('display-new-paper', function(newPaper) {
-    $scope.papers.push([newPaper.key, newPaper]); 
+    $scope.papers.push([newPaper.pkey, newPaper]); 
+    $scope.currPaper = newPaper;
     $scope.$apply(); 
-    $scope.showPaperView(newPaper.key); 
+    $scope.showPaperView(newPaper.pkey); 
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
@@ -250,7 +258,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       }
     }
 
-   // $scope.papers[newVersion.key] = newVersion; 
+    //$scope.papers[newVersion.key] = newVersion; 
     $scope.showPaperView(newVersion.key); 
     $scope.$apply(); 
   });
@@ -411,7 +419,7 @@ app.controller('papersController', function($scope, $modal, $location) {
       }
 
       var newPaper = new Paper(files[0], viewList, alertList, $scope.privatePaper, comments);
-      papers.push([newPaper.pkey, newPaper]);
+//      papers.push([newPaper.pkey, newPaper]);
 
       console.log("NEW PAPER IN UX PAPERS " + JSON.stringify(newPaper));
       $modalInstance.dismiss('cancel');
