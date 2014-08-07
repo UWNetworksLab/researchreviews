@@ -584,7 +584,6 @@ freedom.on('add-version', function(data) {
 }); 
 
 freedom.on('add-paper', function(data) {
-  console.log("DATA IN MAIN  ");
   //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
   var paper = {
     title: data.versions[0].title,

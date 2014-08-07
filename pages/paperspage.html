@@ -27,10 +27,10 @@
       </div>
       <div class="col-md-8">
         <div class="landing-container">
-          <h1 align="center"> {{currPaper.title}} {{viewTitle}}</h1> 
+          <h1 align="center" ng-show="currPaper"> {{currPaper.versions[currVnum-1].title}} v. {{currVnum}} of {{currPaper.versions.length}} </h1> 
           <div>
             <div class="btn-group" dropdown is-open="isopen">
-              <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!viewKey">
+              <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper">
                 Options <span class="caret">
               </button>
               <ul class="dropdown-menu" role="menu" ng-if="accessBtn">
@@ -47,15 +47,15 @@
             </div>
 
             <div class="btn-group pull-right">
-              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)" ng-hide="!viewKey">Previous</button>
-              <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)" ng-hide="!viewKey">Next</button>
+              <button type="button" class="btn btn-default"  ng-disabled="currVnum == 1" ng-click="displayVersion(-1)" ng-show="currPaper">Previous</button>
+              <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-show="currPaper">Next</button>
             </div>
           </div>
-          <h4 ng-hide="!viewKey"> Comments </h4>
-          <p ng-hide="!viewKey"> {{currPaper.comments}} {{viewComments}}</p>
+          <h4 ng-show="currPaper"> Comments </h4>
+          <p ng-show="currPaper"> {{currPaper.versions[currVnum-1].comments}} </p>
           <br>
-          <h4 ng-hide="!viewKey"> Reviews </h4>
-          <accordion ng-hide="!viewKey">
+          <h4 ng-show="currPaper"> Reviews </h4>
+          <accordion ng-show="currPaper">
             <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
           </accordion>
 

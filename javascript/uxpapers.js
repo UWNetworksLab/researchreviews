@@ -5,15 +5,15 @@ app.controller('papersController', function($scope, $modal, $location) {
   $scope.papers = [];  
 
   //for paperView
-  $scope.viewTitle = "";
-  $scope.viewComments = ""; 
-  $scope.viewKey; 
+  //$scope.viewTitle = "";
+  //$scope.viewComments = ""; 
+  //$scope.viewKey; 
   $scope.currPaper;
 
   //for moving between versions
-  $scope.currVersion = 1;
-  $scope.totalVersion = 1;
-  $scope.reviews;
+  $scope.currVnum = 1;
+  //$scope.totalVersion = 1;
+  //$scope.reviews;
 
   //for looking at someone else's papers
   $scope.accessBtn = true;
@@ -122,94 +122,48 @@ app.controller('papersController', function($scope, $modal, $location) {
 
   loadPapersPage(); 
 
-  $scope.showPaperView = function(key, vnum) {//TODO: get rid of vnum??
+  $scope.showPaperView = function(key) {
+    console.log("show paper view " + JSON.stringify($scope.currPaper.versions[$scope.currVnum-1]));
     //LOAD PAPER VIEW
-    console.log("SHOW PAPER VIEW");
-
-    for(var i = 0; i < $scope.papers.length; i++) 
-      if($scope.papers[i][0] == key) {
-//        console.log($scope.currVersion);
-        $scope.currPaper = $scope.papers[i][1].versions[$scope.currVersion-1];
-        if(vnum) { //from version buttons
-          var len = $scope.papers[i][1].versions.length; 
-          $scope.viewTitle = $scope.papers[i][1].versions[vnum-1].title + " v." + vnum + " of " + len; 
-          $scope.viewComments = $scope.papers[i][1].versions[vnum-1].comments;  
-          $scope.totalVersion = len; 
+    if(key) 
+      for(var i = 0; i < $scope.papers.length; i++) 
+        if($scope.papers[i][0] === key) {
+          $scope.currPaper = $scope.papers[i][1]; 
+          break; 
         }
-        else { //from paper table
-          $scope.viewKey = key; 
-          var len = $scope.papers[i][1].versions.length; 
-          $scope.viewTitle = $scope.papers[i][1].versions[len-1].title + " v." + len + " of " + len; 
-          $scope.viewComments = $scope.papers[i][1].versions[len-1].comments;
-          $scope.currVersion = len; 
-          $scope.totalVersion = len;        
-        }
-        break; 
-      }
-    
+      
     //LOAD REVIEWS
-    
-    $scope.reviews = []; 
+    var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
+    if(reviews)
+      for(var i = 0; i < reviews.length; i++) {
+        var msg = {
+          pkey: $scope.currPaper.key,
+          rkey: reviews[i].rkey,
+          reviewer: reviews[i].reviewer,
+          vnum: $scope.currVnum-1,
+          author: $location.search().username, 
+          from: username 
+        };  
 
-    var paper; 
-    console.log(JSON.stringify($scope.papers));
-    for(var i = 0; i < $scope.papers.length; i++){
-      console.log("KEY " + $scope.papers[i][0] + ", key2 " + key );
+        if($location.search().username && $location.search().username !== username)
+          window.freedom.emit('get-other-paper-review', msg);
+        else
+          window.freedom.emit('get-paper-review', msg); 
+      }  
 
-      if($scope.papers[i][0] == key) {
-        paper = $scope.papers[i][1]; 
-        break; 
-      }
-    }
-    if($location.search().username && $location.search().username !== username) { //load someone else's paper's reviews 
+    if($location.search().username && $location.search().username !== username)  //load someone else's paper's reviews 
       $scope.accessBtn = false;
 
-      if (paper.versions[$scope.currVersion-1].reviews){
-        var paperReviews = paper.versions[$scope.currVersion-1].reviews;
-
-        for (var i = 0; i < paperReviews.length; i++){
-          var msg = {
-            pkey: key,
-            rkey: paperReviews[i].rkey,
-            reviewer: paperReviews[i].reviewer,
-            vnum: $scope.currVersion-1,
-            author: $location.search().username, 
-            from: username 
-          };
-
-          window.freedom.emit('get-other-paper-review', msg);
-        }    
-      }
-    }
-    else if (paper.versions[$scope.currVersion-1].reviews){
-      var paperReviews = paper.versions[$scope.currVersion-1].reviews;
-
-      for (var i = 0; i < paperReviews.length; i++){
-          var msg = {
-            pkey: key,
-            rkey: paperReviews[i].rkey,
-            reviewer: paperReviews[i].reviewer,
-            vnum: $scope.currVersion-1,
-            author: username
-          };
-
-          window.freedom.emit('get-paper-review', msg);
-      }    
-    }
-
     window.freedom.on('got-paper-review', function(review){
-      if(!$scope.reviews) $scope.reviews=[];
-      var index = $scope.reviews.map(function(el) {
+      if(!reviews) reviews=[];
+      var index = reviews.map(function(el) {
         return el.reviewer;
       }).indexOf(review.reviewer);
-      if(index == -1) $scope.reviews.push(review);
-      else $scope.reviews[index] = review; 
+      if(index == -1) reviews.push(review);
+      else reviews[index] = review; 
+      $scope.currPaper.versions[$scope.currVnum-1].reviews = reviews; 
       $scope.$apply();
-    });
-
-    if(!$scope.$$phase) {
-      $scope.$apply(); 
-    }    
+    });   
   }; 
 
   window.freedom.on('display-delete-version', function(key) {
@@ -246,7 +200,7 @@ app.controller('papersController', function($scope, $modal, $location) {
     $scope.papers.push([newPaper.pkey, newPaper]); 
     $scope.currPaper = newPaper;
     $scope.$apply(); 
-    $scope.showPaperView(newPaper.pkey); 
+    $scope.showPaperView(); 
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
