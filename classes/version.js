@@ -1,4 +1,4 @@
-function Version(vdata) {
+function Version(vdata, file, paper) {
   console.log("IN VERSION CONSTRUCTOR");
   this.vnum = vdata.vnum;
   this.author = vdata.author;
@@ -7,11 +7,20 @@ function Version(vdata) {
   this.viewList = vdata.viewList;
   this.alertList = vdata.alertList;
   this.privateSetting = vdata.privateSetting;
-  this.binaryString = vdata.binaryString;
-  this.title = vdata.title;
-  
+
   this.reviews = {};
   this.date = new Date();
+
+  var reader = new FileReader();
+  reader.onload = function() {
+    var arrayBuffer = reader.result;
+    this.title = file.name;
+    this.binaryString = ab2str(arrayBuffer);
+    paper.versions.push(this);
+    if (this.vnum === 0) window.freedom.emit('add-paper', paper);
+    else window.freedom.emit('add-version', this);
+  }.bind(this);
+  reader.readAsArrayBuffer(file);
 }
 
 Version.prototype.addReview = function(rkey, reviewer) {

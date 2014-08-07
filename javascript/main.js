@@ -523,19 +523,7 @@ freedom.on('load-profile', function(data) {
 });
 
 freedom.on('add-version', function(data) {
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    if(!papers || typeof papers !== "object") {
-      papers = {}; 
-    }
-    
-    data.vnum = papers[data.key].versions.length;
-    papers[data.key].versions.push(data);
+  console.log("Add version");
 
   //SHARE PAPER WITH USERS ALLOWED TO VIEW IT TODO: make this work for versioning
       var paper = {
@@ -578,17 +566,17 @@ freedom.on('add-version', function(data) {
         });
       }
 
-    freedom.emit('display-new-version', papers[data.key]);
-    store.set(username + 'papers', JSON.stringify(papers)); 
-  }); 
+    freedom.emit('display-new-version', data);
+//    store.set(username + 'papers', JSON.stringify(papers)); 
 }); 
 
 freedom.on('add-paper', function(data) {
+  console.log("add paper" + JSON.stringify(data));
   //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
   var paper = {
     title: data.versions[0].title,
     author: username,
-    key: data.pkey, 
+    key: data.versions[0].pkey, 
     vnum: 0,
     action: 'add-paper'
   };

@@ -12,7 +12,7 @@
                   <i> sort by </i>  <span class="caret">
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a ng-click="sortPapers('title')">Title</a></li>
+                  <li><a ng-click="order(title, false)">Title</a></li>
                   <li><a ng-click="sortPapers('oldest')">Oldest First</a></li>
                   <li><a ng-click="sortPapers('newest')">Newest First</a></li>
                 </ul>
@@ -20,7 +20,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              <td ng-click="showPaperView(paper[1].pkey)"> {{paper[1].versions[paper[1].versions.length-1].title}} by {{paper[1].versions[paper[1].versions.length-1].author}} on {{paper[1].versions[paper[1].versions.length-1].date.getFullYear()}}-{{paper[1].versions[paper[1].versions.length-1].date.getMonth()+1}}-{{paper[1].versions[paper[1].versions.length-1].date.getDate()}} </td> 
+              <td ng-click="showPaperView(paper.pkey)"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
         </div><!--add paper button and modal-->

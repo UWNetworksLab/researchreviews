@@ -1,34 +1,17 @@
-function Paper(file, viewList, alertList, privateSetting, comments) {
-  console.log("IN PAPER CONSTRUCTOR");
+function Paper(paper) {
+  if (paper){
+    this.pkey = paper.pkey; 
+    this.versions = paper.versions;
+    this.author = paper.versions;
+    return;
+  }
   this.pkey = Math.random() + ""; 
   this.versions = [];
   this.author = username;
-
-  var vData = {
-    vnum: 0,
-    author: username,
-    comments: comments,
-    pkey: this.pkey,
-    viewList: viewList,
-    alertList: alertList, 
-    privateSetting: privateSetting
-  };
-
-  var reader = new FileReader();
-  reader.onload = function(vData) {
-    var arrayBuffer = reader.result;
-    vData.title = file.name;
-    vData.binaryString = ab2str(arrayBuffer);
-    var version = new Version(vData);
-    this.versions.push(version);
-    window.freedom.emit('add-paper', this);
-
-  }.bind(this, vData);
-  reader.readAsArrayBuffer(file);
 }
 
-Paper.prototype.addVersion = function(version) {
-  this.versions.push(version);
+Paper.prototype.addVersion = function(vdata, file) {
+  var version = new Version(vdata, file, this);
 };
 
 Paper.prototype.deleteVersion = function(vnum){
