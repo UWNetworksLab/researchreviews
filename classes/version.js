@@ -1,14 +1,15 @@
 function Version(vdata, file, paper) {
-  this.vnum = vdata.vnum;
-  this.author = vdata.author;
   this.comments = vdata.comments;
-  this.pkey = vdata.pkey;
   this.viewList = vdata.viewList;
   this.alertList = vdata.alertList;
   this.privateSetting = vdata.privateSetting;
 
   this.reviews = {};
   this.date = new Date();
+
+  this.author = paper.author;
+  this.pkey = paper.pkey;
+  this.vnum = paper.versions.length; 
 
   var reader = new FileReader();
   reader.onload = function() {

@@ -330,10 +330,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       var newPaper = new Paper();
 
       var vdata = {
-        vnum: 0,
-        author: username,
         comments: comments,
-        pkey: newPaper.pkey,
         viewList: viewList,
         alertList: alertList,
         privateSetting: $scope.privatePaper
@@ -474,10 +471,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       }
 
       var vdata = {
-        vnum: paper.versions.length,
-        author: username,
         comments: comments,
-        pkey: paper.pkey,
         viewList: viewList,
         alertList: alertList,
         privateSetting: $scope.privatePaper

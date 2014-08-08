@@ -2,7 +2,7 @@ function Paper(paper) {
   if (paper){
     this.pkey = paper.pkey; 
     this.versions = paper.versions;
-    this.author = paper.versions;
+    this.author = username; 
     return;
   }
   this.pkey = Math.random() + ""; 
