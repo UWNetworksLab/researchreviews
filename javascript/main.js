@@ -9,6 +9,7 @@ var userList = [];
 var username; 
 
 freedom.on('get-reviews', function(past) {
+  console.log("GET ERI");
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
     var reviews; 
@@ -16,18 +17,17 @@ freedom.on('get-reviews', function(past) {
       reviews = JSON.parse(val);
     } catch(e) {}
 
-    if(!reviews || typeof reviews !== "object") reviews = {};   
+    if(!reviews || typeof reviews !== "object") reviews = [];   
 
-    for (var key in reviews){
-      var rpast = (reviews[key].text) ? 1 : 0;
-      if (rpast !== past){
-        delete reviews[key];
-      } 
+
+    for (var i = reviews.length-1; i >=0; i--){
+      var rpast = (reviews[i].text) ? 1 : 0;
+      if (rpast !== past)
+        reviews.splice(i, 1);
     }
 
-    freedom.emit('display-reviews', {
-      reviews: reviews
-    }); 
+    console.log("REVIEWS IN MAIN" + JSON.stringify(reviews));
+    freedom.emit('display-reviews', reviews); 
   }); 
 }); 
 
@@ -48,19 +48,6 @@ freedom.on('get-saved-review-pp', function(pkey) {
     }
 
     freedom.emit('display-saved-review', reviews[index]); 
-  }); 
-}); 
-
-freedom.on('get-saved-review', function(rkey) {
-  var promise = store.get(username + 'reviews');
-  promise.then(function(val) {
-    var reviews; 
-    try {
-      reviews = JSON.parse(val);
-    } catch(e) {}
-
-    if(!reviews || typeof reviews !== "object") reviews = {};   
-    freedom.emit('display-saved-review', reviews[rkey]); 
   }); 
 }); 
 
@@ -231,7 +218,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if (parse.action === "invite-reviewer"){
     var review = {
       ptitle: parse.title, 
-      pkey: parse.key,
+      pkey: parse.pkey,
       author: parse.author,
       vnum: parse.vnum, 
       rkey: Math.random() + ""
@@ -253,9 +240,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         reviews = JSON.parse(val);
       } catch(e) {}
 
-      if(!reviews || typeof reviews !== "object") reviews = {}; 
+      if(!reviews || typeof reviews !== "object") reviews = []; 
 
-      reviews[review.rkey] = review; 
+      reviews.push(review); 
       store.set(username + 'reviews', JSON.stringify(reviews)); 
     });
   }
@@ -299,6 +286,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
+    console.log("GET R PPAPER");
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
@@ -307,9 +295,14 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         action: 'send-r-paper'
       };
 
-      if (papers[parse.key]) msg.version = papers[parse.key].versions[parse.vnum];
-
-      social.sendMessage(parse.from, JSON.stringify(msg));
+      for (var i = 0; i < papers.length; i++){
+        console.log(papers[i].pkey + " " + parse.pkey);
+        if (papers[i].pkey === parse.pkey){
+          msg.version = papers[i].versions[parse.vnum];
+          social.sendMessage(parse.from, JSON.stringify(msg));
+          break;
+        }
+      }
     });
   }
   else if(parse.action === 'send-r-paper') {

@@ -209,11 +209,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       controller: inviteReviewersCtrl,
       backdrop: 'static', 
       resolve: {
-        key: function() {
-          return $scope.viewKey; 
-        },
-        papers : function() {
-          return $scope.papers;
+        currPaper : function() {
+          return $scope.currPaper;
         },
         vnum :function() {
           return $scope.currVnum-1;
@@ -232,6 +229,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       else if($('#addPaperPrivate2').is(':checked') && !privateSetting) { //public to private
         currPaper.versions[vnum].editPrivacy(false);
       }
+      else $modalInstance.dismiss('cancel');
+
       window.freedom.emit('set-papers', papers);
       $modalInstance.dismiss('cancel');
     };
@@ -305,8 +304,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         comments: comments,
         viewList: viewList,
         alertList: alertList,
-        privateSetting: $scope.privatePaper
-      }
+        privateSetting: $scope.privatePaper, 
+      };
 
       newPaper.addVersion(vdata, files[0]);
       $modalInstance.dismiss('cancel');
@@ -317,23 +316,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
   };
 
-  var inviteReviewersCtrl = function ($scope, $modalInstance, key, papers, vnum) {
+  var inviteReviewersCtrl = function ($scope, $modalInstance, currPaper, vnum) {
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];   
-    $scope.privacyHeading; 
-
-    $scope.init = function() {
-      var paper; 
-      for(var i = 0; i < papers.length; i++)
-        if(papers[i][0] == key) {
-          paper = papers[i][1];
-          break; 
-        }
-      $scope.privacyHeading = paper.versions[vnum].privateSetting? "Select users to view this paper" : "Invite reviewers";  
-    };
-
-    $scope.init(); 
+    $scope.privacyHeading = currPaper.versions[vnum].privateSetting? "Select users to view this paper" : "Invite reviewers";  
 
     $scope.selectMatch = function(selection) {
       $scope.alerts.push({msg: selection});
@@ -345,17 +332,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.invite = function () {
-      var paper; 
-      for(var i = 0; i < papers.length; i++) 
-        if(papers[i][0] == key) {
-          paper = papers[i][1]; 
-          break; 
-        }
-
       var msg = {
-        title:  paper.versions[vnum].title,        
+        title: currPaper.versions[vnum].title,        
         action: 'invite-reviewer',
-        key: key,
+        pkey: currPaper.pkey,
         author: username,
         vnum: vnum
       };
@@ -367,7 +347,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         });
       }
 
-    if(paper.versions[vnum].privateSetting) {
+    if(currPaper.versions[vnum].privateSetting) {
       msg.action = 'allow-access'; 
 
       for(var i = 0; i < $scope.alerts.length; i++) 
@@ -448,7 +428,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         privateSetting: $scope.privatePaper
       };
 
-      var newVersion = new Version(vdata, files[0], paper); 
+      paper.addVersion(vdata, files[0]); 
       $modalInstance.dismiss('cancel');
     };
 

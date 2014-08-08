@@ -1,14 +1,10 @@
 app.controller('reviewsController', function($scope, $modal) {
 	$scope.showNav = true; 
-	$scope.reviews = {}; 
+	$scope.reviews = []; 
 
-	//for review view 
-	$scope.reviewKey; 
-	$scope.currRPaper = {};
-	$scope.currPaperReviews; 
+	$scope.currReview; 
+	$scope.currRVersion = {};
 
-	//for review modal
-	$scope.reviewText; 
 	$scope.privacyHeading; 
 
 	window.freedom.emit('get-reviews', 0); 
@@ -32,55 +28,52 @@ app.controller('reviewsController', function($scope, $modal) {
 	}
 
 	$scope.downloadRPaper = function() {
-	  var ab = str2ab($scope.currRPaper.binaryString);
-	  var reader = new FileReader();
-
-	  var blob = new Blob([ab], {type:'text/plain'});
-	  reader.readAsArrayBuffer(blob);
-	  saveAs(blob, $scope.currRPaper.title); 
+		$scope.currRVersion.download();
 	}; 
 
 	$scope.getReviewView = function(rkey){
-		$scope.reviewKey = rkey;
-		$scope.currPaperReviews = []; 
+		for (var i = 0; i < $scope.reviews.length; i++){
+			if ($scope.reviews[i].rkey === rkey){
+				$scope.currReview = $scope.reviews[i];
+				break;
+			}
+		}
 
 		var msg = {
-			key: $scope.reviews[rkey].pkey,
-			vnum: $scope.reviews[rkey].vnum,
+			pkey: $scope.currReview.pkey,
+			vnum: $scope.currReview.vnum,
 			from: username,
-			to: $scope.reviews[rkey].author,
+			to: $scope.currReview.author,
 			action: 'get-r-paper'
 		};
 		window.freedom.emit('get-r-paper', msg);
-
-		window.freedom.emit('get-saved-review', rkey); 
 	}; 
 
 	window.freedom.on('display-saved-review', function(review) {
-		$scope.reviewText = review.text; 
+//		$scope.reviewText = review.text; 
 		if(review.accessList === 'public') $scope.privacyHeading = "public"; 
 		else $scope.privacyHeading = "private"; 
 		$scope.$apply(); 
 	}); 
 
 	window.freedom.on('got-paper-review', function(review) {
-		if(!$scope.currPaperReviews) $scope.currPaperReviews = []; 
-		var index = $scope.currPaperReviews.map(function(el) {
+		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
+		var index = $scope.currRVersion.reviews.map(function(el) {
 		  return el.reviewer;
 		}).indexOf(review.reviewer);
-		if(index == -1) $scope.currPaperReviews.push(review); 
+		if(index == -1) $scope.currRVersion.reviews.push(review); 
 		$scope.$apply(); 
 	});
 
 	window.freedom.on('send-r-paper', function(msg){
 		//show reviews of a paper that this reviewer is able to access
-		$scope.currRPaper = msg;
+		$scope.currRVersion = new Version(msg);
 
-		var paperReviews = $scope.currRPaper.reviews; 
+		var paperReviews = $scope.currRVersion.reviews; 
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++){
 	    	 	var r_msg = {
-			        pkey: $scope.currRPaper.key,
+			        pkey: $scope.currRVersion.key,
 			        rkey: paperReviews[i].rkey,
 			        reviewer: paperReviews[i].reviewer,
 			        vnum: paperReviews[i].vnum,
@@ -111,8 +104,8 @@ app.controller('reviewsController', function($scope, $modal) {
 		  	controller: addReviewCtrl,
 		  	backdrop: 'static',
 		  	resolve: {
-		    	currRPaper: function() {
-			      	return $scope.currRPaper; 
+		    	currRVersion: function() {
+			      	return $scope.currRVersion; 
 	    		},
 	    		reviewKey: function(){
 	    			return $scope.reviewKey;
@@ -127,7 +120,7 @@ app.controller('reviewsController', function($scope, $modal) {
 		});
 	};  
 
-	var addReviewCtrl = function ($scope, $modalInstance, currRPaper, reviewKey, reviewText, privacyHeading) {
+	var addReviewCtrl = function ($scope, $modalInstance, currRVersion, reviewKey, reviewText, privacyHeading) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
 	    $scope.alerts = [];
@@ -139,7 +132,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
 	    }; 
 
-	    $scope.init(currRPaper.author); 
+	    $scope.init(currRVersion.author); 
 
 	    $scope.selectMatch = function(selection) {
 	      $scope.alerts.push({msg: selection});
@@ -160,11 +153,11 @@ app.controller('reviewsController', function($scope, $modal) {
 	  	$scope.upload = function () {
 		    var today = new Date();  
 		    var data = {
-		    	ptitle: currRPaper.title,
-		        author: currRPaper.author,
-		        pkey: currRPaper.key,
+		    	ptitle: currRVersion.title,
+		        author: currRVersion.author,
+		        pkey: currRVersion.key,
 		        rkey: reviewKey,
-		        vnum: currRPaper.vnum,
+		        vnum: currRVersion.vnum,
 		        text: $("#reviewText").val(),
 		        reviewer: username,
 		        action: 'add-review',
@@ -174,7 +167,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 			if ($scope.privacySetting || $scope.privacySetting=='true') {
 				data.accessList.push(username);
-				data.accessList.push(currRPaper.author); 
+				data.accessList.push(currRVersion.author); 
 				for(var i = 0; i < $scope.alerts.length; i++)
 					data.accessList.push($scope.alerts[i].msg); 
 				window.freedom.emit('upload-review', data);
@@ -191,8 +184,24 @@ app.controller('reviewsController', function($scope, $modal) {
 	  };
 	};
 
-	window.freedom.on('display-reviews', function(data) {
-		$scope.reviews = data.reviews;
+	window.freedom.on('display-reviews', function(reviews) {
+		$scope.reviews=[];
+		for (var i = 0; i < reviews.length; i++){
+			var review = new Review(reviews[i]);
+			$scope.reviews.push(review);
+		}
+
+		if ($scope.reviews.length > 0) {
+			$scope.currReview = $scope.reviews[0];
+			var msg = {
+				pkey: $scope.currReview.pkey,
+				vnum: $scope.currReview.vnum,
+				from: username,
+				to: $scope.currReview.author,
+				action: 'get-r-paper'
+			};
+			window.freedom.emit('get-r-paper', msg);
+		}
 		$scope.$apply();
 	});
 });

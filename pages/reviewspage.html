@@ -22,10 +22,10 @@
       <!--papers-->
         <div class="col-md-8">
           <div id = "review-view-container" class="landing-container">
-            <h1 align="center"> {{ currRPaper.title }} </h1>
+            <h1 align="center"> {{ currRVersion.title }} </h1>
             <div id = "options-and-nav">
               <div class="btn-group" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!reviewKey"> <!-- ng-disabled="!reviewKey">-->
+                <button type="button" class="btn btn-default dropdown-toggle" ng-show="currReview"> <!-- ng-disabled="!reviewKey">-->
                   Options <span class="caret">
                 </button>
                 <ul class="dropdown-menu" role="menu">
@@ -33,19 +33,13 @@
                   <li><a ng-click="downloadRPaper()">Download this paper</a></li>
                 </ul>
               </div>
-<!--
-              <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default">Previous</button>
-                <button type="button" class="btn btn-default">Next</button>
-              </div>
--->
             </div>
-            <h4 ng-hide="!reviewKey"> Comments </h4> 
-            {{ currRPaper.comments }} 
+            <h4 ng-show="currReview"> Comments </h4> 
+            {{ currRVersion.comments }} 
 
-            <h4> Reviews </h4> 
+            <h4 ng-show="currReview"> Reviews </h4> 
             <accordion>
-              <accordion-group ng-repeat="review in currPaperReviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+              <accordion-group ng-repeat="review in currRVersion.reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
             </accordion>
           </div> <!--landing-container-->
         </div> <!--column-->

@@ -16,6 +16,9 @@ function Paper(paper) {
 }
 
 Paper.prototype.addVersion = function(vdata, file) {
+  vdata.author = this.author;
+  vdata.pkey = this.pkey;
+  vdata.vnum = this.versions.length;
   var version = new Version(vdata, file, this);
 };
 

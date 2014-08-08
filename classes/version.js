@@ -7,9 +7,9 @@ function Version(vdata, file, paper) {
   this.reviews = {};
   this.date = new Date();
 
-  this.author = paper.author;
-  this.pkey = paper.pkey;
-  this.vnum = paper.versions.length; 
+  this.author = vdata.author;
+  this.pkey = vdata.pkey;
+  this.vnum = vdata.vnum; 
 
   this.binaryString = vdata.binaryString;
   this.title = vdata.title;
