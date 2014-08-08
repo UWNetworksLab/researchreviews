@@ -28,7 +28,8 @@
       <div class="col-md-8">
         <div class="landing-container">
           <h1 align="center" ng-show="currPaper"> {{currPaper.versions[currVnum-1].title}} v. {{currVnum}} of {{currPaper.versions.length}} </h1> 
-          <h1 align="center" ng-show="papers.length===0"> You haven't added any papers yet. </h1>
+          <h1 align="center" ng-show="papers.length===0"> Please add a paper. </h1>
+          <h1 align="center" ng-show="!currPaper&&papers.length>0"> Please choose a paper. </h1>
           <div>
             <div class="btn-group" dropdown is-open="isopen">
               <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper">
@@ -48,7 +49,7 @@
             </div>
 
             <div class="btn-group pull-right">
-              <button type="button" class="btn btn-default"  ng-disabled="currVnum == 1" ng-click="displayVersion(-1)" ng-show="currPaper">Previous</button>
+              <button type="button" class="btn btn-default"  ng-disabled="currVnum === 1" ng-click="displayVersion(-1)" ng-show="currPaper">Previous</button>
               <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-show="currPaper">Next</button>
             </div>
           </div>

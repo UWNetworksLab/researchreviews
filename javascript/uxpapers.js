@@ -63,11 +63,14 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         for(var i = 0; i < papers.length; i++) {
           for(var j = 0; j < papers[i].versions.length; j++) 
             papers[i].versions[j].date = new Date(papers[i].versions[j].date); 
-          $scope.papers.push(papers[i]); 
+          var newPaper = new Paper(papers[i]); 
+          $scope.papers.push(newPaper); 
         }
 
+        console.log("in load");
         if($scope.papers.length > 0) {
 //          $scope.sortPapers('newest');
+console.log("stuff in papers");
           $scope.currPaper = $scope.papers[0];
           $scope.showPaperView();
         }
@@ -80,9 +83,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   $scope.showPaperView = function(key) {
     //LOAD PAPER VIEW
+    if($scope.papers.length === 0) 
+      return; 
     if(!$scope.currPaper) {
       $scope.currPaper = $scope.papers[0]; 
-      $scope.currVnum = $scope.papers[0].versions.length; 
+      $scope.currVnum = $scope.papers[0].versions.length;
     }
 
     if(key) {
@@ -94,6 +99,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       }
     
     //LOAD REVIEWS
+    console.log($scope.currVnum);
     var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
     if(reviews)
       for(var i = 0; i < reviews.length; i++) {
@@ -126,33 +132,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       $scope.$apply();
     });   
   }; 
-
-  window.freedom.on('display-delete-version', function(key) {
-    $scope.viewTitle = "Your paper has been deleted.";
-    $scope.viewComments = "";
-
-    if($scope.currVnum-1 == 0) {
-      for(var i = 0; i < $scope.papers.length; i++) 
-        if($scope.papers[i].key === key) {
-          $scope.papers.splice(i, 1);
-          break; 
-        }
-      $scope.currVnum = 1;
-      return; 
-    }
-
-//    if($scope.currVnum == $scope.totalVersion)
-//      $scope.totalVersion = $scope.totalVersion-1; 
-
-    $scope.currVnum = $scope.currVnum-1; 
-
-    if(!$scope.$$phase) {
-      $scope.$apply(); 
-    }
-
-    loadPapersPage(); 
-    $scope.showPaperView(key);
-  });
 
   window.freedom.on('display-new-paper', function(newPaper) {
     var paper = new Paper(newPaper);
@@ -487,14 +466,22 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   };
 
   $scope.deleteVersion = function() {
-    $scope.currPaper.deleteVersion($scope.currVnum-1);
-    window.freedom.emit('set-papers', $scope.papers);
+    $scope.currPaper.deleteVersion(--$scope.currVnum);
 
-/*    window.freedom.emit('delete-version', {
-      key: $scope.viewKey,
-      vnum: $scope.currVnum-1 
-    });
-*/
+    if($scope.currPaper.versions.length === 0) { //deleted last version
+      for(var i = 0; i < $scope.papers.length; i++)
+        if($scope.papers[i].pkey === $scope.currPaper.pkey) {
+          $scope.papers.splice(i, 1); 
+          break; 
+        }  
+
+      $scope.currPaper = $scope.papers.length>0? $scope.papers[0] : false; 
+      if($scope.currVnum < 1) $scope.currVnum = 1; 
+    }   
+
+    console.log(JSON.stringify($scope.papers));
+
+    window.freedom.emit('set-papers', $scope.papers);
   };
 
   $scope.downloadVersion = function () {
