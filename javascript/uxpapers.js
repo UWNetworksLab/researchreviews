@@ -15,6 +15,14 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   $scope.isopen = false; 
 
+  var orderBy = $filter('orderBy');
+
+  $scope.order = 'versions[versions.length-1].title'; 
+
+  $scope.setOrder = function(order) {
+    $scope.order = order; 
+  }
+
   $scope.displayVersion = function(offset) {
     $scope.currVnum = $scope.currVnum + offset;
     $scope.showPaperView();

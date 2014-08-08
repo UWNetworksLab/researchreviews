@@ -12,14 +12,14 @@
                   <i> sort by </i>  <span class="caret">
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a ng-click="order(title, false)">Title</a></li>
-                  <li><a ng-click="sortPapers('oldest')">Oldest First</a></li>
-                  <li><a ng-click="sortPapers('newest')">Newest First</a></li>
+                  <li><a ng-click="setOrder('versions[versions.length-1].title')">Title</a></li>
+                  <li><a ng-click="setOrder('versions[versions.length-1].date')">Oldest First</a></li>
+                  <li><a ng-click="setOrder('-versions[versions.length-1].date')">Newest First</a></li>
                 </ul>
               </span>
 
           <table class="table table-hover">
-            <tr ng-repeat="paper in papers"> 
+            <tr ng-repeat="paper in papers | orderBy:order"> 
               <td ng-click="showPaperView(paper.pkey)"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
