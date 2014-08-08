@@ -1,7 +1,12 @@
 function Paper(paper) {
   if (paper){
     this.pkey = paper.pkey; 
-    this.versions = paper.versions;
+    this.versions = [];
+
+    for (var i = 0; i < paper.versions.length; i++){
+      this.versions.push(new Version(paper.versions[i], false, this));
+    }
+
     this.author = username; 
     return;
   }
@@ -17,12 +22,3 @@ Paper.prototype.addVersion = function(vdata, file) {
 Paper.prototype.deleteVersion = function(vnum){
   this.versions.splice(vnum, 1);
 };
-
-function toPaper(obj){
-  var paper = new Paper();
-  paper.pkey = obj.pkey;
-  paper.author = obj.author;
-  paper.date = obj.date;
-  paper.versions = obj.versions;
-  return paper;
-}

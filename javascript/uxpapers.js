@@ -60,17 +60,13 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       window.freedom.emit('get-papers', 0); 
       window.freedom.on('display-papers', function(papers) {
         $scope.papers = []; 
+
         for(var i = 0; i < papers.length; i++) {
-          for(var j = 0; j < papers[i].versions.length; j++) 
-            papers[i].versions[j].date = new Date(papers[i].versions[j].date); 
-          var newPaper = new Paper(papers[i]); 
-          $scope.papers.push(newPaper); 
+          var newPaper = new Paper(papers[i]);
+          $scope.papers.push(newPaper);
         }
 
-        console.log("in load");
         if($scope.papers.length > 0) {
-//          $scope.sortPapers('newest');
-console.log("stuff in papers");
           $scope.currPaper = $scope.papers[0];
           $scope.showPaperView();
         }
@@ -99,7 +95,6 @@ console.log("stuff in papers");
       }
     
     //LOAD REVIEWS
-    console.log($scope.currVnum);
     var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
     if(reviews)
       for(var i = 0; i < reviews.length; i++) {
@@ -165,7 +160,6 @@ console.log("stuff in papers");
     }); 
   };
 
-
   $scope.addPaper = function() {
     var modalInstance = $modal.open({
       templateUrl: '/modals/addPaperTemplate.html',
@@ -187,16 +181,14 @@ console.log("stuff in papers");
       controller: editPrivacyCtrl,
       backdrop: 'static', 
       resolve: {
-        key: function() {
-          return $scope.viewKey; 
-        },
-        privateSetting: function() {
-          for(var i = 0; i < $scope.papers.length; i++)
-            if($scope.papers[i][0] == $scope.viewKey) 
-              return $scope.papers[i][1].versions[$scope.currVnum-1].privateSetting; 
+        currPaper: function() {
+          return $scope.currPaper;
         },
         vnum: function() {
           return $scope.currVnum-1;  
+        },
+        papers: function(){
+          return $scope.papers;
         }
       }
     });   
@@ -222,24 +214,17 @@ console.log("stuff in papers");
     }); 
   };
 
-  var editPrivacyCtrl = function ($scope, $modalInstance, key, vnum, privateSetting) {
+  var editPrivacyCtrl = function ($scope, $modalInstance, currPaper, vnum, papers) {
+    var privateSetting = currPaper.versions[vnum].privateSetting;
     $scope.currSetting = privateSetting? "private" : "public"; 
-
     $scope.save = function () { 
-      var msg = {
-        key: key, 
-        vnum: vnum
-      }; 
-
-      if($("#addPaperPublic2").is(':checked') && privateSetting) { //private to public
-        msg.action = "toPublic"; 
-        window.freedom.emit('edit-privacy', JSON.stringify(msg));
+      if($("#addPaperPublic2").is(':checked') && privateSetting){
+        currPaper.versions[vnum].editPrivacy(true);
       }
       else if($('#addPaperPrivate2').is(':checked') && !privateSetting) { //public to private
-        msg.action = "toPrivate"; 
-        window.freedom.emit('edit-privacy', JSON.stringify(msg));
+        currPaper.versions[vnum].editPrivacy(false);
       }
-
+      window.freedom.emit('set-papers', papers);
       $modalInstance.dismiss('cancel');
     };
 
@@ -332,7 +317,6 @@ console.log("stuff in papers");
 
     $scope.init = function() {
       var paper; 
-      //console.log(JSON.stringify(papers));
       for(var i = 0; i < papers.length; i++)
         if(papers[i][0] == key) {
           paper = papers[i][1];
@@ -479,8 +463,6 @@ console.log("stuff in papers");
       if($scope.currVnum < 1) $scope.currVnum = 1; 
     }   
 
-    console.log(JSON.stringify($scope.papers));
-
     window.freedom.emit('set-papers', $scope.papers);
   };
 
@@ -494,20 +476,6 @@ console.log("stuff in papers");
       }
     }
 
-    var file; 
-    for(var i = 0; i < $scope.papers.length; i++) 
-      if($scope.papers[i].pkey === $scope.currPaper.pkey) {
-        file = $scope.papers[i].versions[$scope.currVnum-1]; 
-        break; 
-      }
-
-    var ab = str2ab(file.binaryString);
-    var reader = new FileReader();
-    var blob = new Blob([ab], {type:'application/pdf'});
-
-    reader.readAsArrayBuffer(blob);
-    saveAs(blob, file.title);
+    $scope.currPaper.versions[$scope.currVnum-1].download();
   }
-
-  //TODO: this should be temporary
 });
