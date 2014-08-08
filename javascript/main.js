@@ -523,10 +523,7 @@ freedom.on('load-profile', function(data) {
 });
 
 freedom.on('add-version', function(data) {
-  console.log("Add version");
-
-  //SHARE PAPER WITH USERS ALLOWED TO VIEW IT TODO: make this work for versioning
-/*      var paper = {
+   var paper = {
         title: data.title,
         author: username,
         key: data.key, 
@@ -564,7 +561,7 @@ freedom.on('add-version', function(data) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
-      }*/
+      }
 
     freedom.emit('display-new-version', data);
 //    store.set(username + 'papers', JSON.stringify(papers)); 

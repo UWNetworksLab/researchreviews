@@ -30,7 +30,7 @@ function Version(vdata, file, paper, version) {
     this.title = file.name;
     this.binaryString = ab2str(arrayBuffer);
     paper.versions.push(this);
-    console.log("in onload");
+
     if (this.vnum === 0) window.freedom.emit('add-paper', paper);
     else window.freedom.emit('add-version', this);
   }.bind(this);

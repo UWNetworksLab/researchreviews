@@ -2,13 +2,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   //for paperTable
   $scope.papers = [];
 
-/*  var orderBy = $filter('orderBy');
-  $scope.order = function(predicate, reverse) {
-    $scope.papers = orderBy($scope.papers, predicate, reverse);
-  };
-  $scope.order('-age',false);
-
-*/
   $scope.showNav = true; 
   //for paperView
   $scope.currPaper;
@@ -21,36 +14,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   $scope.accessAddBtn = true;   
 
   $scope.isopen = false; 
-
-/*  $scope.sortPapers = function(sortOpt) {
-    if(sortOpt === 'title') {
-      $scope.papers.sort(function(a, b) {
-        a = a[1];
-        b = b[1];
-        a = a.versions[a.versions.length-1].title.toUpperCase(); 
-        b = b.versions[b.versions.length-1].title.toUpperCase(); 
-        return a < b ? -1 : (a > b ? 1 : 0);
-      });
-    }
-    else if(sortOpt === 'newest') {
-      $scope.papers.sort(function(a, b) {
-        a = a[1];
-        b = b[1];
-        a = a.versions[a.versions.length-1].date; 
-        b = b.versions[b.versions.length-1].date; 
-        return a < b ? -1 : (a > b ? 1 : 0);
-      });     
-    }
-    else if(sortOpt === 'oldest') {
-      $scope.papers.sort(function(a, b) {
-        a = a[1];
-        b = b[1];
-        a = a.versions[a.versions.length-1].date; 
-        b = b.versions[b.versions.length-1].date; 
-        return a > b ? -1 : (a < b ? 1 : 0);
-      });
-    }
-  }*/
 
   $scope.displayVersion = function(offset) {
     $scope.currVnum = $scope.currVnum + offset;
@@ -116,19 +79,19 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   loadPapersPage(); 
 
   $scope.showPaperView = function(key) {
-    console.log("show paper");
     //LOAD PAPER VIEW
     if(!$scope.currPaper) {
       $scope.currPaper = $scope.papers[0]; 
       $scope.currVnum = $scope.papers[0].versions.length; 
     }
 
-    if(key) 
+    if(key) {
       for(var i = 0; i < $scope.papers.length; i++) 
         if($scope.papers[i].pkey === key) {
           $scope.currPaper = $scope.papers[i]; 
           break; 
         }
+      }
     
     //LOAD REVIEWS
     var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
@@ -202,17 +165,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
-    console.log("display version");
     $scope.currVnum = newVersion.vnum+1;
-    for(var i = 0; i < $scope.papers.length; i++) {
-      if($scope.papers[i].pkey == newVersion.pkey) {
-        var version = new Version(false, false, false, newVersion);
-        $scope.papers[i].versions.push(version);
-        break; 
-      }
-    }
     $scope.showPaperView(); 
     $scope.$apply(); 
+
+    window.freedom.emit('set-papers', $scope.papers);
   });
 
   $scope.addVersion = function() {
@@ -518,7 +475,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
       var vdata = {
         vnum: paper.versions.length,
-        author: paper.author,
+        author: username,
         comments: comments,
         pkey: paper.pkey,
         viewList: viewList,
@@ -526,9 +483,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         privateSetting: $scope.privatePaper
       };
 
-      var mypaper = new Paper(paper);
-
-      mypaper.addVersion(vdata, files[0]);
+      var newVersion = new Version(vdata, files[0], paper); 
       $modalInstance.dismiss('cancel');
     };
 
