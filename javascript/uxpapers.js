@@ -9,11 +9,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   $scope.order('-age',false);
 
 */
-
-
   $scope.showNav = true; 
-
-
   //for paperView
   $scope.currPaper;
 
@@ -120,6 +116,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   loadPapersPage(); 
 
   $scope.showPaperView = function(key) {
+    console.log("show paper");
     //LOAD PAPER VIEW
     if(!$scope.currPaper) {
       $scope.currPaper = $scope.papers[0]; 
@@ -195,8 +192,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   });
 
   window.freedom.on('display-new-paper', function(newPaper) {
-    $scope.papers.push(newPaper); 
-    $scope.currPaper = newPaper;
+    var paper = new Paper(newPaper);
+    $scope.currPaper = paper;
+    $scope.papers.push($scope.currPaper); 
     $scope.$apply(); 
     $scope.showPaperView(); 
 
@@ -204,17 +202,15 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   }); 
 
   window.freedom.on('display-new-version', function(newVersion) {
-    //$scope.reviews = []; 
+    console.log("display version");
     $scope.currVnum = newVersion.vnum+1;
-    console.log("VNUM " + $scope.currVnum);
     for(var i = 0; i < $scope.papers.length; i++) {
       if($scope.papers[i].pkey == newVersion.pkey) {
-        $scope.papers[i].push(newVersion);
+        var version = new Version(false, false, false, newVersion);
+        $scope.papers[i].versions.push(version);
         break; 
       }
     }
-
-    //$scope.papers[newVersion.key] = newVersion; 
     $scope.showPaperView(); 
     $scope.$apply(); 
   });
@@ -542,10 +538,14 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   };
 
   $scope.deleteVersion = function() {
-    window.freedom.emit('delete-version', {
+    $scope.currPaper.deleteVersion($scope.currVnum-1);
+    window.freedom.emit('set-papers', $scope.papers);
+
+/*    window.freedom.emit('delete-version', {
       key: $scope.viewKey,
       vnum: $scope.currVnum-1 
     });
+*/
   };
 
   $scope.downloadVersion = function () {

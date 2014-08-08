@@ -1,5 +1,18 @@
-function Version(vdata, file, paper) {
-  console.log("IN VERSION CONSTRUCTOR");
+function Version(vdata, file, paper, version) {
+  if (version){
+    this.vnum = version.vnum;
+    this.author = version.author;
+    this.comments = version.comments;
+    this.pkey = version.pkey;
+    this.viewList = version.viewList;
+    this.alertList = version.alertList;
+    this.privateSetting = version.privateSetting;
+    this.reviews = version.reviews;
+    this.date = version.date;
+    this.title = version.title;
+    this.binaryString = version.binaryString;
+    return;
+  }
   this.vnum = vdata.vnum;
   this.author = vdata.author;
   this.comments = vdata.comments;
@@ -17,6 +30,7 @@ function Version(vdata, file, paper) {
     this.title = file.name;
     this.binaryString = ab2str(arrayBuffer);
     paper.versions.push(this);
+    console.log("in onload");
     if (this.vnum === 0) window.freedom.emit('add-paper', paper);
     else window.freedom.emit('add-version', this);
   }.bind(this);
