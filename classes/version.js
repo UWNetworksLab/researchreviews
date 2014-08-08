@@ -1,18 +1,4 @@
-function Version(vdata, file, paper, version) {
-  if (version){
-    this.vnum = version.vnum;
-    this.author = version.author;
-    this.comments = version.comments;
-    this.pkey = version.pkey;
-    this.viewList = version.viewList;
-    this.alertList = version.alertList;
-    this.privateSetting = version.privateSetting;
-    this.reviews = version.reviews;
-    this.date = version.date;
-    this.title = version.title;
-    this.binaryString = version.binaryString;
-    return;
-  }
+function Version(vdata, file, paper) {
   this.vnum = vdata.vnum;
   this.author = vdata.author;
   this.comments = vdata.comments;
