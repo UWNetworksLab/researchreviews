@@ -91,16 +91,22 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         reviews = JSON.parse(val);
       } catch(e) {}
 
-      if(!reviews || typeof reviews !== "object") reviews = {}; 
+      if(!reviews || typeof reviews !== "object") reviews = []; 
 
-      var msg = {
-        action: 'got-paper-review',
-        text: reviews[parse.rkey].text,
-        reviewer: parse.reviewer
-      };
+      for(var i = 0; i < reviews.length; i++) 
+        if(reviews[i].rkey === parse.rkey) {
+          var msg = {
+            action: 'got-paper-review',
+            text: reviews[i].text,
+            reviewer: username 
+          }; 
+          break; 
+        }
 
       if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.author) == -1)
         msg.text = "You do not have access to this review"; 
+
+      console.log("the reviewer's side " + JSON.stringify(msg));
 
       social.sendMessage(parse.author, JSON.stringify(msg));
     });
@@ -219,7 +225,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       pkey: parse.pkey,
       author: parse.author,
       vnum: parse.vnum, 
-      rkey: Math.random() + ""
+      rkey: Math.random() + "",
+      reviewer: username 
     };
 
     //TODO: r_comments 

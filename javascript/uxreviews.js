@@ -73,17 +73,17 @@ app.controller('reviewsController', function($scope, $modal) {
 
 		var paperReviews = $scope.currRVersion.reviews; 
 		console.log("send r paper" + JSON.stringify(msg));
-		console.log(JSON.stringify($scope.currRVersion));
+		console.log("paper reviews..." + JSON.stringify(paperReviews));
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++){
 	    	 	var r_msg = {
-			        pkey: $scope.currRVersion.key,
+			        pkey: $scope.currRVersion.pkey, //
 			        rkey: paperReviews[i].rkey,
-			        reviewer: paperReviews[i].reviewer,
+			        reviewer: paperReviews[i].reviewer,//
 			        vnum: paperReviews[i].vnum,
-			        author: username
+			        author: $scope.currRVersion.author 
 	        	};
-	        	
+	        	console.log(JSON.stringify(r_msg));
 	       	 	window.freedom.emit('get-paper-review', r_msg);
 		    }	
 
