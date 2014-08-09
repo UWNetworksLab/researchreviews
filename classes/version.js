@@ -4,7 +4,7 @@ function Version(vdata, file, paper) {
   this.alertList = vdata.alertList;
   this.privateSetting = vdata.privateSetting;
 
-  this.reviews = {};
+  this.reviews = vdata.reviews? vdata.reviews : {};
   this.date = new Date();
 
   this.author = vdata.author;
