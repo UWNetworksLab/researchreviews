@@ -9,7 +9,6 @@ var userList = [];
 var username; 
 
 freedom.on('get-reviews', function(past) {
-  console.log("GET ERI");
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
     var reviews; 
@@ -26,7 +25,6 @@ freedom.on('get-reviews', function(past) {
         reviews.splice(i, 1);
     }
 
-    console.log("REVIEWS IN MAIN" + JSON.stringify(reviews));
     freedom.emit('display-reviews', reviews); 
   }); 
 }); 
@@ -286,7 +284,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 //get our own papers to send back
   else if (parse.action === 'get-r-paper'){
-    console.log("GET R PPAPER");
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
@@ -296,9 +293,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       };
 
       for (var i = 0; i < papers.length; i++){
-        console.log(papers[i].pkey + " " + parse.pkey);
         if (papers[i].pkey === parse.pkey){
           msg.version = papers[i].versions[parse.vnum];
+          console.log("on author's side " + JSON.stringify(msg.version));
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
@@ -309,26 +306,29 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('send-r-paper', parse.version);
   }
   else if (parse.action === 'add-review-on-author'){
-    //TODO: now sending over binary string, only need to send key etc
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
 
-      if (!papers[parse.pkey].versions[parse.vnum].reviews)
-        papers[parse.pkey].versions[parse.vnum].reviews = [];
-      
-      papers[parse.pkey].versions[parse.vnum].reviews.push(parse);
-      store.set(username + 'papers', JSON.stringify(papers)); 
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i].pkey === parse.pkey) {
+          var reviews = papers[i].versions[parse.vnum].reviews;
+          if(!reviews) reviews=[];
+          reviews.push(parse);
 
-    //alert author that their paper has been reviewed
-      var alertmsg = {
-        action: 'add-review-on-author',
-        title: papers[parse.pkey].versions[parse.vnum].title,
-        date: parse.date,
-        vnum: parse.vnum, 
-        reviewer: parse.reviewer   
-      };
-      freedom.emit('alert', alertmsg);
+          var alertmsg = {
+            action: 'add-review-on-author',
+            title: papers[i].versions[parse.vnum].title,
+            date: parse.date,
+            vnum: parse.vnum, 
+            reviewer: parse.reviewer   
+          };
+          freedom.emit('alert', alertmsg);
+          break; 
+        }
+
+      console.log("wtf on author's side " + JSON.stringify(papers));
+      store.set(username + 'papers', JSON.stringify(papers)); 
     });
   }  
 });
@@ -374,19 +374,6 @@ freedom.on('get-other-reviews', function(msg) {
 }); 
 
 freedom.on('upload-review', function(parse){
-  var promise = store.get(username + 'reviews');
-  promise.then(function(val) {
-    var reviews; 
-    try {
-      reviews = JSON.parse(val);
-    } catch(e) {}
-    if(!reviews || typeof reviews !== "object") reviews = {}; 
-    reviews[parse.rkey] = parse;
-    reviews[parse.rkey].past = 1; 
-    store.set(username + 'reviews', JSON.stringify(reviews));
-    freedom.emit('update-my-review', JSON.stringify(parse));
-  }); 
-
   //only info the author gets
   var reviewForAuth = {
     reviewer : parse.reviewer,
@@ -599,6 +586,10 @@ freedom.on('add-paper', function(data) {
 
   freedom.emit('display-new-paper', data);
 });
+
+freedom.on('set-reviews', function(reviews) {
+  store.set(username+'reviews', JSON.stringify(reviews)); 
+}); 
 
 freedom.on('set-papers', function(papers) {
   store.set(username+'papers', JSON.stringify(papers)); 
