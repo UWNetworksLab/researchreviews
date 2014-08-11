@@ -177,10 +177,17 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!papers || typeof papers !== "object") papers = {}; 
 
       var msg = {
-        action: 'got-browse-paper', 
-        paper: papers[parse.key]
+        action: 'got-browse-paper' 
       };
 
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i].pkey === parse.pkey) {
+          msg.paper = papers[i]; 
+          console.log(JSON.stringify(msg.paper));
+          break; 
+        }
+
+      console.log("got browse paper to send over..." + JSON.stringify(msg));
       social.sendMessage(parse.from, JSON.stringify(msg));
     }); 
   }
@@ -569,7 +576,7 @@ freedom.on('add-paper', function(data) {
   var paper = {
     title: data.versions[0].title,
     author: username,
-    key: data.versions[0].pkey, 
+    pkey: data.versions[0].pkey, 
     vnum: 0,
     action: 'add-paper'
   };

@@ -2,17 +2,13 @@ app.controller('browseController', function($scope, $location) {
   	$scope.showNav = true; 
 
   	//for browse paper table
-  	$scope.papers;
+  	$scope.papers = [];
   	$scope.publicSetting = true; 
 
   	//for browse paper view
-  	$scope.currBPaper; 
-  	$scope.viewKey;   
+  	$scope.currPaper; 
+  	$scope.currVnum = 1; 
   	$scope.currVersion = 1;
-  	$scope.totalVersion = 1; 
-  	$scope.viewTitle; 
-  	$scope.viewComments; 
-  	$scope.reviews; 
 
 	$scope.getPublicPapers = function() {
 		$("#publicBtn").attr('class', "btn btn-default active"); 
@@ -37,29 +33,27 @@ app.controller('browseController', function($scope, $location) {
 	};
 
 	$scope.getPaper = function(paper) {
+		console.log(JSON.stringify(paper));
+
 		var msg = {
 			title: paper.title,
 			author: paper.author,
-			key: paper.key,
+			pkey: paper.pkey,
 			from: username
 		};
-		$scope.viewKey = paper.key; 
 
 		window.freedom.emit('get-browse-paper', msg); 
 		window.freedom.on('display-browse-paper', function(paper) {
-			$scope.currBPaper = paper;
-			$scope.currVersion = paper.versions.length; 
-			$scope.totalVersion = paper.versions.length; 
+			$scope.currPaper = new Paper(paper);
+			$scope.currVnum = paper.versions.length; 
 			var len = paper.versions.length; 
 
-			$scope.viewTitle = paper.versions[len-1].title + " v." + len + " of " + len; 
-			$scope.viewComments = paper.versions[len-1].comments; 
 			$scope.$apply(); 
 			if($scope.publicSetting) 
 				$scope.getPublicPapers(); 
 			else 
 				$scope.getPrivatePapers(); 
-			$scope.getReviews(); 
+			//$scope.getReviews(); 
 		}); 
 	};
 
@@ -83,7 +77,6 @@ app.controller('browseController', function($scope, $location) {
 			} 
 	};
 
-	//recv message
 	window.freedom.on('got-public-papers', function(papers) {
 		$scope.papers = papers; 
 		$scope.$apply(); 
@@ -138,22 +131,10 @@ app.controller('browseController', function($scope, $location) {
 	  }
 
 	$scope.downloadVersion = function() {
-		var version = $scope.currBPaper.versions[$scope.currVersion-1]; 
-		if(version.privateSetting && version.viewList.indexOf(username) == -1) {
-			alert("You do not have access to this version of the paper.");
-			return; 
-		}
-	    var file = $scope.currBPaper.versions[$scope.currVersion-1]; 
-	    var ab = str2ab(file.binaryString);
-	    var reader = new FileReader();
-	    var blob = new Blob([ab], {type:'application/pdf'});
-
-	    reader.readAsArrayBuffer(blob);
-	    saveAs(blob, file.title);
+		($scope.currPaper.versions[$scope.currVnum-1]).download(); 
 	}; 
 
 	window.freedom.on('send-private-papers', function(data) {
-		console.log("sent private papers...." + JSON.stringify(data));
 		$scope.papers = data; 
 		$scope.$apply(); 
 	}); 

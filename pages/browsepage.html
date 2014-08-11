@@ -24,10 +24,10 @@
       <!--papers-->
         <div class="col-md-6">
           <div class="landing-container">
-            <h1 align="center"> {{ viewTitle }} </h1>
+            <h1 align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
             <div id = "options-and-nav">
               <div class="btn-group" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!viewKey"> 
+                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper"> 
                   Options <span class="caret">
                 </button>
                 <ul class="dropdown-menu" role="menu">
@@ -37,16 +37,16 @@
               </div>
 
             <div class="btn-group pull-right">
-              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)" ng-hide="!viewKey">Previous</button>
-              <button type="button" class="btn btn-default" ng-disabled="currVersion >= totalVersion" ng-click="displayVersion(1)" ng-hide="!viewKey">Next</button>
+              <button type="button" class="btn btn-default"  ng-disabled="currVersion == 1" ng-click="displayVersion(-1)" ng-hide="!currPaper">Previous</button>
+              <button type="button" class="btn btn-default" ng-disabled="currVersion >= currPaper.versions.length" ng-click="displayVersion(1)" ng-hide="!currPaper">Next</button>
             </div>
 
             </div>
-            <h4 ng-hide="!viewKey"> Comments </h4> 
-            {{ viewComments }} 
+            <h4 ng-hide="!currPaper"> Comments </h4> 
+            {{ currPaper.versions[currVnum-1].comments }} 
 
-            <h4 ng-hide="!viewKey"> Reviews </h4> 
-            <accordion ng-hide="!viewKey">
+            <h4 ng-hide="!currPaper"> Reviews </h4> 
+            <accordion ng-hide="!currPaper">
               <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
             </accordion>
           </div> <!--landing-container-->
