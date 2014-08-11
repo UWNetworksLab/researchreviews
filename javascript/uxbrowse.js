@@ -1,4 +1,4 @@
-app.controller('browseController', function($scope, $location) {
+app.controller('browseController', function($scope, $location, $modal) {
   	$scope.showNav = true; 
 
   	//for browse paper table
@@ -8,7 +8,100 @@ app.controller('browseController', function($scope, $location) {
   	//for browse paper view
   	$scope.currPaper; 
   	$scope.currVnum = 1; 
-  	$scope.currVersion = 1;
+
+	$scope.addReview = function() {
+		var version = $scope.currPaper.versions[$scope.currVnum-1];
+		if(version.privateSetting && version.viewList.indexOf(username) == -1) {
+			alert("You do not have permission to review this paper.");
+			return;
+		}
+
+		var modalInstance = $modal.open({
+		  	templateUrl: '/modals/addReviewTemplate.html',
+		  	windowClass:'normal',
+		  	controller: addReviewCtrl,
+		  	backdrop: 'static',
+		  	resolve: {
+		    	currReview: function() {
+		    		var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
+		    		for (var i = 0; i < reviews.length; i++){
+		    			if (reviews[i].reviewer === username)
+		    				return reviews[i];
+		    		}
+		    		return false;
+	    		},
+	    		currRVersion: function() {
+	    			return $scope.currPaper.versions[$scope.currVnum-1];
+	    		}
+		 	}
+		});
+	};  
+
+	var addReviewCtrl = function ($scope, $modalInstance, currReview, currRVersion) {
+		console.log("CURRREVIEW " + currReview);
+		$scope.states = userList; 
+	    $scope.selected = undefined;
+	    $scope.alerts = [];
+	    $scope.privacySetting;
+	    $scope.privacyHeading = currReview.accessList? "public" : "private"; 
+
+	    $scope.init = function(author) {
+	    	$scope.states.splice($scope.states.indexOf(author), 1); 
+	    }; 
+
+	    $scope.init(currRVersion.author); 
+
+	    $scope.selectMatch = function(selection) {
+	      $scope.alerts.push({msg: selection});
+	    };
+
+	    $scope.deleteUser = function(id) {
+	      $scope.alerts.splice(id, 1);
+	    };
+
+	    $scope.setPrivate = function() {
+	    	$scope.privacySetting = true;
+	    };
+
+	    $scope.setPublic = function() {
+	    	$scope.privacySetting = false; 
+	    };
+
+	  	$scope.upload = function () {
+
+	  		//TODO: access list, information
+	  		var review = {
+			    date: new Date(),  
+			    text: $("#reviewText").val(), 
+			    accessList: [],
+			    pkey: currRVersion.pkey,
+			    reviewer: username,
+			    vnum: currRVersion.vnum,
+			    author: currRVersion.author
+	  		};
+	  		if (!currReview){
+				review.rkey = Math.random() + "";	  			
+	  		}
+
+			if ($scope.privacySetting) {
+				review.accessList.push(username);
+				review.accessList.push(currRVersion.author); 
+				for(var i = 0; i < $scope.alerts.length; i++)
+					review.accessList.push($scope.alerts[i].msg); 
+			}
+			else review.accessList = false; 
+			var newReview = new Review(review);
+
+			//TODO: make this a method?
+			window.freedom.emit('upload-review', newReview);
+			window.freedom.emit('set-review', newReview);
+		    $modalInstance.dismiss('cancel'); 
+	  };
+
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+	};
 
 	$scope.getPublicPapers = function() {
 		$("#publicBtn").attr('class', "btn btn-default active"); 
@@ -53,28 +146,26 @@ app.controller('browseController', function($scope, $location) {
 				$scope.getPublicPapers(); 
 			else 
 				$scope.getPrivatePapers(); 
-			//$scope.getReviews(); 
+			$scope.getReviews(); 
 		}); 
 	};
 
 	$scope.getReviews = function() {
-		$scope.reviews = []; 
-
-		var paperReviews = $scope.currBPaper.versions[$scope.currVersion-1].reviews;
+		var paperReviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
 
 		if(paperReviews)
 			for(var i = 0; i < paperReviews.length; i++) {
 				var msg = {
-					pkey: $scope.currBPaper.key,
+					pkey: $scope.currPaper.key,
 					rkey: paperReviews[i].rkey,
 					reviewer: paperReviews[i].reviewer,
-					vnum: $scope.currVersion-1,
-					author: $scope.currBPaper.versions[$scope.currVersion-1].author,
+					vnum: $scope.currVnum-1,
+					author: $scope.currPaper.versions[$scope.currVnum-1].author,
 					from: username 
 				}; 
-
+				console.log("MSG " + JSON.stringify(msg));
 				window.freedom.emit('get-other-paper-review', msg);
-			} 
+			}
 	};
 
 	window.freedom.on('got-public-papers', function(papers) {
@@ -84,44 +175,27 @@ app.controller('browseController', function($scope, $location) {
 	}); 
 
     window.freedom.on('got-paper-review', function(review){
-      if(!$scope.reviews) $scope.reviews=[];
-      var index = $scope.reviews.map(function(el) {
+    	console.log("GOT PAPER REVIEW " + JSON.stringify(review));
+
+    	var version = $scope.currPaper.versions[$scope.currVnum-1];
+
+      if(!version.reviews) version.reviews=[];
+      var index = version.reviews.map(function(el) {
         return el.reviewer;
       }).indexOf(review.reviewer);
-      if(index == -1) $scope.reviews.push(review);
-      else $scope.reviews[index] = review; 
+      if(index == -1) version.reviews.push(review);
+      else version.reviews[index] = review; 
+      console.log("INDEX  "  + index);
       $scope.$apply();
     });
 
 	$scope.displayVersion = function(offset) {
-		$scope.currVersion = $scope.currVersion + offset; 
-		$scope.viewTitle = $scope.currBPaper.versions[$scope.currVersion-1].title + " v." + $scope.currVersion + " of " + $scope.totalVersion; 
-		$scope.viewComments = $scope.currBPaper.versions[$scope.currVersion-1].comments; 
-
+		$scope.currVnum = $scope.currVnum + offset; 
 		$scope.getReviews(); 
 	}; 
 
-	$scope.addReview = function() {
-		var version = $scope.currBPaper.versions[$scope.currVersion-1];
-		if(version.privateSetting && version.viewList.indexOf(username) == -1) {
-			alert("You do not have permission to review this paper.");
-			return; 
-		}
-		var msg = {
-			ptitle: version.title,
-			pkey: $scope.viewKey,
-			author: version.author,
-			vnum: $scope.currVersion-1,
-			rkey: Math.random() + ""
-		}; 
-		window.freedom.emit('add-review', msg);
-		window.freedom.on('go-to-reviews', function(data) {
-			$location.path('reviewspage'); 
-		});
-	}; 
-
 	  //TODO: this should be temporary
-	  function str2ab(str) {
+	function str2ab(str) {
 	    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
 	    var bufView = new Uint8Array(buf);
 	    for (var i=0, strLen=str.length; i<strLen; i++) {

@@ -165,6 +165,7 @@ app.controller('reviewsController', function($scope, $modal) {
 			window.freedom.emit('upload-review', currReview);
 			window.freedom.emit('set-reviews', reviews);
 		    $modalInstance.dismiss('cancel'); 
+		    //TODO: make a review instance
 	  };
 
 	  $scope.cancel = function () {

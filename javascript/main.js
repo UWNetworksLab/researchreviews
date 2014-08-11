@@ -56,21 +56,6 @@ freedom.on('get-r-paper', function(data){
   });
 });
 
-freedom.on('add-review', function(review) {
-  var promise = store.get(username + 'reviews');
-  promise.then(function(val) {
-    var reviews; 
-    try {
-      reviews = JSON.parse(val);
-    } catch(e) {}
-
-    if(!reviews || typeof reviews !== "object") reviews = {}; 
-
-    reviews[review.rkey] = review; 
-    store.set(username + 'reviews', JSON.stringify(reviews));
-    freedom.emit('go-to-reviews', 0);
-  });
-}); 
 
 /*backend storing review
 rkey,
@@ -83,6 +68,7 @@ vnum */
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
+  console.log("ACTION " + parse.action);
   if (parse.action === "get-paper-review"){
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
@@ -113,6 +99,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('got-public-papers', parse.papers);
   }
   else if (parse.action === "get-other-paper-review"){
+    console.log("GET OTHER PAPER REVIEW " );
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -120,21 +107,27 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         reviews = JSON.parse(val);
       } catch(e) {}
 
-      if(!reviews || typeof reviews !== "object") reviews = {}; 
+      if(!reviews || typeof reviews !== "object") reviews = []; 
+      for (var i = 0; i < reviews.length; i++){
+        if (reviews[i].rkey === parse.rkey){
+          var msg = {
+            action: 'got-paper-review',
+            text: reviews[i].text,
+            reviewer: parse.reviewer
+          };
 
-      var msg = {
-        action: 'got-paper-review',
-        text: reviews[parse.rkey].text,
-        reviewer: parse.reviewer
-      };
+          console.log("MSG TO SEND" + parse.from + " " + JSON.stringify(msg));
 
-      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.from) == -1)
-        msg.text = "You do not have access to this review."; 
-
-      social.sendMessage(parse.from, JSON.stringify(msg));
+          if(reviews[i].accessList !== 'public' && reviews[i].accessList.indexOf(parse.from) == -1)
+            msg.text = "You do not have access to this review."; 
+          social.sendMessage(parse.from, JSON.stringify(msg));
+          break;
+        }
+      }
     });
   }
   else if (parse.action === "got-paper-review"){
+    console.log("GOT PAPER REVIEW");
     freedom.emit('got-paper-review', parse);
   } 
   else if(parse.action === 'get-other-papers') {
@@ -381,6 +374,29 @@ freedom.on('get-other-reviews', function(msg) {
     freedom.emit("recv-err", err);
   });
 }); 
+
+freedom.on('set-review', function(review) {
+  var promise = store.get(username + 'reviews');
+  promise.then(function(val) {
+    var reviews; 
+    try {
+      reviews = JSON.parse(val);
+    } catch(e) {}
+
+    if(!reviews || typeof reviews !== "object") reviews = []; 
+
+    var exists = false;
+    for (var i = 0; i < reviews.length; i++){
+      if (reviews[i].rkey === review.rkey){
+        reviews[i] = review;
+        exists = true;
+      }
+    }
+    if (!exists) reviews.push(review); 
+    store.set(username + 'reviews', JSON.stringify(reviews));
+  });
+}); 
+
 
 freedom.on('upload-review', function(parse){
   //only info the author gets

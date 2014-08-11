@@ -13,3 +13,5 @@ function Review(rdata) {
 Review.prototype.editReview = function(newText){
   this.text = newText;
 };
+
+//TOOD: privacy, delete, upload?

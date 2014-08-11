@@ -3,7 +3,7 @@
     <div class="view-container">
       <!--Two Columns--papers, paper view-->
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
           <div style="margin-bottom:20px; margin-top:20px">
             <div class="btn-group">
               <button type="button" id="publicBtn" class="btn btn-default active" ng-click="getPublicPapers()">Public Papers</button>
@@ -22,7 +22,7 @@
         </div>
       
       <!--papers-->
-        <div class="col-md-6">
+        <div class="col-md-9">
           <div class="landing-container">
             <h1 align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
             <div id = "options-and-nav">
@@ -47,7 +47,7 @@
 
             <h4 ng-hide="!currPaper"> Reviews </h4> 
             <accordion ng-hide="!currPaper">
-              <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+              <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
             </accordion>
           </div> <!--landing-container-->
         </div> <!--column-->
