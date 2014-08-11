@@ -58,7 +58,7 @@
           <br>
           <h4 ng-show="currPaper"> Reviews </h4>
           <accordion ng-show="currPaper">
-            <accordion-group ng-repeat="review in reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+            <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
           </accordion>
 
           <p></p>

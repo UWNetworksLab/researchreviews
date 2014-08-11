@@ -104,6 +104,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     
     //LOAD REVIEWS
     var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
+
     if(reviews)
       for(var i = 0; i < reviews.length; i++) {
         var msg = {
@@ -111,9 +112,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
           rkey: reviews[i].rkey,
           reviewer: reviews[i].reviewer,
           vnum: $scope.currVnum-1,
-          author: $location.search().username, 
           from: username 
         };  
+
+        msg.author = $location.search().username? $location.search().username : username;
 
         if($location.search().username && $location.search().username !== username)
           window.freedom.emit('get-other-paper-review', msg);
@@ -125,13 +127,15 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       $scope.accessBtn = false;
 
     window.freedom.on('got-paper-review', function(review){
-      if(!reviews) reviews=[];
-      var index = reviews.map(function(el) {
-        return el.reviewer;
-      }).indexOf(review.reviewer);
-      if(index == -1) reviews.push(review);
-      else reviews[index] = review; 
-      $scope.currPaper.versions[$scope.currVnum-1].reviews = reviews; 
+      var version = $scope.currPaper.versions[$scope.currVnum-1];
+
+      if(!version.reviews) version.reviews=[];
+      for (var i = 0; i < version.reviews.length; i++){
+        if (version.reviews[i].reviewer === review.reviewer){
+          version.reviews[i] = review; 
+        }
+      }
+
       $scope.$apply();
     });   
   }; 

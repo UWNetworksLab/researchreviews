@@ -105,12 +105,12 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           }; 
           console.log(JSON.stringify(reviews[i])); 
 
-          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.author) == -1)
+          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) == -1)
             msg.text = "You do not have access to this review"; 
           console.log("here");
           break;
         }
-      console.log("in promise moooo " + JSON.stringify(reviews[0]));
+      console.log("in promise moooo from " + parse.from);
 
 
       console.log("the reviewer's side " + JSON.stringify(msg));

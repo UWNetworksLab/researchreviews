@@ -56,8 +56,6 @@ app.controller('reviewsController', function($scope, $modal) {
 	}); 
 
 	window.freedom.on('got-paper-review', function(review) {
-		console.log("CURR REVIEWS "+ JSON.stringify($scope.currRVersion.reviews));
-		console.log("got a paper review " + JSON.stringify(review));
 		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
 		
 		for (var i = 0; i < $scope.currRVersion.reviews.length; i++){
