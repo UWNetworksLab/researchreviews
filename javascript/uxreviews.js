@@ -157,7 +157,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 			if ($scope.privacySetting) {
 				currReview.accessList.push(username);
-				currReview.accessList.push(currRVersion.author); 
+				currReview.accessList.push(currReview.author); 
 				for(var i = 0; i < $scope.alerts.length; i++)
 					currReview.accessList.push($scope.alerts[i].msg); 
 			}
@@ -176,6 +176,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	window.freedom.on('display-reviews', function(reviews) {
 		$scope.reviews=[];
 		for (var i = 0; i < reviews.length; i++){
+			console.log(JSON.stringify(reviews[i]));
 			var review = new Review(reviews[i]);
 			$scope.reviews.push(review);
 		}
@@ -192,5 +193,6 @@ app.controller('reviewsController', function($scope, $modal) {
 			window.freedom.emit('get-r-paper', msg);
 		}
 		$scope.$apply();
+			console.log(JSON.stringify($scope.reviews));
 	});
 });
