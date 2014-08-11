@@ -74,8 +74,6 @@ app.controller('reviewsController', function($scope, $modal) {
 		$scope.$apply(); 
 
 		var paperReviews = $scope.currRVersion.reviews; 
-		console.log("send r paper" + JSON.stringify(msg));
-		console.log("paper reviews..." + JSON.stringify(paperReviews));
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++){
 	    	 	var r_msg = {
@@ -86,7 +84,6 @@ app.controller('reviewsController', function($scope, $modal) {
 			        author: $scope.currRVersion.author,
 			        from: username
 	        	};
-	        	console.log(JSON.stringify(r_msg));
 	       	 	window.freedom.emit('get-paper-review', r_msg);
 		    }	
 
