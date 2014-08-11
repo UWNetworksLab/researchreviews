@@ -133,6 +133,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       for (var i = 0; i < version.reviews.length; i++){
         if (version.reviews[i].reviewer === review.reviewer){
           version.reviews[i] = review; 
+          break;
         }
       }
 
