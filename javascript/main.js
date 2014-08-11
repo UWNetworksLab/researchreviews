@@ -99,7 +99,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('got-public-papers', parse.papers);
   }
   else if (parse.action === "get-other-paper-review"){
-    console.log("GET OTHER PAPER REVIEW " );
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -116,10 +115,9 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             reviewer: parse.reviewer
           };
 
-          console.log("MSG TO SEND" + parse.from + " " + JSON.stringify(msg));
-
-          if(reviews[i].accessList !== 'public' && reviews[i].accessList.indexOf(parse.from) == -1)
+          if(reviews[i].accessList && reviews[i].accessList.indexOf(parse.from) == -1)
             msg.text = "You do not have access to this review."; 
+
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
