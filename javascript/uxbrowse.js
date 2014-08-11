@@ -142,10 +142,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 			var len = paper.versions.length; 
 
 			$scope.$apply(); 
-			if($scope.publicSetting) 
-				$scope.getPublicPapers(); 
-			else 
-				$scope.getPrivatePapers(); 
 			$scope.getReviews(); 
 		}); 
 	};
