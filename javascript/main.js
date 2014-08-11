@@ -84,7 +84,6 @@ vnum */
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
-    console.log("get paper review on reviewers side");
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -93,31 +92,21 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       } catch(e) {}
 
       if(!reviews || typeof reviews !== "object") reviews = []; 
-      console.log("in promise " + parse.author + parse.from + JSON.stringify(parse));
 
       for(var i = 0; i < reviews.length; i++) {
-        console.log(reviews[i].rkey + " " + parse.rkey);
         if(reviews[i].rkey === parse.rkey) {
-          console.log("here in loop" + reviews[i].text + username + " FROM " + parse.from);
           var msg = {
             action: 'got-paper-review',
             text: reviews[i].text,
             reviewer: username 
           }; 
-          console.log(JSON.stringify(reviews[i])); 
-
           if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) == -1)
             msg.text = "You do not have access to this review"; 
-          console.log("here");
 
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
       }
-      console.log("in promise moooo from " + parse.from);
-
-
-      console.log("the reviewer's side " + JSON.stringify(parse));
     });
   }
   else if(parse.action === 'get-public-papers') {
@@ -225,7 +214,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('display-other-reviews', parse.reviews);
   }
   else if(parse.action === 'delete-r-paper') {
-    //console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(parse));
   }
   else if(parse.action === 'invite-group') {
     var alertmsg = {
@@ -318,7 +306,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       for (var i = 0; i < papers.length; i++){
         if (papers[i].pkey === parse.pkey){
           msg.version = papers[i].versions[parse.vnum];
-          console.log("on author's side " + JSON.stringify(msg.version));
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
@@ -357,7 +344,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
 freedom.on('get-paper-review', function(msg){
   msg.action = "get-paper-review";
-  console.log(JSON.stringify(msg));
   social.sendMessage(msg.reviewer, JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -571,7 +557,6 @@ freedom.on('add-version', function(data) {
 }); 
 
 freedom.on('add-paper', function(data) {
-  console.log("add paper" + JSON.stringify(data));
   //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
   var paper = {
     title: data.versions[0].title,
@@ -629,8 +614,6 @@ freedom.on('get-papers', function(data) {
     if(!papers || typeof papers !== "object") {
       papers = []; 
     }
-
-    console.log("asdfasdfadsfasdfasdfasdf " + JSON.stringify(papers));
 
     freedom.emit('display-papers', papers);
   });  

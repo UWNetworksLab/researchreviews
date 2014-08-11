@@ -105,8 +105,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     //LOAD REVIEWS
     var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
 
-    console.log(JSON.stringify(reviews));
-
     if(reviews)
       for(var i = 0; i < reviews.length; i++) {
         var msg = {
@@ -118,9 +116,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         };  
 
         msg.author = $location.search().username? $location.search().username : username;
-
-        console.log(JSON.stringify(msg));
-
         if($location.search().username && $location.search().username !== username) 
           window.freedom.emit('get-other-paper-review', msg);
         else 
