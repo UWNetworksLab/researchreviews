@@ -50,18 +50,22 @@ app.controller('reviewsController', function($scope, $modal) {
 	}; 
 
 	window.freedom.on('display-saved-review', function(review) {
-//		$scope.reviewText = review.text; 
 		if(review.accessList === 'public') $scope.privacyHeading = "public"; 
 		else $scope.privacyHeading = "private"; 
 		$scope.$apply(); 
 	}); 
 
 	window.freedom.on('got-paper-review', function(review) {
+		console.log("CURR REVIEWS "+ JSON.stringify($scope.currRVersion.reviews));
+		console.log("got a paper review " + JSON.stringify(review));
 		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
-		var index = $scope.currRVersion.reviews.map(function(el) {
-		  return el.reviewer;
-		}).indexOf(review.reviewer);
-		if(index == -1) $scope.currRVersion.reviews.push(review); 
+		
+		for (var i = 0; i < $scope.currRVersion.reviews.length; i++){
+			if ($scope.currRVersion.reviews[i].reviewer === review.reviewer){
+				$scope.currRVersion.reviews[i] = review; 
+			}
+		}
+		
 		$scope.$apply(); 
 	});
 
@@ -81,7 +85,8 @@ app.controller('reviewsController', function($scope, $modal) {
 			        rkey: paperReviews[i].rkey,
 			        reviewer: paperReviews[i].reviewer,//
 			        vnum: paperReviews[i].vnum,
-			        author: $scope.currRVersion.author 
+			        author: $scope.currRVersion.author,
+			        from: username
 	        	};
 	        	console.log(JSON.stringify(r_msg));
 	       	 	window.freedom.emit('get-paper-review', r_msg);

@@ -84,6 +84,7 @@ vnum */
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
+    console.log("get paper review on reviewers side");
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -92,23 +93,29 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       } catch(e) {}
 
       if(!reviews || typeof reviews !== "object") reviews = []; 
+      console.log("in promise " + parse.author + parse.from);
 
       for(var i = 0; i < reviews.length; i++) 
         if(reviews[i].rkey === parse.rkey) {
+          console.log("here in loop" + reviews[i].text + username + " FROM " + parse.from);
           var msg = {
             action: 'got-paper-review',
             text: reviews[i].text,
             reviewer: username 
           }; 
-          break; 
-        }
+          console.log(JSON.stringify(reviews[i])); 
 
-      if(reviews[parse.rkey].accessList !== 'public' && reviews[parse.rkey].accessList.indexOf(parse.author) == -1)
-        msg.text = "You do not have access to this review"; 
+          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.author) == -1)
+            msg.text = "You do not have access to this review"; 
+          console.log("here");
+          break;
+        }
+      console.log("in promise moooo " + JSON.stringify(reviews[0]));
+
 
       console.log("the reviewer's side " + JSON.stringify(msg));
 
-      social.sendMessage(parse.author, JSON.stringify(msg));
+      social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
   else if(parse.action === 'get-public-papers') {
