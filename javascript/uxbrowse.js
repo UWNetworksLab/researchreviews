@@ -172,9 +172,7 @@ app.controller('browseController', function($scope, $location, $modal) {
 	}); 
 
     window.freedom.on('got-paper-review', function(review){
-    	console.log("GOT PAPER REVIEW " + JSON.stringify(review));
-
-    	var version = $scope.currPaper.versions[$scope.currVnum-1];
+    var version = $scope.currPaper.versions[$scope.currVnum-1];
 
       if(!version.reviews) version.reviews=[];
       var index = version.reviews.map(function(el) {
