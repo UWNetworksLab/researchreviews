@@ -49,7 +49,6 @@ vnum */
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
-  console.log("ACTION " + parse.action);
   if (parse.action === "get-paper-review"){
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
@@ -106,7 +105,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if (parse.action === "got-paper-review"){
-    console.log("GOT PAPER REVIEW");
     freedom.emit('got-paper-review', parse);
   } 
   else if(parse.action === 'get-other-papers') {
@@ -144,11 +142,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       for(var i = 0; i < papers.length; i++) 
         if(papers[i].pkey === parse.pkey) {
           msg.paper = papers[i]; 
-          console.log(JSON.stringify(msg.paper));
           break; 
         }
-
-      console.log("got browse paper to send over..." + JSON.stringify(msg));
       social.sendMessage(parse.from, JSON.stringify(msg));
     }); 
   }
@@ -384,6 +379,12 @@ freedom.on('set-review', function(review) {
   });
 }); 
 
+freedom.on('edit-privacy', function(msg){
+  social.sendMessage("publicstorage", JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
 
 freedom.on('upload-review', function(parse){
   //only info the author gets

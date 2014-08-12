@@ -4,11 +4,7 @@ var store = freedom.localstorage();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
 
-  console.log(data.message);
-
   if (parse.action === 'get-public-papers'){
-    console.log('get-public-papers');
-
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -19,8 +15,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!papers || typeof papers !== "object") {
         papers = []; 
       }
-
-      console.log(JSON.stringify(papers));
 
       var msg = {
         papers: papers,
@@ -34,7 +28,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
 
-  else if (parse.action === 'add-paper'){
+  else if (parse.action === 'edit-privacy'){
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -42,7 +36,31 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
 
-      console.log(JSON.stringify(papers));
+     if(!papers || typeof papers !== "object") {
+        papers = []; 
+      }
+
+      if (parse.privateSetting){
+        for (var i = 0; i < papers.length; i++){
+          if (papers[i].pkey === parse.pkey){
+            papers.splice(i, 1);
+          }
+        }        
+      }
+      else {
+        papers.push(parse);
+      }
+      store.set('public-papers', JSON.stringify(papers)); 
+    });
+  }
+
+  else if (parse.action === 'add-paper'){
+    var promise = store.get('public-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
 
      if(!papers || typeof papers !== "object") {
         papers = []; 

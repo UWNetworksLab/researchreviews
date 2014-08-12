@@ -77,7 +77,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 			    pkey: currRVersion.pkey,
 			    reviewer: username,
 			    vnum: currRVersion.vnum,
-			    author: currRVersion.author
+			    author: currRVersion.author,
+			    ptitle: currRVersion.title
 	  		};
 	  		if (!currReview){
 				review.rkey = Math.random() + "";	  			
