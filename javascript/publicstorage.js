@@ -4,11 +4,7 @@ var store = freedom.localstorage();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
 
-  console.log("MESSAGE " + data.message);
-
   if (parse.action === 'get-public-papers'){
-    console.log('get-public-papers');
-
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -19,8 +15,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!papers || typeof papers !== "object") {
         papers = []; 
       }
-
-      console.log(JSON.stringify(papers));
 
       var msg = {
         papers: papers,
@@ -35,7 +29,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'edit-privacy'){
-    console.log("EDIT PRIVACY MSG : " + JSON.stringify(parse));
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -68,8 +61,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       try {
         papers = JSON.parse(val);
       } catch(e) {}
-
-      console.log(JSON.stringify(papers));
 
      if(!papers || typeof papers !== "object") {
         papers = []; 
