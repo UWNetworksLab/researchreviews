@@ -4,7 +4,7 @@ var store = freedom.localstorage();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
 
-  console.log(data.message);
+  console.log("MESSAGE " + data.message);
 
   if (parse.action === 'get-public-papers'){
     console.log('get-public-papers');
@@ -31,6 +31,33 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       }, function(err) {
         freedom.emit("recv-err", err);
       });
+    });
+  }
+
+  else if (parse.action === 'edit-privacy'){
+    console.log("EDIT PRIVACY MSG : " + JSON.stringify(parse));
+    var promise = store.get('public-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+
+     if(!papers || typeof papers !== "object") {
+        papers = []; 
+      }
+
+      if (parse.privateSetting){
+        for (var i = 0; i < papers.length; i++){
+          if (papers[i].pkey === parse.pkey){
+            papers.splice(i, 1);
+          }
+        }        
+      }
+      else {
+        papers.push(parse);
+      }
+      store.set('public-papers', JSON.stringify(papers)); 
     });
   }
 

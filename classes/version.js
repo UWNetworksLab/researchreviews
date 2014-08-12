@@ -38,10 +38,22 @@ Version.prototype.editPrivacy = function(publicSetting) {
     this.viewList = false; 
     this.privateSetting = false; 
   }
-  else{
+  else {
     this.viewList = this.alertList; 
     this.privateSetting = true; 
   }
+
+  var msg = {
+    title: this.title,
+    author: this.author,
+    vnum: this.vnum,
+    privateSetting : this.privateSetting,
+    pkey : this.pkey,
+    action : 'edit-privacy'
+  };
+
+  console.log("msg " + JSON.stringify(msg));
+  window.freedom.emit('edit-privacy', msg); 
 };
 
 Version.prototype.download = function(){

@@ -395,6 +395,13 @@ freedom.on('set-review', function(review) {
   });
 }); 
 
+freedom.on('edit-privacy', function(msg){
+//  console.log("IN MAIN " + JSON.stringify(msg));
+  social.sendMessage("publicstorage", JSON.stringify(msg)).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
 
 freedom.on('upload-review', function(parse){
   //only info the author gets
