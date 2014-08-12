@@ -114,10 +114,11 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $scope.alerts = [];
 	    $scope.privacySetting;
 	    $scope.currReview = currReview; 
-	    $scope.privacyHeading = (typeof currReview.accessList) === 'undefined'? "public" : "private"; 
+	    $scope.privacyHeading = currReview.accessList === 'public'? "public" : "private"; 
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
+	    	console.log("ACCESS LIST: " + (typeof currReview.accessList) + JSON.stringify(currReview.accessList));
 	    }; 
 
 	    $scope.init(currReview.author); 
