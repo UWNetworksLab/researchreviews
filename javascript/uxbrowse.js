@@ -179,9 +179,8 @@ app.controller('browseController', function($scope, $location, $modal) {
       var index = version.reviews.map(function(el) {
         return el.reviewer;
       }).indexOf(review.reviewer);
-      if(index == -1) version.reviews.push(review);
+      if(index === -1) version.reviews.push(review);
       else version.reviews[index] = review; 
-      console.log("INDEX  "  + index);
       $scope.$apply();
     });
 

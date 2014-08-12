@@ -311,6 +311,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         privateSetting: $scope.privatePaper, 
       };
 
+      console.log(JSON.stringify(vdata));
+
       newPaper.addVersion(vdata, files[0]);
       $modalInstance.dismiss('cancel');
     };
