@@ -114,7 +114,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $scope.alerts = [];
 	    $scope.privacySetting;
 	    $scope.currReview = currReview; 
-	    $scope.privacyHeading = (typeof currReview.accessList) === 'undefined'? "private" : "public"; 
+	    $scope.privacyHeading = (typeof currReview.accessList) === 'undefined'? "public" : "private"; 
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
@@ -151,7 +151,7 @@ app.controller('reviewsController', function($scope, $modal) {
 				for(var i = 0; i < $scope.alerts.length; i++)
 					currReview.accessList.push($scope.alerts[i].msg); 
 			}
-			else currReview.accessList = false; 
+			else currReview.accessList = "public"; 
 
 			window.freedom.emit('upload-review', currReview);
 			window.freedom.emit('set-reviews', reviews);

@@ -25,8 +25,10 @@ app.controller('browseController', function($scope, $location, $modal) {
 		    	currReview: function() {
 		    		var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
 		    		for (var i = 0; i < reviews.length; i++){
-		    			if (reviews[i].reviewer === username)
+		    			if (reviews[i].reviewer === username) {
+		    				console.log("FOUND REVIEW: " + JSON.stringify(reviews[i]));
 		    				return reviews[i];
+		    			}
 		    		}
 		    		return false;
 	    		},
@@ -38,15 +40,16 @@ app.controller('browseController', function($scope, $location, $modal) {
 	};  
 
 	var addReviewCtrl = function ($scope, $modalInstance, currReview, currRVersion) {
-		console.log("CURRREVIEW " + currReview);
 		$scope.states = userList; 
 	    $scope.selected = undefined;
 	    $scope.alerts = [];
 	    $scope.privacySetting;
-	    $scope.privacyHeading = currReview.accessList? "public" : "private"; 
+	   	$scope.privacyHeading = (currReview.accessList || (typeof currReview.accessList !== 'undefined'))? "private" : "public"; 
+	    $scope.currReview = currReview; 
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
+	    	console.log("ACCESS LIST: " + currReview.accessList);
 	    }; 
 
 	    $scope.init(currRVersion.author); 
@@ -68,7 +71,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 	    };
 
 	  	$scope.upload = function () {
-
 	  		//TODO: access list, information
 	  		var review = {
 			    date: new Date(),  
@@ -127,8 +129,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 	};
 
 	$scope.getPaper = function(paper) {
-		console.log(JSON.stringify(paper));
-
 		var msg = {
 			title: paper.title,
 			author: paper.author,
@@ -160,7 +160,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 					author: $scope.currPaper.versions[$scope.currVnum-1].author,
 					from: username 
 				}; 
-				console.log("MSG " + JSON.stringify(msg));
 				window.freedom.emit('get-other-paper-review', msg);
 			}
 	};
@@ -168,7 +167,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 	window.freedom.on('got-public-papers', function(papers) {
 		$scope.papers = papers; 
 		$scope.$apply(); 
-		console.log(JSON.stringify($scope.papers));
 	}); 
 
     window.freedom.on('got-paper-review', function(review){

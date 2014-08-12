@@ -5,8 +5,8 @@
     "script": "javascript/main.js",
     "index": "index.html",
     "static": [
-      "./css/bootstrap.min.css",
-      "./css/rrstyle.css",
+      "css/bootstrap.min.css",
+      "css/rrstyle.css",
       "node_modules/angular/lib/angular.min.js",
       "node_modules/angular/lib/angular.min.js.map",
       "node_modules/jquery/dist/cdn/jquery-2.1.1.min.js",
@@ -37,7 +37,10 @@
       "modals/editGroupsTemplate.html",
       "modals/editPrivacyTemplate.html",
       "modals/editProfileTemplate.html",
-      "modals/inviteReviewersTemplate.html"
+      "modals/inviteReviewersTemplate.html",
+      "classes/paper.js",
+      "classes/review.js",
+      "classes/version.js"
     ]
   },
   "dependencies": {

@@ -64,7 +64,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             text: reviews[i].text,
             reviewer: username 
           }; 
-          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) == -1)
+
+          if((reviews[i].accessList)!=="public" && reviews[i].accessList.indexOf(parse.from) == -1)
             msg.text = "You do not have access to this review"; 
 
           social.sendMessage(parse.from, JSON.stringify(msg));
@@ -90,10 +91,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           var msg = {
             action: 'got-paper-review',
             text: reviews[i].text,
+            accessList: reviews[i].accessList, 
             reviewer: parse.reviewer
           };
 
-          if(reviews[i].accessList && reviews[i].accessList.indexOf(parse.from) == -1)
+          if(reviews[i].accessList!=="public" && reviews[i].accessList.indexOf(parse.from) == -1)
             msg.text = "You do not have access to this review."; 
 
           social.sendMessage(parse.from, JSON.stringify(msg));
