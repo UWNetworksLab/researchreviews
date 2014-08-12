@@ -100,18 +100,21 @@ app.controller('reviewsController', function($scope, $modal) {
 	    		},
 	    		reviews: function(){
 	    			return $scope.reviews;
-	    		}  		
+	    		},
+	    		currRVersion: function(){
+	    			return $scope.currRVersion;
+	    		}  	
 		 	}
 		});
 	};  
 
-	var addReviewCtrl = function ($scope, $modalInstance, currReview, reviews) {
+	var addReviewCtrl = function ($scope, $modalInstance, currReview, reviews, currRVersion) {
 		$scope.states = userList; 
 	    $scope.selected = undefined;
 	    $scope.alerts = [];
 	    $scope.privacySetting;
 	    $scope.currReview = currReview; 
-	    $scope.privacyHeading = currReview.accessList? "public" : "private"; 
+	    $scope.privacyHeading = (typeof currReview.accessList) === 'undefined'? "private" : "public"; 
 
 	    $scope.init = function(author) {
 	    	$scope.states.splice($scope.states.indexOf(author), 1); 
@@ -152,6 +155,14 @@ app.controller('reviewsController', function($scope, $modal) {
 
 			window.freedom.emit('upload-review', currReview);
 			window.freedom.emit('set-reviews', reviews);
+
+			var index = currRVersion.reviews.map(function(el) {
+				return el.reviewer;
+			}).indexOf(username);
+			
+			if(index === -1) currRVersion.reviews.push(currReview);
+			else currRVersion.reviews[index] = currReview; 
+
 		    $modalInstance.dismiss('cancel'); 
 		    //TODO: make a review instance
 	  };

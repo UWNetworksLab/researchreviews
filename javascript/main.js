@@ -24,8 +24,6 @@ freedom.on('get-reviews', function(past) {
         reviews.splice(i, 1);
     }
 
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(reviews));
-
     freedom.emit('display-reviews', reviews); 
   }); 
 }); 
@@ -296,7 +294,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
           if(reviews.length > 0)
             index = reviews.map(function(el) {
               return el.reviewer;
-            }).indexOf(review.reviewer); 
+            }).indexOf(parse.reviewer); 
 
           if(index === -1) reviews.push(parse);
           else reviews[index] = parse;
@@ -380,7 +378,6 @@ freedom.on('set-review', function(review) {
 }); 
 
 freedom.on('edit-privacy', function(msg){
-  console.log("EDIT PRIVACY " + msg);
   social.sendMessage("publicstorage", msg).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
