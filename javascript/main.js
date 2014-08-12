@@ -8,6 +8,25 @@ var username = null;
 var userList = []; 
 var username; 
 
+freedom.on('boot', function(val) {
+  console.log("IN THE BOOTfasldfjkasjdfjaslkdfjs" + JSON.stringify(myClientState));
+  if(myClientState !== null) {
+    if(myClientState.status == social.STATUS["ONLINE"]) {
+      var data = {
+        id: myClientState.userId, 
+        onLogin: true,
+        userList: userList
+      };
+      console.log(JSON.stringify(data));
+      freedom.emit('recv-uid', data);
+      freedom.emit('recv-status', "online");
+    }
+    else {
+      freedom.emit('recv-status', "offline");
+    }
+  }
+}); 
+
 freedom.on('get-reviews', function(past) {
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
@@ -697,8 +716,7 @@ social.login({
   rememberLogin: false
 }).then(function(ret) {
   myClientState = ret;
-  username = ret.userId;
-
+  username = ret.userId; 
   if (ret.status == social.STATUS["ONLINE"]) {
     var data = {
       id: ret.userId, 
