@@ -9,14 +9,6 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	window.freedom.emit('get-reviews', 0); 
 
-	window.freedom.on('update-my-review', function(data) {
-		var review = JSON.parse(data); 
-
-		$scope.reviews[review.rkey] = review;
-		$scope.$apply(); 
-		$scope.getReviewView(review.rkey);
-	}); 
-
 	//TODO: temporary. until storage buffer
 	function str2ab(str) {
 	  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
@@ -48,12 +40,6 @@ app.controller('reviewsController', function($scope, $modal) {
 		};
 		window.freedom.emit('get-r-paper', msg);
 	}; 
-
-	window.freedom.on('display-saved-review', function(review) {
-		if(review.accessList === 'public') $scope.privacyHeading = "public"; 
-		else $scope.privacyHeading = "private"; 
-		$scope.$apply(); 
-	}); 
 
 	window.freedom.on('got-paper-review', function(review) {
 		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
@@ -124,6 +110,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	    $scope.selected = undefined;
 	    $scope.alerts = [];
 	    $scope.privacySetting;
+	    $scope.currReview = currReview; 
 	    $scope.privacyHeading = currReview.accessList? "public" : "private"; 
 
 	    $scope.init = function(author) {
@@ -157,11 +144,12 @@ app.controller('reviewsController', function($scope, $modal) {
 
 			if ($scope.privacySetting) {
 				currReview.accessList.push(username);
-				currReview.accessList.push(currRVersion.author); 
+				currReview.accessList.push(currReview.author); 
 				for(var i = 0; i < $scope.alerts.length; i++)
 					currReview.accessList.push($scope.alerts[i].msg); 
 			}
 			else currReview.accessList = false; 
+
 			window.freedom.emit('upload-review', currReview);
 			window.freedom.emit('set-reviews', reviews);
 		    $modalInstance.dismiss('cancel'); 

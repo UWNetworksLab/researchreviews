@@ -18,34 +18,15 @@ freedom.on('get-reviews', function(past) {
 
     if(!reviews || typeof reviews !== "object") reviews = [];   
 
-
     for (var i = reviews.length-1; i >=0; i--){
       var rpast = (reviews[i].text) ? 1 : 0;
       if (rpast !== past)
         reviews.splice(i, 1);
     }
 
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(reviews));
+
     freedom.emit('display-reviews', reviews); 
-  }); 
-}); 
-
-freedom.on('get-saved-review-pp', function(pkey) {
-  var promise = store.get(username + 'reviews');
-  promise.then(function(val) {
-    var reviews; 
-    try {
-      reviews = JSON.parse(val);
-    } catch(e) {}
-
-    if(!reviews || typeof reviews !== "object") reviews = {};  
-
-    var index = -1; 
-    for(key in reviews) {
-      if(reviews[key].pkey == pkey)
-        index = key; 
-    }
-
-    freedom.emit('display-saved-review', reviews[index]); 
   }); 
 }); 
 
@@ -310,7 +291,15 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         if(papers[i].pkey === parse.pkey) {
           var reviews = papers[i].versions[parse.vnum].reviews;
           if(!reviews) reviews=[];
-          reviews.push(parse);
+
+          var index = -1; 
+          if(reviews.length > 0)
+            index = reviews.map(function(el) {
+              return el.reviewer;
+            }).indexOf(review.reviewer); 
+
+          if(index === -1) reviews.push(parse);
+          else reviews[index] = parse;
 
           var alertmsg = {
             action: 'add-review-on-author',
