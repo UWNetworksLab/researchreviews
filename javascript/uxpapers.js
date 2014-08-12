@@ -225,17 +225,20 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currPaper, vnum, papers) {
     var privateSetting = currPaper.versions[vnum].privateSetting;
+    console.log("PRIVATE SETTING " + privateSetting);
     $scope.currSetting = privateSetting? "private" : "public"; 
+    console.log("PRIVATE public  " + $scope.currSetting);
     $scope.save = function () { 
-      if($("#addPaperPublic2").is(':checked') && privateSetting){
+      if($("#addPaperPublic2").is(':checked')){
         currPaper.versions[vnum].editPrivacy(true);
-      }
-      else if($('#addPaperPrivate2').is(':checked') && !privateSetting) { //public to private
-        currPaper.versions[vnum].editPrivacy(false);
-      }
-      else $modalInstance.dismiss('cancel');
-
       window.freedom.emit('set-papers', papers);
+      }
+      else if($('#addPaperPrivate2').is(':checked')) { //public to private  && !privateSetting
+        currPaper.versions[vnum].editPrivacy(false);
+      window.freedom.emit('set-papers', papers);
+      }
+//      else $modalInstance.dismiss('cancel');
+
       $modalInstance.dismiss('cancel');
     };
 

@@ -2,6 +2,7 @@ var social = freedom.socialprovider();
 var store = freedom.localstorage();
 
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
+  console.log("DATA MESSAGE " + data.message);
   var parse = JSON.parse(data.message);
 
   if (parse.action === 'get-public-papers'){
@@ -29,6 +30,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'edit-privacy'){
+    console.log("edit privacy "+ data);
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 

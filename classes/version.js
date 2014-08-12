@@ -53,7 +53,7 @@ Version.prototype.editPrivacy = function(publicSetting) {
   };
 
   console.log("msg " + JSON.stringify(msg));
-  window.freedom.emit('edit-privacy', msg); 
+  window.freedom.emit('edit-privacy', JSON.stringify(msg)); 
 };
 
 Version.prototype.download = function(){
@@ -63,15 +63,4 @@ Version.prototype.download = function(){
 
   reader.readAsArrayBuffer(blob);
   saveAs(blob, this.title);
-};
-
-Paper.prototype.editPrivacy = function(publicSetting){
-  if (publicSetting) {
-    this.privateSetting = false;
-    this.viewList = false;
-  }
-  else {
-    this.privateSetting = true;
-    this.viewList = alertList;
-  }
 };

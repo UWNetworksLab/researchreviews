@@ -391,7 +391,8 @@ freedom.on('set-review', function(review) {
 }); 
 
 freedom.on('edit-privacy', function(msg){
-  social.sendMessage("publicstorage", JSON.stringify(msg)).then(function(ret) {
+  console.log("EDIT PRIVACY " + msg);
+  social.sendMessage("publicstorage", msg).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
