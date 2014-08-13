@@ -9,6 +9,7 @@ var userList = [];
 var username; 
 
 freedom.on('boot', function(val) {
+  console.log("test");
   console.log("IN THE BOOTfasldfjkasjdfjaslkdfjs" + JSON.stringify(myClientState));
   if(myClientState !== null) {
     if(myClientState.status == social.STATUS["ONLINE"]) {
