@@ -7,7 +7,8 @@
   "dependencies": {
     "socialprovider": {
       "url_": "javascript/social/social.rr.json",
-      "url": "socialmailbox/provider/social.mb.json",
+      "url_": "socialmailbox/provider/social.mb.json",
+      "url": "node_modules/freedom/providers/social/websocket-server/social.ws.json",
       "api": "social"
     }, 
     "transport": {
