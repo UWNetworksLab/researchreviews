@@ -307,7 +307,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       };
 
       var ver = new Version(vdata);
-     // ver.uploadPDF(files[0]);
+      ver.uploadPDF(files[0]);
       newPaper.addVersion(ver);
       console.log("HERE" + JSON.stringify(papers));
       papers.push(currPaper);  

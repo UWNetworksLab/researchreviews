@@ -55,6 +55,10 @@
     "localstorage": {
       "url": "node_modules/freedom/providers/storage/shared/storage.shared.json",
       "api": "storage"
+    },
+    "storebuffer": {
+      "url": "node_modules/radiatus-providers/src/providers/storebuffer.radiatus.json",
+      "api": "storage"
     }
   },
   "services": {

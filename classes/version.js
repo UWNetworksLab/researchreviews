@@ -19,12 +19,18 @@ Version.prototype.addReview = function(rkey, reviewer) {
 };
 
 Version.prototype.uploadPDF = function(file){
-console.log("IN PDF");
-   var reader = new FileReader();
-    reader.onload = function() {
-      var arrayBuffer = reader.result;
-    }.bind(this);
-    reader.readAsArrayBuffer(file);
+  console.log("IN PDF");
+  var reader = new FileReader();
+  reader.onload = function() {
+    var data = {
+      pkey: this.pkey,
+      vnum: this.vnum,
+      arrayBuffer: reader.result
+    };
+    console.log("TYEP OF " + typeof(data.arrayBuffer));
+    window.freedom.emit('add-pdf', data);
+  }.bind(this);
+  reader.readAsArrayBuffer(file);
 };
 
 Version.prototype.shareVersion = function(){
@@ -54,11 +60,18 @@ Version.prototype.editPrivacy = function(publicSetting) {
   window.freedom.emit('edit-privacy', JSON.stringify(msg)); 
 };
 
-/*Version.prototype.download = function(){
-  var ab = str2ab(this.binaryString);
-  var reader = new FileReader();
-  var blob = new Blob([ab], {type:'application/pdf'});
-
-  reader.readAsArrayBuffer(blob);
-  saveAs(blob, this.title);
-};*/
+Version.prototype.download = function(){
+  var data = {
+    pkey: this.pkey,
+    vnum: this.vnum
+  };
+  window.freedom.emit('download-pdf', data);
+  
+  window.freedom.on('got-pdf', function(ab){
+    console.log("got pdf " );
+    var reader = new FileReader();
+    var blob = new Blob([ab], {type:'application/pdf'});
+    reader.readAsArrayBuffer(blob);
+    saveAs(blob, this.title);
+  });
+};
