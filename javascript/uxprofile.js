@@ -48,6 +48,11 @@ app.controller('profileController', function($scope, $modal, $location) {
   		else if($scope.ownProfile != true) $location.path('paperspage').search({username: $scope.ownProfile}); 	
   	}; 
 
+  	$scope.displayDetailedReviews = function() {
+  		if($scope.ownProfile == true) $scope.changeView('reviewspage');
+  		else if($scope.ownProfile != true) $location.path('reviewspage').search({username: $scope.ownProfile}); 	
+  	}; 
+
   	window.freedom.on('display-other-reviews', function(reviews) {
   		$scope.ownProfile = $location.search().username; 
   		for(var key in reviews)
@@ -81,19 +86,20 @@ app.controller('profileController', function($scope, $modal, $location) {
 	  $scope.$apply(); 
 	});
 
-	window.freedom.on('display-papers', function(data) {
-		for(key in data.papers) {
-			for(var i = 0; i < data.papers[key].versions.length; i++)
-				data.papers[key].versions[i].date = new Date(data.papers[key].versions[i].date); 
+	window.freedom.on('display-papers', function(papers) {
+		console.log(JSON.stringify(papers));
+		for(var i = 0; i < papers.length; i++) {
+			for(var j = 0; i < papers[i].versions.length; j++)
+				papers[i].versions[j].date = new Date(papers[i].versions[j].date); 
 		}
-		$scope.papers = data.papers; 
+		$scope.papers = papers; 
 		$scope.$apply(); 
 	}); 
 
-	window.freedom.on('display-reviews', function(data) {
-		for(var key in data.reviews) 
-			data.reviews[key].date = new Date(data.reviews[key].date); 		
-		$scope.reviews = data.reviews;
+	window.freedom.on('display-reviews', function(reviews) {
+		for(var i = 0; i < reviews.length; i++) 
+			reviews[i].date = new Date(reviews[i].date); 		
+		$scope.reviews = reviews;
 		$scope.$apply(); 
 	});
 
