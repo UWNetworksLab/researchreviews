@@ -47,16 +47,16 @@
          <span ng-if="ownProfile== true"> My Reviews </span> 
          <span ng-if="ownProfile != true"> {{ownProfile}}'s Reviews </span> 
           <span>
-            <a  ng-click="changeView('reviewspage')"  class="btn btn-link">Detailed View</a>
+            <a ng-click="displayDetailedReviews()" class="btn btn-link">Detailed View</a>
           </span>
         </h2>
       <table class="table table-hover">
           <tr ng-repeat="review in reviews" >
               <td>
-                  <div ng-if="ownProfile == true">
+                  <div ng-if="ownProfile == true" ng-click="displayDetailedReviews()">
 My review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}} 
                   </div>
-                  <div ng-if="ownProfile != true">
+                  <div ng-if="ownProfile != true" ng-click="displayDetailedReviews()">
                     {{review.reviewer}}'s review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}}
                   </div>
               </td>       

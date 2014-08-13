@@ -1,7 +1,6 @@
 //backend
 
 var store = freedom.localstorage();
-var storebuffer = freedom.storebuffer(); 
 var social = freedom.socialprovider(); 
 var myClientState = null;
 var username = null;
@@ -10,7 +9,6 @@ var userList = [];
 var username; 
 
 freedom.on('boot', function(val) {
-  console.log("IN THE BOOTfasldfjkasjdfjaslkdfjs" + JSON.stringify(myClientState));
   if(myClientState !== null) {
     if(myClientState.status == social.STATUS["ONLINE"]) {
       var data = {
@@ -18,7 +16,6 @@ freedom.on('boot', function(val) {
         onLogin: true,
         userList: userList
       };
-      console.log(JSON.stringify(data));
       freedom.emit('recv-uid', data);
       freedom.emit('recv-status', "online");
     }
@@ -597,7 +594,6 @@ freedom.on('get-papers', function(data) {
     if(!papers || typeof papers !== "object") {
       papers = []; 
     }
-
     freedom.emit('display-papers', papers);
   });  
 });
