@@ -635,7 +635,6 @@ freedom.on('get-papers', function(data) {
     if(!papers || typeof papers !== "object") {
       papers = []; 
     }
-
     freedom.emit('display-papers', papers);
   });  
 });
