@@ -1,0 +1,23 @@
+{
+  "name": "Social Provider",
+  "description": "Social provider using a custom user database",
+  "app": {
+    "script": "social.rr.js"
+  },
+  "provides": [
+    "social"
+  ],
+  "permissions": [
+    "core.view"
+  ],
+  "dependencies": {
+    "storageprovider": {
+      "url": "../../node_modules/freedom/providers/storage/isolated/storage.isolated.json",
+      "api": "storage"
+    }
+  },
+  "views": {
+    "login": ["login.html", "login.js"]
+  }
+}
+
