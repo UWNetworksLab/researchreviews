@@ -20,14 +20,14 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers | orderBy:order"> 
-              <td ng-click="showPaperView(paper.pkey)"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
+              <td ng-click="showPaperView(paper.pkey)"> {{paper.versions[paper.versions.length-1].ptitle}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
         </div><!--add paper button and modal-->
       </div>
       <div class="col-md-8">
         <div class="landing-container">
-          <h1 align="center" ng-show="currPaper"> {{currPaper.versions[currVnum-1].title}} v. {{currVnum}} of {{currPaper.versions.length}} </h1> 
+          <h1 align="center" ng-show="currPaper"> {{currPaper.versions[currVnum-1].ptitle}} v. {{currVnum}} of {{currPaper.versions.length}} </h1> 
           <h1 align="center" ng-show="papers.length===0"> Please add a paper. </h1>
           <h1 align="center" ng-show="!currPaper&&papers.length>0"> Please choose a paper. </h1>
           <div>

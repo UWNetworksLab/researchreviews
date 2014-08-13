@@ -2,6 +2,7 @@ function Version(vdata) {
   this.comments = vdata.comments;
   this.viewList = vdata.viewList;
   this.alertList = vdata.alertList;
+    console.log("xxxxxxxxxxxxxxxxxx in version class");
   this.privateSetting = vdata.privateSetting;
 
   this.reviews = vdata.reviews? vdata.reviews : [];
@@ -11,7 +12,6 @@ function Version(vdata) {
   this.pkey = vdata.pkey;
   this.vnum = vdata.vnum; 
   this.ptitle = vdata.ptitle;  
-  console.log(this.vnum);
 }
 
 Version.prototype.addReview = function(rkey, reviewer) {

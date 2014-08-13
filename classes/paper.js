@@ -1,12 +1,10 @@
 function Paper(paper) {
   if (paper){ 
-    console.log("IN PAPER " + JSON.stringify(paper));
     this.author = paper.author; 
     this.pkey = paper.pkey; 
     this.versions = [];
     for (var i = 0; i < paper.versions.length; i++){
-    console.log("loop"+i);
-      addVersion(new Version(paper.versions[i]));
+      this.addVersion(new Version(paper.versions[i]));
     }
     return;
   }
