@@ -101,9 +101,14 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
           break; 
         }
       }
-    
     //LOAD REVIEWS
-    var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
+    getReviews();
+ }; 
+
+  var getReviews = function(){
+  $scope.$apply();
+  console.log("get reviews..." + JSON.stringify($scope.currPaper));
+  var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
 
     if(reviews)
       for(var i = 0; i < reviews.length; i++) {
@@ -120,14 +125,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
           window.freedom.emit('get-other-paper-review', msg);
         else 
           window.freedom.emit('get-paper-review', msg); 
-      }  
-
+      }
     if($location.search().username && $location.search().username !== username)  //load someone else's paper's reviews 
       $scope.accessBtn = false;
-
     window.freedom.on('got-paper-review', function(review){
       var version = $scope.currPaper.versions[$scope.currVnum-1];
-
       if(!version.reviews) version.reviews=[];
       for (var i = 0; i < version.reviews.length; i++){
         if (version.reviews[i].reviewer === review.reviewer){
@@ -135,28 +137,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
           break;
         }
       }
-
       $scope.$apply();
     });   
-  }; 
-
-  window.freedom.on('display-new-paper', function(newPaper) {
-    var paper = new Paper(newPaper);
-    $scope.currPaper = paper;
-    $scope.papers.push($scope.currPaper); 
-    $scope.$apply(); 
-    $scope.showPaperView(); 
-
-    window.freedom.emit('set-papers', $scope.papers);
-  }); 
-
-  window.freedom.on('display-new-version', function(newVersion) {
-    $scope.currVnum = newVersion.vnum+1;
-    $scope.showPaperView(); 
-    $scope.$apply(); 
-
-    window.freedom.emit('set-papers', $scope.papers);
-  });
+ 
+  }
 
   $scope.addVersion = function() {
     var modalInstance = $modal.open({
@@ -181,6 +165,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       resolve:{
         papers: function(){
           return $scope.papers;
+        },
+        currPaper: function(){
+          return $scope.currPaper;
         }
       }
     }); 
@@ -247,16 +234,13 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
   };
 
-  var addPaperCtrl = function ($scope, $modalInstance, papers) {
+  var addPaperCtrl = function ($scope, $modalInstance, papers, currPaper) {
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
-
     $scope.selected = undefined;
     $scope.alerts = [];
-
     $scope.checkList = []; 
-
     $scope.setPrivate = function(){
       $scope.privatePaper = true;
     };
@@ -304,19 +288,29 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         viewList = alertList; 
         alertList = $scope.checkList; 
       }
-
-      var newPaper = new Paper();
-
+       var newPaper = new Paper();
+       currPaper = newPaper;
+      
       var vdata = {
+        vnum: 0,
+        pkey: newPaper.pkey,
+        ptitle: files[0].name,
+        author: username,
         comments: comments,
         viewList: viewList,
         alertList: alertList,
         privateSetting: $scope.privatePaper, 
       };
 
-      console.log(JSON.stringify(vdata));
-
-      newPaper.addVersion(vdata, files[0]);
+      var ver = new Version(vdata);
+     // ver.uploadPDF(files[0]);
+      newPaper.addVersion(ver);
+      console.log("HERE" + JSON.stringify(papers));
+      papers.push(currPaper);  
+      ver.shareVersion();
+      window.freedom.emit('set-papers', papers);
+     console.log("current paper: " + JSON.stringify(currPaper));
+     getReviews();
       $modalInstance.dismiss('cancel');
     };
 
@@ -437,7 +431,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         privateSetting: $scope.privatePaper
       };
 
-      paper.addVersion(vdata, files[0]); 
+console.log("MAKING A NEW VERSION");
+      var ver = new Version(vdata, paper);
+      ver.uploadPDF(files[0]);
+      console.log("HERE" + JSON.stringify(vdata));
       $modalInstance.dismiss('cancel');
     };
 

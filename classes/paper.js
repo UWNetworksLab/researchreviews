@@ -1,27 +1,26 @@
 function Paper(paper) {
-  if (paper){
+  if (paper){ 
+    console.log("IN PAPER " + JSON.stringify(paper));
+    this.author = paper.author; 
     this.pkey = paper.pkey; 
     this.versions = [];
-
     for (var i = 0; i < paper.versions.length; i++){
-      this.versions.push(new Version(paper.versions[i], false, this));
+    console.log("loop"+i);
+      addVersion(new Version(paper.versions[i]));
     }
-
-    this.author = username; 
     return;
   }
   this.pkey = Math.random() + ""; 
   this.versions = [];
   this.author = username;
-}
+};
 
-Paper.prototype.addVersion = function(vdata, file) {
-  vdata.author = this.author;
-  vdata.pkey = this.pkey;
-  vdata.vnum = this.versions.length;
-  var version = new Version(vdata, file, this);
+Paper.prototype.addVersion = function(version) {
+  this.versions.push(version);
 };
 
 Paper.prototype.deleteVersion = function(vnum){
   this.versions.splice(vnum, 1);
 };
+
+

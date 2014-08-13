@@ -535,11 +535,11 @@ freedom.on('load-profile', function(data) {
   }
 });
 
-freedom.on('add-version', function(data) {
+freedom.on('share-version', function(data) {
    var paper = {
-        title: data.title,
+        title: data.ptitle,
         author: username,
-        key: data.key, 
+        key: data.pkey, 
         vnum: data.vnum, 
         action: 'add-paper'
       };
@@ -562,10 +562,10 @@ freedom.on('add-version', function(data) {
 
       //SHARE PAPER WITH REVIEWERS
       var msg = {
-        title: data.title, 
+        title: data.ptitle, 
         author: username, 
         vnum: data.vnum, 
-        key: data.key,
+        key: data.pkey,
         action: 'invite-reviewer' 
       };
 
@@ -575,49 +575,8 @@ freedom.on('add-version', function(data) {
           freedom.emit("recv-err", err);
         });
       }
-
-    freedom.emit('display-new-version', data);
 //    store.set(username + 'papers', JSON.stringify(papers)); 
 }); 
-
-freedom.on('add-paper', function(data) {
-  //SHARE PAPER WITH USERS ALLOWED TO VIEW IT
-  var paper = {
-    title: data.versions[0].title,
-    author: username,
-    pkey: data.versions[0].pkey, 
-    vnum: 0,
-    action: 'add-paper'
-  };
-
-  if(!data.versions[0].privateSetting) //public (send paper to public storage) 
-    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
-    }, function(err) {
-      freedom.emit("recv-err", err);
-    });
-
-  else { //private (send private paper to viewList) 
-    paper.action = 'allow-access';
-    for(var i = 0; i < data.versions[0].viewList.length; i++) {
-      social.sendMessage(data.versions[0].viewList[i], JSON.stringify(paper)).then(function(ret) {
-      }, function(err) {
-        freedom.emit("recv-err", err);
-      });
-    }
-  }
-
-  //SHARE PAPER WITH REVIEWERS
-  paper.action = 'invite-reviewer';
-
-  for(var i = 0; i < data.versions[0].alertList.length; i++) {
-    social.sendMessage(data.versions[0].alertList[i], JSON.stringify(paper)).then(function(ret) {
-    }, function(err) {
-      freedom.emit("recv-err", err);
-    });
-  }
-
-  freedom.emit('display-new-paper', data);
-});
 
 freedom.on('set-reviews', function(reviews) {
   store.set(username+'reviews', JSON.stringify(reviews)); 
