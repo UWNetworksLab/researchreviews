@@ -105,8 +105,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     getReviews();
  }; 
 
-  var getReviews = function(){
-  $scope.$apply();
+  var getReviews = function(currPaper){
+ // $scope.$apply();
+  $scope.currPaper = currPaper;
   console.log("get reviews..." + JSON.stringify($scope.currPaper));
   var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
 
@@ -310,7 +311,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       ver.shareVersion();
       window.freedom.emit('set-papers', papers);
      console.log("current paper: " + JSON.stringify(currPaper));
-     getReviews();
+     
+     getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
 
