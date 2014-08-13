@@ -1,6 +1,7 @@
 //backend
 
 var store = freedom.localstorage();
+var storebuffer = freedom.storebuffer(); 
 var social = freedom.socialprovider(); 
 var myClientState = null;
 var username = null;
