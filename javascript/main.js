@@ -27,20 +27,22 @@ freedom.on('boot', function(val) {
 }); 
 
 freedom.on('add-pdf', function(data){
-  console.log('add-pdf ' + JSON.stringify(data) + typeof (data.arrayBuffer));
-  storebuffer.set(data.pkey+data.vnum, data.arrayBuffer);
-  return;
+  console.log('add-pdf ' + data.arrayBuffer.byteLength);
+  storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
  // console.log(storebuffer.get(data.pkey + data.vum));
-  var promise = storebuffer.get(data.pkey + data.vnum);
-  promise.then(function(val){
-    console.log("in promise" + typeof val);
-    freedom.emit('got-pdf', val);
-  });
+  
+//  setTimeout(function(){
+  /*  var promise = storebuffer.get(data.pkey + data.vnum+"");
+    promise.then(function(val){
+      console.log("in promise" + typeof val);
+      freedom.emit('got-pdf', val);
+    });
+//  }, 2000);*/
 });
 
 freedom.on('download-pdf', function(data){
   console.log("download");
-  var promise = storebuffer.get(data.pkey + data.vnum);
+  var promise = storebuffer.get(data.pkey + data.vnum+"");
   promise.then(function(val){
     console.log("in promise");
     freedom.emit('got-pdf', val);

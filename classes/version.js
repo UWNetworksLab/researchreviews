@@ -27,7 +27,7 @@ Version.prototype.uploadPDF = function(file){
       vnum: this.vnum,
       arrayBuffer: reader.result
     };
-    console.log("TYEP OF " + typeof(data.arrayBuffer));
+    console.log("TYEP OF " + data.arrayBuffer.byteLength);
     window.freedom.emit('add-pdf', data);
   }.bind(this);
   reader.readAsArrayBuffer(file);
@@ -68,7 +68,7 @@ Version.prototype.download = function(){
   window.freedom.emit('download-pdf', data);
   
   window.freedom.on('got-pdf', function(ab){
-    console.log("got pdf " );
+    console.log('gotpdf');
     var reader = new FileReader();
     var blob = new Blob([ab], {type:'application/pdf'});
     reader.readAsArrayBuffer(blob);

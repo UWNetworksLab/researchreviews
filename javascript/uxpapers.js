@@ -81,7 +81,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         }
         $scope.$apply(); 
 
-        console.log(JSON.stringify($scope.papers));
+//        console.log(JSON.stringify($scope.papers));
       }); 
     }
   };  
@@ -111,7 +111,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   var getReviews = function(currPaper){
  // $scope.$apply();
   if(currPaper) $scope.currPaper = currPaper;
-  console.log("get reviews..." + JSON.stringify($scope.currPaper));
+//  console.log("get reviews..." + JSON.stringify($scope.currPaper));
   var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
 
     if(reviews)
@@ -308,14 +308,13 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
       var ver = new Version(vdata);
       ver.uploadPDF(files[0]);
+
       newPaper.addVersion(ver);
-      console.log("HERE" + JSON.stringify(papers));
       papers.push(currPaper);  
-      ver.shareVersion();
+      //ver.shareVersion();
       window.freedom.emit('set-papers', papers);
-     console.log("current paper: " + JSON.stringify(currPaper));
      
-     getReviews(currPaper);
+       getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
 
