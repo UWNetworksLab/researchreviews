@@ -154,7 +154,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     $scope.currVnum = newVersion.vnum+1;
     $scope.showPaperView(); 
     $scope.$apply(); 
-
+    console.log("display new version");
     window.freedom.emit('set-papers', $scope.papers);
   });
 

@@ -28,6 +28,11 @@ freedom.on('boot', function(val) {
   }
 }); 
 
+freedom.on('upload-pdf', function(data){
+  console.log('upload-pdf here ' + JSON.stringify(data));
+  store.set(data.pkey + data.vnum, data.arrayBuffer);
+});
+
 freedom.on('get-reviews', function(past) {
   var promise = store.get(username + 'reviews');
   promise.then(function(val) {
@@ -568,7 +573,6 @@ freedom.on('add-version', function(data) {
         key: data.key,
         action: 'invite-reviewer' 
       };
-
       for(var i = 0; i < data.alertList.length; i++) {
         social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
         }, function(err) {

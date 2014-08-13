@@ -1,4 +1,4 @@
-function Version(vdata, file, paper) {
+function Version(vdata, paper) {
   this.comments = vdata.comments;
   this.viewList = vdata.viewList;
   this.alertList = vdata.alertList;
@@ -11,21 +11,12 @@ function Version(vdata, file, paper) {
   this.pkey = vdata.pkey;
   this.vnum = vdata.vnum; 
 
-  this.binaryString = vdata.binaryString;
   this.title = vdata.title;
-
-  if (file){
-    var reader = new FileReader();
-    reader.onload = function() {
-      var arrayBuffer = reader.result;
-      this.title = file.name;
-      this.binaryString = ab2str(arrayBuffer);
-      paper.versions.push(this);
-
-      if (this.vnum === 0) window.freedom.emit('add-paper', paper);
-      else window.freedom.emit('add-version', this);
-    }.bind(this);
-    reader.readAsArrayBuffer(file);
+  if (paper){
+    this.pkey = paper.pkey;
+    paper.versions.push(this);
+    if (this.vnum === 0) window.freedom.emit('add-paper', paper);
+    else window.freedom.emit('add-version', this);
   }
 }
 
@@ -64,3 +55,16 @@ Version.prototype.download = function(){
   reader.readAsArrayBuffer(blob);
   saveAs(blob, this.title);
 };
+
+Version.prototype.uploadPDF = function(file){
+  var reader = new FileReader();
+    reader.onload = function() {
+      var data = {
+        pkey: this.pkey,
+        vnum: this.vnum,
+        arrayBuffer: reader.result
+      };
+      window.freedom.emit('upload-pdf', data);
+    }.bind(this);
+    reader.readAsArrayBuffer(file);
+}
