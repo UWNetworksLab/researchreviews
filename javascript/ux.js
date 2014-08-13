@@ -75,6 +75,7 @@ app.controller('mainController', function($scope, $location) {
       $scope.username_fixed = username; 
       $location.path('profilepage').search({username: username}); 
     }
+    if(data.userList) userList = data.userList; 
     $scope.username = data.id; 
     $scope.$apply();
   });
