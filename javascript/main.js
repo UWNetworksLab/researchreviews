@@ -462,7 +462,7 @@ social.on('onUserProfile', function(data) {
   };
   freedom.emit('send-users', msg);
 });*/
-
+/*
 freedom.on('edit-privacy', function(msg) {
  var data = JSON.parse(msg); 
  var promise = store.get(username + 'papers');
@@ -492,7 +492,7 @@ freedom.on('edit-privacy', function(msg) {
     store.set(username + 'papers', JSON.stringify(papers));  
   });  
 });
-
+*/
 freedom.on('edit-profile', function(data) {
   var promise = store.get(username + 'profile');
   promise.then(function(val) {
@@ -570,7 +570,8 @@ freedom.on('share-version', function(data) {
           freedom.emit("recv-err", err);
         });
       }
-      else { //private (send private paper to viewList) 
+      else { //private (send private paper to viewList)
+        console.log("private" + JSON.stringify(data.viewList));
         paper.action = 'allow-access';
         for(var i = 0; i < data.viewList.length; i++) {
           social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
@@ -603,6 +604,7 @@ freedom.on('set-reviews', function(reviews) {
 }); 
 
 freedom.on('set-papers', function(papers) {
+console.log("SET PAPERS");
   store.set(username+'papers', JSON.stringify(papers)); 
 }); 
 

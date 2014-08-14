@@ -1,6 +1,7 @@
 app.controller('papersController', function($scope, $modal, $location, $filter) {
 
   $scope.$watch('papers', function(){
+    alert("papers changed");
     window.freedom.emit('set-papers', $scope.papers);
   }, true);
 
@@ -310,8 +311,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       newPaper.addVersion(ver);
       papers.push(newPaper);  
       currPaper = newPaper;
-       
-     ver.shareVersion();
+      console.log("SHARE VERSION IN UXPAPERS");
+      ver.shareVersion();
       getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
