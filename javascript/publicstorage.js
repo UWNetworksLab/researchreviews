@@ -57,6 +57,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-paper'){
+  console.log("ADD PAPER HERE ASDFASDASDFASDFLASDJFALKSDFJALSKDFJALSKDFJL");
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 

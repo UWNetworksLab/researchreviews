@@ -219,9 +219,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currPaper, vnum, papers) {
     var privateSetting = currPaper.versions[vnum].privateSetting;
-    console.log("PRIVATE SETTING " + privateSetting);
     $scope.currSetting = privateSetting? "private" : "public"; 
-    console.log("PRIVATE public  " + $scope.currSetting);
     $scope.save = function () { 
       if($("#addPaperPublic2").is(':checked')){
         currPaper.versions[vnum].editPrivacy(true);
@@ -229,7 +227,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       else if($('#addPaperPrivate2').is(':checked')) { //public to private  && !privateSetting
         currPaper.versions[vnum].editPrivacy(false);
       }
-//      else $modalInstance.dismiss('cancel');
 
       $modalInstance.dismiss('cancel');
     };
@@ -255,7 +252,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.deleteUser = function(id) {
-      var idx = $scope.checkList.indexOf($scope.alerts[id].msg);
+      var idx = $scope.checkList.indexOf($scope.alerts[id]);
       if(idx > -1) 
         $scope.checkList.splice(idx, 1); 
 
@@ -263,7 +260,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.selectMatch = function(selection) {
-      $scope.alerts.push({msg: selection});
+      console.log("SELECTION " + selection);
+      $scope.alerts.push(selection);
     };
 
     $scope.checkAlert = function(username) {
@@ -283,7 +281,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       var comments = document.getElementById("add-paper-comments").value;
       var alertList = [];
       for(var i = 0; i < $scope.alerts.length; i++) 
-        alertList.push($scope.alerts[i].msg); 
+        alertList.push($scope.alerts[i]); 
 
       var viewList;
       if(!$scope.privatePaper) { //publicly shared
@@ -294,8 +292,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         alertList = $scope.checkList; 
       }
        var newPaper = new Paper();
-       currPaper = newPaper;
-      
+     
       var vdata = {
         vnum: 0,
         pkey: newPaper.pkey,
@@ -311,9 +308,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       ver.uploadPDF(files[0]);
 
       newPaper.addVersion(ver);
-      papers.push(currPaper);  
-      ver.shareVersion();
-       getReviews(currPaper);
+      papers.push(newPaper);  
+      currPaper = newPaper;
+       
+     ver.shareVersion();
+      getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
 
@@ -338,10 +337,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.invite = function () {
-     currPaper.versions[vnum].alertList = $scope.alerts;
-
-    console.log("SCOPE LAERTS " + JSON.stringify($scope.alerts));
-
+      currPaper.versions[vnum].alertList = $scope.alerts;
       currPaper.versions[vnum].shareVersion();
       $modalInstance.dismiss('cancel');
     };

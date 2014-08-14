@@ -68,9 +68,9 @@ Version.prototype.download = function(){
   
   window.freedom.on('got-pdf', function(ab){
     console.log('gotpdf');
-    var reader = new FileReader();
+    //var reader = new FileReader();
     var blob = new Blob([ab], {type:'application/pdf'});
-    reader.readAsArrayBuffer(blob);
+    //reader.readAsArrayBuffer(blob);
     saveAs(blob, this.title);
   });
 };
