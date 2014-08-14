@@ -49,22 +49,21 @@
       "api": "social"
     }, 
     "transport": {
-      "url": "node_modules/freedom/providers/transport/webrtc/transport.webrtc.json",
+      "url": "node_modules/radiatus-providers/src/providers/transport.radiatus.json",
       "api": "transport"
     },
     "localstorage": {
-      "url": "node_modules/freedom/providers/storage/shared/storage.shared.json",
+      "url": "node_modules/radiatus-providers/src/providers/storage.radiatus.json",
       "api": "storage"
     },
     "storebuffer": {
       "url": "node_modules/radiatus-providers/src/providers/storebuffer.radiatus.json",
-      "api": "storage"
+      "api": "storebuffer"
     }
   },
   "services": {
     "publicstorage": {
-      "url": "javascript/publicstorage.json", 
-      "api": "social"
+      "url": "javascript/publicstorage.json"
     }
   }
 }
