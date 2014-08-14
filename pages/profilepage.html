@@ -34,7 +34,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              <td ng-click="displayDetailedPapers()"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
+              <td ng-click="displayDetailedPapers()"> {{paper.versions[paper.versions.length-1].ptitle}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
 

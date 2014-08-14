@@ -41,21 +41,10 @@ app.controller('reviewsController', function($scope, $modal) {
 		window.freedom.emit('get-r-paper', msg);
 	}; 
 
-	window.freedom.on('got-paper-review', function(review) {
-		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
-		
-		for (var i = 0; i < $scope.currRVersion.reviews.length; i++){
-			if ($scope.currRVersion.reviews[i].reviewer === review.reviewer){
-				$scope.currRVersion.reviews[i] = review; 
-			}
-		}
-		
-		$scope.$apply(); 
-	});
-
 	window.freedom.on('send-r-paper', function(msg){
 		//show reviews of a paper that this reviewer is able to access
-		$scope.currRVersion = new Version(msg);
+console.log("SEND R PAPER " + JSON.stringify(msg));
+$scope.currRVersion = new Version(msg);
 
 		$scope.$apply(); 
 
@@ -75,6 +64,19 @@ app.controller('reviewsController', function($scope, $modal) {
 
 		$scope.$apply();
 	});
+	
+  window.freedom.on('got-paper-review', function(review) {
+		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
+		
+		for (var i = 0; i < $scope.currRVersion.reviews.length; i++){
+			if ($scope.currRVersion.reviews[i].reviewer === review.reviewer){
+				$scope.currRVersion.reviews[i] = review; 
+			}
+		}
+		
+		$scope.$apply(); 
+	});
+
 
 	$scope.getPendingReviews = function() {
 		$("#pendingBtn").attr('class', "btn btn-default active"); 

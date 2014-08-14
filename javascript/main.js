@@ -29,15 +29,6 @@ freedom.on('boot', function(val) {
 freedom.on('add-pdf', function(data){
   console.log('add-pdf ' + data.arrayBuffer.byteLength);
   storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
- // console.log(storebuffer.get(data.pkey + data.vum));
-  
-//  setTimeout(function(){
-  /*  var promise = storebuffer.get(data.pkey + data.vnum+"");
-    promise.then(function(val){
-      console.log("in promise" + typeof val);
-      freedom.emit('got-pdf', val);
-    });
-//  }, 2000);*/
 });
 
 freedom.on('download-pdf', function(data){
@@ -586,17 +577,17 @@ freedom.on('share-version', function(data) {
         title: data.ptitle, 
         author: username, 
         vnum: data.vnum, 
-        key: data.pkey,
+        pkey: data.pkey,
         action: 'invite-reviewer' 
       };
 
+      console.log("MSG in version.js" + JSON.stringify(msg));
       for(var i = 0; i < data.alertList.length; i++) {
         social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
       }
-//    store.set(username + 'papers', JSON.stringify(papers)); 
 }); 
 
 freedom.on('set-reviews', function(reviews) {

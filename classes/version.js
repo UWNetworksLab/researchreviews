@@ -2,7 +2,6 @@ function Version(vdata) {
   this.comments = vdata.comments;
   this.viewList = vdata.viewList;
   this.alertList = vdata.alertList;
-    console.log("xxxxxxxxxxxxxxxxxx in version class");
   this.privateSetting = vdata.privateSetting;
 
   this.reviews = vdata.reviews? vdata.reviews : [];

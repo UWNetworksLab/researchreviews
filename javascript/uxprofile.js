@@ -87,14 +87,12 @@ app.controller('profileController', function($scope, $modal, $location) {
 	});
 
 	window.freedom.on('display-papers', function(papers) {
-		console.log(JSON.stringify(papers));
 		for(var i = 0; i < papers.length; i++) {
 			for(var j = 0; j < papers[i].versions.length; j++)
 				papers[i].versions[j].date = new Date(papers[i].versions[j].date); 
 		}
 		$scope.papers = papers; 
 		$scope.$apply(); 
-		console.log(JSON.stringify($scope.papers));
 	}); 
 
 	window.freedom.on('display-reviews', function(reviews) {

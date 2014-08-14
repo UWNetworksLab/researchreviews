@@ -80,8 +80,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
           $scope.showPaperView();
         }
         $scope.$apply(); 
-
-//        console.log(JSON.stringify($scope.papers));
       }); 
     }
   };  
@@ -311,7 +309,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
       newPaper.addVersion(ver);
       papers.push(currPaper);  
-      //ver.shareVersion();
+      ver.shareVersion();
       window.freedom.emit('set-papers', papers);
      
        getReviews(currPaper);
