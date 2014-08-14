@@ -5,8 +5,6 @@ var social = freedom.socialprovider();
 var storebuffer = freedom.storebuffer();
 var myClientState = null;
 var username = null;
-store.clear();
-storebuffer.clear();
 var userList = []; 
 var username; 
 
