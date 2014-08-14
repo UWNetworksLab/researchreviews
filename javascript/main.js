@@ -27,7 +27,16 @@ freedom.on('boot', function(val) {
 }); 
 
 freedom.on('add-pdf', function(data){
-  console.log('add-pdf ' + data.arrayBuffer.byteLength);
+  console.log('add-pdf: length=' + data.arrayBuffer.byteLength);
+  // Hack because ArrayBuffers get mangled when
+  // traversing EventInterfaces
+  var ab = new ArrayBuffer(data.arrayBuffer.byteLength);
+  var view = new Uint8Array(ab);
+  for (var i=0; i<data.arrayBuffer.byteLength; i++) {
+    view[i] = data.arrayBuffer[i];
+  }
+  data.arrayBuffer = ab;
+  // End hack
   storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
 });
 
@@ -35,7 +44,10 @@ freedom.on('download-pdf', function(data){
   console.log("download");
   var promise = storebuffer.get(data.pkey + data.vnum+"");
   promise.then(function(val){
-    console.log("in promise");
+    console.log("download-pdf: promise returns with "+val);
+    if (val.byteLength) {
+      console.log("download-pdf: pdf length="+val.byteLength);
+    }
     freedom.emit('got-pdf', val);
   });
 });
