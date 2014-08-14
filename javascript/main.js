@@ -3,6 +3,8 @@
 var store = freedom.localstorage();
 var social = freedom.socialprovider(); 
 var storebuffer = freedom.storebuffer();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -569,12 +571,13 @@ freedom.on('share-version', function(data) {
 
       console.log("SHARE VERSION " + JSON.stringify(data));
 
-      if(!data.privateSetting) //public (send paper to public storage) 
+      if(!data.privateSetting){
+      //public (send paper to public storage) 
         social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
-
+      }
       else { //private (send private paper to viewList) 
         paper.action = 'allow-access';
         for(var i = 0; i < data.viewList.length; i++) {

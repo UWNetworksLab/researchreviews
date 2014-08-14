@@ -81,13 +81,13 @@ $scope.currRVersion = new Version(msg);
 	$scope.getPendingReviews = function() {
 		$("#pendingBtn").attr('class', "btn btn-default active"); 
   		$("#pastBtn").attr('class', "btn btn-default"); 
-  		window.freedom.emit('get-reviews', 0); 
+  		window.freedom.emit('get-reviews', 0);
 	};
 
 	$scope.getPastReviews = function() {
 		$("#pastBtn").attr('class', "btn btn-default active"); 
-  		$("#pendingBtn").attr('class', "btn btn-default"); 
-  		window.freedom.emit('get-reviews', 1); 
+  	$("#pendingBtn").attr('class', "btn btn-default"); 
+		window.freedom.emit('get-reviews', 1); 
 	}; 
 
 	$scope.addReview = function() {
@@ -193,6 +193,7 @@ $scope.currRVersion = new Version(msg);
 			};
 			window.freedom.emit('get-r-paper', msg);
 		}
+    else $scope.currReview = false;
 		$scope.$apply();
 	});
 });
