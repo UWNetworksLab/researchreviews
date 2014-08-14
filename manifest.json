@@ -2,7 +2,10 @@
   "name": "Researcher reviewer",
   "description": "research",
   "app": {
-    "script": "javascript/main.js"
+    "script": [
+      "node_modules/freedom/demo/filedrop/freedom-modules/social-transport.js",
+      "javascript/main.js"
+    ]
   },
   "dependencies": {
     "socialprovider": {

@@ -2,7 +2,10 @@
   "name": "blizi",
   "description": "Research paper review application for freedom.js",
   "app": {
-    "script": "javascript/main.js",
+    "script": [
+      "node_modules/freedom/demo/filedrop/freedom-modules/social-transport.js",
+      "javascript/main.js"
+    ],
     "index": "index.html",
     "static": [
       "css/bootstrap.min.css",
