@@ -3,8 +3,8 @@
 var store = freedom.localstorage();
 var social = freedom.socialprovider(); 
 var storebuffer = freedom.storebuffer();
-store.clear();
-storebuffer.clear();
+//store.clear();
+//storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -29,21 +29,13 @@ freedom.on('boot', function(val) {
 
 freedom.on('add-pdf', function(data){
   console.log('add-pdf: length=' + data.arrayBuffer.byteLength);
-  // Hack because ArrayBuffers get mangled when
-  // traversing EventInterfaces
-  var ab = new ArrayBuffer(data.arrayBuffer.byteLength);
-  var view = new Uint8Array(ab);
-  for (var i=0; i<data.arrayBuffer.byteLength; i++) {
-    view[i] = data.arrayBuffer[i];
-  }
-  data.arrayBuffer = ab;
-  // End hack
   storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
 });
 
 freedom.on('download-pdf', function(data){
-  console.log("download");
-  var promise = storebuffer.get(data.pkey + data.vnum+"");
+  var key = data.pkey + data.vnum + '';
+  console.log("download "+key);
+  var promise = storebuffer.get(key);
   promise.then(function(val){
     console.log("download-pdf: promise returns with "+val);
     if (val.byteLength) {

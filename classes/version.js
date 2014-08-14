@@ -59,27 +59,16 @@ Version.prototype.editPrivacy = function(publicSetting) {
   window.freedom.emit('edit-privacy', JSON.stringify(msg)); 
 };
 
+window.freedom.on('got-pdf', function(ab){
+  console.log('gotpdf');
+  var blob = new Blob([ab], {type:'application/pdf'});
+  saveAs(blob, this.title);
+});
+
 Version.prototype.download = function(){
   var data = {
     pkey: this.pkey,
     vnum: this.vnum
   };
   window.freedom.emit('download-pdf', data);
-  
-  window.freedom.on('got-pdf', function(ab){
-    console.log('gotpdf');
-    var newAb = new ArrayBuffer(ab.byteLength);
-    var view = new Uint8Array(newAb)
-    for (var i=0; i<ab.byteLength; i++) {
-      view[i] = ab[i];
-    }
-    ab = newAb;
-    console.log(ab instanceof ArrayBuffer);
-    console.log(ab);
-    console.log(ab.byteLength);
-    //var reader = new FileReader();
-    var blob = new Blob([ab], {type:'application/pdf'});
-    //reader.readAsArrayBuffer(blob);
-    saveAs(blob, this.title);
-  });
 };
