@@ -5,7 +5,8 @@ var social = freedom.socialprovider();
 var storebuffer = freedom.storebuffer();
 var myClientState = null;
 var username = null;
-
+store.clear();
+storebuffer.clear();
 var userList = []; 
 var username; 
 
@@ -555,6 +556,8 @@ freedom.on('share-version', function(data) {
         vnum: data.vnum, 
         action: 'add-paper'
       };
+
+      console.log("SHARE VERSION " + JSON.stringify(data));
 
       if(!data.privateSetting) //public (send paper to public storage) 
         social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
