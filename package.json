@@ -22,6 +22,6 @@
     "freedom": "0.5.0",
     "jquery": "^2.1.1",
     "jquery-ui": "^1.10.5",
-    "radiatus-providers": "0.0.5"
+    "radiatus-providers": "0.0.6"
   }
 }
