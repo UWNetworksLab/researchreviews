@@ -19,7 +19,7 @@
   "dependencies": {
     "angular": "^1.2.16",
     "bootstrap": "^3.1.1",
-    "freedom": "0.5.0",
+    "freedom": "~0.5.6",
     "jquery": "^2.1.1",
     "jquery-ui": "^1.10.5",
     "radiatus-providers": "0.0.6"

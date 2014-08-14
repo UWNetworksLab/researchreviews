@@ -3,6 +3,10 @@
 var store = freedom.localstorage();
 var social = freedom.socialprovider(); 
 var storebuffer = freedom.storebuffer();
+var socialWrap = new SocialTransport(
+  [ freedom.socialprovider ], 
+  [ freedom.transport ]
+);
 //store.clear();
 //storebuffer.clear();
 var myClientState = null;
