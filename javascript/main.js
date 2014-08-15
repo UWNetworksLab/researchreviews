@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-store.clear();
-storebuffer.clear();
+//store.clear();
+//storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -95,23 +95,22 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       if(!reviews || typeof reviews !== "object") reviews = []; 
 
       for(var i = 0; i < reviews.length; i++) {
+
         if(reviews[i].rkey === parse.rkey) {
           var msg = {
             action: 'got-paper-review',
             text: reviews[i].text,
             reviewer: username 
           }; 
-
-          if((reviews[i].accessList)!=="public" && reviews[i].accessList.indexOf(parse.from) == -1)
-            msg.text = "You do not have access to this review"; 
-
+         if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
+           // msg.text = "You do not have access to this review"; 
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
       }
     });
   }
-  else if(parse.action === 'get-public-papers') {
+  else if(parse.action === 'got-public-papers') {
     freedom.emit('got-public-papers', parse.papers);
   }
   else if (parse.action === "get-other-paper-review"){
@@ -337,7 +336,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
           if(index === -1) reviews.push(parse);
           else reviews[index] = parse;
-
+          
+          
           var alertmsg = {
             action: 'add-review-on-author',
             title: papers[i].versions[parse.vnum].title,
@@ -411,7 +411,9 @@ freedom.on('set-review', function(review) {
         exists = true;
       }
     }
-    if (!exists) reviews.push(review); 
+    if (!exists) {
+      reviews.push(review); 
+    }
     store.set(username + 'reviews', JSON.stringify(reviews));
   });
 }); 
@@ -636,7 +638,7 @@ freedom.on('load-private-papers', function(data) {
 
 freedom.on('load-public-storage', function(data){
   var message = {
-    username: username,
+    from: username,
     action: 'get-public-papers'
   };
 

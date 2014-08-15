@@ -1,5 +1,5 @@
 function Review(rdata) {
-  this.ptitle = rdata.ptitle;
+  this.title = rdata.title;
   this.pkey = rdata.pkey;
   this.author = rdata.author;
   this.vnum = rdata.vnum;

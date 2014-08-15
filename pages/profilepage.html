@@ -1,5 +1,4 @@
   <div>
-    <!--Three Columns--profile, papers, reviews-->
     <div class="col-md-2">
       <div class="sidebar">
         <div class="std-container">
@@ -34,7 +33,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="paper in papers"> 
-              <td ng-click="displayDetailedPapers()"> {{paper.versions[paper.versions.length-1].ptitle}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
+              <td ng-click="displayDetailedPapers()"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>
 
@@ -54,10 +53,10 @@
           <tr ng-repeat="review in reviews" >
               <td>
                   <div ng-if="ownProfile == true" ng-click="displayDetailedReviews()">
-My review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}} 
+My review of {{review.title}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}} 
                   </div>
                   <div ng-if="ownProfile != true" ng-click="displayDetailedReviews()">
-                    {{review.reviewer}}'s review of {{review.ptitle}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}}
+                    {{review.reviewer}}'s review of {{review.title}} on {{review.date.getFullYear()}}-{{review.date.getMonth()+1}}-{{review.date.getDate()}}
                   </div>
               </td>       
           </tr>

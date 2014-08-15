@@ -11,7 +11,7 @@ app.controller('browseController', function($scope, $location, $modal) {
 
 	$scope.addReview = function() {
 		var version = $scope.currPaper.versions[$scope.currVnum-1];
-		if(version.privateSetting && version.viewList.indexOf(username) == -1) {
+		if(version.privateSetting && version.viewList.indexOf(username) === -1) {
 			alert("You do not have permission to review this paper.");
 			return;
 		}
@@ -95,8 +95,10 @@ app.controller('browseController', function($scope, $location, $modal) {
 			else review.accessList = false; 
 			var newReview = new Review(review);
 
-			//TODO: make this a method?
+			//TODO: make this a method
+      //?
 			window.freedom.emit('upload-review', newReview);
+      console.log("Setting review "  + JSON.stringify(newReview));
 			window.freedom.emit('set-review', newReview);
 		    $modalInstance.dismiss('cancel'); 
 	  };
@@ -110,8 +112,9 @@ app.controller('browseController', function($scope, $location, $modal) {
 		$("#publicBtn").attr('class', "btn btn-default active"); 
   		$("#privateBtn").attr('class', "btn btn-default"); 	
 
-  		$scope.publicSetting = true; 
-		window.freedom.emit('load-public-storage', 0)
+  		$scope.publicSetting = true;
+      console.log("get public papers");
+		window.freedom.emit('load-public-storage');
 	};
 
 	$scope.getPublicPapers(); 
@@ -166,7 +169,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 
 	window.freedom.on('got-public-papers', function(papers) {
 		$scope.papers = papers; 
-		$scope.$apply(); 
+	  console.log("public papers " + JSON.stringify(papers));
+  $scope.$apply(); 
 	}); 
 
     window.freedom.on('got-paper-review', function(review){

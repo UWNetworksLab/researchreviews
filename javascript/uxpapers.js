@@ -70,7 +70,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       });
     }
     else { //load own papers
-      window.freedom.emit('get-papers', 0); 
+      window.freedom.emit('get-papers'); 
       window.freedom.on('display-papers', function(papers) {
         $scope.papers = []; 
 
@@ -113,7 +113,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   var getReviews = function(currPaper){
  // $scope.$apply();
   if(currPaper) $scope.currPaper = currPaper;
-  var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
+  if (!$scope.currPaper) return;
+  var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
     if(reviews) {
       for(var i = 0; i < reviews.length; i++) {
         var msg = {
