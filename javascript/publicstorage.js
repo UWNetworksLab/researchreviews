@@ -73,7 +73,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'delete-paper'){
-  console.log("delete paper in here public storage " + JSON.stringify(parse));
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 

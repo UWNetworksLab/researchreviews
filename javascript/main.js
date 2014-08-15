@@ -653,17 +653,11 @@ freedom.on('load-public-storage', function(data){
 });
 
 freedom.on('delete-paper', function(data){
-    var paper ={
-      pkey: data.pkey, 
-      vnum: data.vnum, 
-      action: 'delete-paper'
-    };
-
-    social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
+      data.action = 'delete-paper';
+    social.sendMessage("publicstorage", JSON.stringify(data)).then(function(ret) {
     }, function(err) {
       freedom.emit("recv-err", err);
     });
-  }); 
 });
 
 social.login({
