@@ -1,6 +1,7 @@
 app.controller('papersController', function($scope, $modal, $location, $filter) {
 
   $scope.$watch('papers', function(){
+    alert("papers changed");
     window.freedom.emit('set-papers', $scope.papers);
   }, true);
 
@@ -72,7 +73,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     else { //load own papers
       window.freedom.emit('get-papers', 0); 
       window.freedom.on('display-papers', function(papers) {
-
         $scope.papers = []; 
 
         for(var i = 0; i < papers.length; i++) {
@@ -103,7 +103,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     if(key) {
       for(var i = 0; i < $scope.papers.length; i++) 
         if($scope.papers[i].pkey === key) {
-          $scope.currPaper = $scope.papers[i]; 
+          $scope.currPaper = $scope.papers[i];
+          console.log("CURRPAPER " + JSON.stringify($scope.currPaper));
           break; 
         }
       }
@@ -116,8 +117,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   if(currPaper) $scope.currPaper = currPaper;
 //  console.log("get reviews..." + JSON.stringify($scope.currPaper));
   var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
-
-    if(reviews)
+    if(reviews) {
+      console.log("REVIEWS" + JSON.stringify(reviews));
       for(var i = 0; i < reviews.length; i++) {
         var msg = {
           pkey: $scope.currPaper.pkey,
@@ -133,21 +134,25 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         else 
           window.freedom.emit('get-paper-review', msg); 
       }
-    if($location.search().username && $location.search().username !== username)  //load someone else's paper's reviews 
-      $scope.accessBtn = false;
-    window.freedom.on('got-paper-review', function(review){
-      var version = $scope.currPaper.versions[$scope.currVnum-1];
-      if(!version.reviews) version.reviews=[];
-      for (var i = 0; i < version.reviews.length; i++){
-        if (version.reviews[i].reviewer === review.reviewer){
-          version.reviews[i] = review; 
-          break;
+      if($location.search().username && $location.search().username !== username)  //load someone else's paper's reviews 
+        $scope.accessBtn = false;
+      window.freedom.on('got-paper-review', function(review){
+        var version = $scope.currPaper.versions[$scope.currVnum-1];
+        if(!version.reviews) version.reviews=[];
+        for (var i = 0; i < version.reviews.length; i++){
+          if (version.reviews[i].reviewer === review.reviewer){
+            version.reviews[i] = review; 
+            $scope.$apply();
+           break;
+          }
         }
-      }
-      $scope.$apply();
-    });   
- 
-  }
+      });
+    }
+    else {
+      console.log("no reviews" + JSON.stringify($scope.currPaper));
+    }
+
+ }
 
   $scope.addVersion = function() {
     var modalInstance = $modal.open({
@@ -310,8 +315,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       newPaper.addVersion(ver);
       papers.push(newPaper);  
       currPaper = newPaper;
-       
-     ver.shareVersion();
+      console.log("SHARE VERSION IN UXPAPERS");
+      ver.shareVersion();
       getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
