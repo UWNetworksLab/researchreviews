@@ -1,6 +1,6 @@
 var social = freedom.socialprovider(); 
 var store = freedom.localstorage();
-
+store.clear();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   console.log("DATA MESSAGE " + data.message);
   var parse = JSON.parse(data.message);
@@ -43,13 +43,17 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       }
 
       if (parse.privateSetting){
+      console.log("asdfasdkjfalsdkjfalsdkjfhalskdjfhlaksjdfhlaskdjhfaldsjkf private setting " + JSON.stringify(papers));
         for (var i = 0; i < papers.length; i++){
+        console.log("KEYS XXXXXXXXXX " + papers[i].pkey + " " + parse.pkey);
           if (papers[i].pkey === parse.pkey){
+          console.log("SPLICED FOR KEY " + parse.pkey + " " + papers[i].pkey);
             papers.splice(i, 1);
           }
         }        
       }
       else {
+      console.log("asdhflaksjdfhlajsdfhlasjdkfhalsdkjfh oubis setting");
         papers.push(parse);
       }
       store.set('public-papers', JSON.stringify(papers)); 

@@ -1,7 +1,6 @@
 app.controller('papersController', function($scope, $modal, $location, $filter) {
 
   $scope.$watch('papers', function(){
-    alert("papers changed");
     window.freedom.emit('set-papers', $scope.papers);
   }, true);
 
@@ -44,7 +43,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       }
     } 
     var msg = {
-      ptitle: $scope.papers[$scope.viewKey].versions[$scope.currVnum-1].title,
+      title: $scope.papers[$scope.viewKey].versions[$scope.currVnum-1].title,
       pkey: $scope.viewKey,
       author: $location.search().username,
       vnum: $scope.currVnum-1,
@@ -301,7 +300,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       var vdata = {
         vnum: 0,
         pkey: newPaper.pkey,
-        ptitle: files[0].name,
+        title: files[0].name,
         author: username,
         comments: comments,
         viewList: viewList,

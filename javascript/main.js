@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -233,7 +233,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
   else if (parse.action === "invite-reviewer"){
     var review = {
-      ptitle: parse.title, 
+      title: parse.title, 
       pkey: parse.pkey,
       author: parse.author,
       vnum: parse.vnum, 
@@ -421,6 +421,7 @@ freedom.on('set-review', function(review) {
 }); 
 
 freedom.on('edit-privacy', function(msg){
+console.log("edit privacy");
   social.sendMessage("publicstorage", msg).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -558,9 +559,9 @@ freedom.on('load-profile', function(data) {
 
 freedom.on('share-version', function(data) {
    var paper = {
-        title: data.ptitle,
+        title: data.title,
         author: username,
-        key: data.pkey, 
+        pkey: data.pkey, 
         vnum: data.vnum, 
         action: 'add-paper'
       };
@@ -587,7 +588,7 @@ freedom.on('share-version', function(data) {
 
       //SHARE PAPER WITH REVIEWERS
       var msg = {
-        title: data.ptitle, 
+        title: data.title, 
         author: username, 
         vnum: data.vnum, 
         pkey: data.pkey,

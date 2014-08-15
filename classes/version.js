@@ -10,7 +10,7 @@ function Version(vdata) {
   this.author = vdata.author;
   this.pkey = vdata.pkey;
   this.vnum = vdata.vnum; 
-  this.ptitle = vdata.ptitle;  
+  this.title = vdata.title;  
 }
 
 Version.prototype.addReview = function(rkey, reviewer) {
@@ -45,7 +45,7 @@ Version.prototype.editPrivacy = function(publicSetting) {
     this.viewList = this.alertList; 
     this.privateSetting = true; 
   }
-/*
+
   var msg = {
     title: this.title,
     author: this.author,
@@ -56,7 +56,7 @@ Version.prototype.editPrivacy = function(publicSetting) {
   };
 
   console.log("msg " + JSON.stringify(msg));
-  window.freedom.emit('edit-privacy', JSON.stringify(msg)); */
+  window.freedom.emit('edit-privacy', JSON.stringify(msg));
 };
 
 window.freedom.on('got-pdf', function(ab){
