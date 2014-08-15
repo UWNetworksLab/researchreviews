@@ -32,18 +32,14 @@ freedom.on('boot', function(val) {
 }); 
 
 freedom.on('add-pdf', function(data){
-  console.log('add-pdf: length=' + data.arrayBuffer.byteLength);
   storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
 });
 
 freedom.on('download-pdf', function(data){
   var key = data.pkey + data.vnum + '';
-  console.log("download "+key);
   var promise = storebuffer.get(key);
   promise.then(function(val){
-    console.log("download-pdf: promise returns with "+val);
     if (val.byteLength) {
-      console.log("download-pdf: pdf length="+val.byteLength);
     }
     freedom.emit('got-pdf', val);
   });
@@ -421,7 +417,6 @@ freedom.on('set-review', function(review) {
 }); 
 
 freedom.on('edit-privacy', function(msg){
-console.log("edit privacy");
   social.sendMessage("publicstorage", msg).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
@@ -566,8 +561,6 @@ freedom.on('share-version', function(data) {
         action: 'add-paper'
       };
 
-      console.log("SHARE VERSION " + JSON.stringify(data));
-
       if(!data.privateSetting){
       //public (send paper to public storage) 
         social.sendMessage("publicstorage", JSON.stringify(paper)).then(function(ret) {
@@ -576,7 +569,6 @@ freedom.on('share-version', function(data) {
         });
       }
       else { //private (send private paper to viewList)
-        console.log("private" + JSON.stringify(data.viewList));
         paper.action = 'allow-access';
         for(var i = 0; i < data.viewList.length; i++) {
           social.sendMessage(data.viewList[i], JSON.stringify(paper)).then(function(ret) {
@@ -595,7 +587,6 @@ freedom.on('share-version', function(data) {
         action: 'invite-reviewer' 
       };
 
-      console.log("MSG in version.js" + JSON.stringify(msg));
       for(var i = 0; i < data.alertList.length; i++) {
         social.sendMessage(data.alertList[i], JSON.stringify(msg)).then(function(ret) {
         }, function(err) {
@@ -609,7 +600,6 @@ freedom.on('set-reviews', function(reviews) {
 }); 
 
 freedom.on('set-papers', function(papers) {
-console.log("SET PAPERS");
   store.set(username+'papers', JSON.stringify(papers)); 
 }); 
 

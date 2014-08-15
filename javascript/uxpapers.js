@@ -103,7 +103,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       for(var i = 0; i < $scope.papers.length; i++) 
         if($scope.papers[i].pkey === key) {
           $scope.currPaper = $scope.papers[i];
-          console.log("CURRPAPER " + JSON.stringify($scope.currPaper));
           break; 
         }
       }
@@ -114,10 +113,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   var getReviews = function(currPaper){
  // $scope.$apply();
   if(currPaper) $scope.currPaper = currPaper;
-//  console.log("get reviews..." + JSON.stringify($scope.currPaper));
   var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews; 
     if(reviews) {
-      console.log("REVIEWS" + JSON.stringify(reviews));
       for(var i = 0; i < reviews.length; i++) {
         var msg = {
           pkey: $scope.currPaper.pkey,
@@ -147,10 +144,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         }
       });
     }
-    else {
-      console.log("no reviews" + JSON.stringify($scope.currPaper));
-    }
-
  }
 
   $scope.addVersion = function() {
@@ -264,7 +257,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.selectMatch = function(selection) {
-      console.log("SELECTION " + selection);
       $scope.alerts.push(selection);
     };
 
@@ -314,7 +306,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       newPaper.addVersion(ver);
       papers.push(newPaper);  
       currPaper = newPaper;
-      console.log("SHARE VERSION IN UXPAPERS");
       ver.shareVersion();
       getReviews(currPaper);
       $modalInstance.dismiss('cancel');
@@ -414,10 +405,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         privateSetting: $scope.privatePaper
       };
 
-console.log("MAKING A NEW VERSION");
       var ver = new Version(vdata, paper);
       ver.uploadPDF(files[0]);
-      console.log("HERE" + JSON.stringify(vdata));
       $modalInstance.dismiss('cancel');
     };
 
