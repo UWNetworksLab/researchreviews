@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -461,44 +461,6 @@ social.on('onUserProfile', function(data) {
   freedom.emit('new-user', data.userId);
 });
  
-/*freedom.on('get-users', function(data) {
-  var msg = {
-    action: data, 
-    userList: userList
-  };
-  freedom.emit('send-users', msg);
-});*/
-/*
-freedom.on('edit-privacy', function(msg) {
- var data = JSON.parse(msg); 
- var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    if(!papers || typeof papers !== "object") {
-      papers = {}; 
-    } 
-
-    for(key in papers) {
-      if(key == data.key) {
-        if(data.action === 'toPublic') { //change to public
-          papers[key].versions[data.vnum].viewList = false; 
-          papers[key].versions[data.vnum].privateSetting = false; 
-        }
-        else if(data.action === 'toPrivate'){ //change to private
-          papers[key].versions[data.vnum].viewList = papers[key].versions[data.vnum].alertList; 
-          papers[key].versions[data.vnum].privateSetting = true; 
-        }
-      }
-    }
-
-    store.set(username + 'papers', JSON.stringify(papers));  
-  });  
-});
-*/
 freedom.on('edit-profile', function(data) {
   var promise = store.get(username + 'profile');
   promise.then(function(val) {

@@ -321,19 +321,37 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     $scope.states = userList; 
     $scope.selected = undefined;
     $scope.alerts = [];
-    $scope.privacyHeading = currPaper.versions[vnum].privateSetting? "Select users to view this paper" : "Invite reviewers";  
-
+    $scope.privateSetting = currPaper.versions[vnum].privateSetting;
+    $scope.privacyHeading = $scope.privateSetting? "Select users to view this paper" : "Invite reviewers"; 
+ 
+    $scope.checkList = []; 
+    
     $scope.selectMatch = function(selection) {
       $scope.alerts.push(selection);
       $scope.selected = '';
     }; 
 
     $scope.deleteUser = function(id) {
+      var idx = $scope.checkList.indexOf($scope.alerts[id]);
+      if(idx > -1) 
+        $scope.checkList.splice(idx, 1); 
       $scope.alerts.splice(id, 1);
     };
+    $scope.checkAlert = function(username) {
+      var idx = $scope.checkList.indexOf(username); 
+      if (idx > -1) $scope.checkList.splice(idx, 1);
+      else $scope.checkList.push(username);
+    }; 
 
-    $scope.invite = function () {
-      currPaper.versions[vnum].alertList = $scope.alerts;
+    $scope.accept = function () {
+      if ($scope.privateSetting){
+        currPaper.versions[vnum].alertList = $scope.checkList;
+        currPaper.versions[vnum].viewList = $scope.alerts;
+      }
+      else{
+        currPaper.versions[vnum].alertList = $scope.alerts;
+        currPaper.versions[vnum].viewList = false;
+      }
       currPaper.versions[vnum].shareVersion();
       $modalInstance.dismiss('cancel');
     };
@@ -360,9 +378,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
     $scope.deleteUser = function(id) {
       var idx = $scope.checkList.indexOf($scope.alerts[id]);
-      if(idx > -1) 
-        $scope.checkList.splice(idx, 1); 
-
+      if(idx > -1) $scope.checkList.splice(idx, 1); 
       $scope.alerts.splice(id, 1);
     };
 

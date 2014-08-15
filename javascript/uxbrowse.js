@@ -190,16 +190,6 @@ app.controller('browseController', function($scope, $location, $modal) {
 		$scope.getReviews(); 
 	}; 
 
-	  //TODO: this should be temporary
-	function str2ab(str) {
-	    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-	    var bufView = new Uint8Array(buf);
-	    for (var i=0, strLen=str.length; i<strLen; i++) {
-	      bufView[i] = str.charCodeAt(i);
-	    }
-	    return buf;
-	  }
-
 	$scope.downloadVersion = function() {
 		($scope.currPaper.versions[$scope.currVnum-1]).download(); 
 	}; 
