@@ -6,12 +6,14 @@
   },
   "dependencies": {
     "socialprovider": {
+      "url": "../node_modules/radiatus-providers/src/providers/social.radiatus.json",
       "url_": "javascript/social/social.rr.json",
-      "url": "../socialmailbox/provider/social.mb.json",
+      "url_": "../socialmailbox/provider/social.mb.json",
       "api": "social"
     },
     "localstorage": {
-      "url": "../../node_modules/freedom/providers/storage/shared/storage.shared.json",
+      "url": "../node_modules/radiatus-providers/src/providers/storage.radiatus.json",
+      "url_": "../../node_modules/freedom/providers/storage/shared/storage.shared.json",
       "api": "storage"
     }
   }

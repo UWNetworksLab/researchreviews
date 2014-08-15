@@ -66,6 +66,7 @@
   },
   "services": {
     "publicstorage": {
+      "username": "publicstorage",
       "url": "javascript/publicstorage.json"
     }
   }
