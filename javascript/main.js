@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -310,9 +310,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
         if (papers[i].pkey === parse.pkey){
           msg.version = papers[i].versions[parse.vnum];
           social.sendMessage(parse.from, JSON.stringify(msg));
-          break;
+          return;
         }
       }
+      msg.err = 'Paper has been deleted.'; 
+      social.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
   else if(parse.action === 'send-r-paper') {

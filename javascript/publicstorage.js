@@ -1,6 +1,6 @@
 var social = freedom.socialprovider(); 
 var store = freedom.localstorage();
-//store.clear();
+store.clear();
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   console.log("DATA MESSAGE " + data.message);
   var parse = JSON.parse(data.message);

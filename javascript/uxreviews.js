@@ -42,12 +42,15 @@ app.controller('reviewsController', function($scope, $modal) {
 	}; 
 
 	window.freedom.on('send-r-paper', function(msg){
+    
 		//show reviews of a paper that this reviewer is able to access
-console.log("SEND R PAPER " + JSON.stringify(msg));
-$scope.currRVersion = new Version(msg);
-
-		$scope.$apply(); 
-
+    console.log("SEND R PAPER " + JSON.stringify(msg));
+    if (msg.err) {
+      $scope.currRVersion = false;
+      $scope.$apply();
+      return;
+    }
+    $scope.currRVersion = new Version(msg);
 		var paperReviews = $scope.currRVersion.reviews; 
 		if(paperReviews)
 		    for (var i = 0; i < paperReviews.length; i++){

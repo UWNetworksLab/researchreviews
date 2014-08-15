@@ -1,7 +1,6 @@
  <div>
 
     <div class="view-container">
-      <!--Two Columns--papers, paper view-->
       <div class="row">
         <div class="col-md-4">
           <div style="margin-bottom:20px; margin-top:20px">
@@ -13,7 +12,7 @@
 
           <table class="table table-hover">
             <tr ng-repeat="review in reviews"> 
-              <td ng-click="getReviewView(review.rkey)"> {{ review.ptitle }} v.{{review.vnum}} by {{ review.author }} </td> 
+              <td ng-click="getReviewView(review.rkey)"> {{ review.title }} v.{{review.vnum}} by {{ review.author }} </td> 
             </tr> 
           </table>
 
@@ -21,10 +20,10 @@
       
       <!--papers-->
         <div class="col-md-8">
-          <h2 ng-show="!currReview" align="center">You have no reviews.</h2>
-          
+          <h2 ng-show="!reviews.length" align="center">You have no reviews.</h2>
+          <h2 ng-show="!currReview && reviews.length" align="center">Paper has been deleted.</h2>
           <div ng-show="currReview" id = "review-view-container" class="landing-container">
-            <h1 align="center"> {{ currRVersion.ptitle }} </h1>
+            <h1 align="center"> {{ currRVersion.title }} </h1>
             <div id = "options-and-nav">
               <div class="btn-group" dropdown is-open="status.isopen">
                 <button type="button" class="btn btn-default dropdown-toggle"> <!-- ng-disabled="!reviewKey">-->
