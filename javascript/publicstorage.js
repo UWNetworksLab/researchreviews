@@ -73,6 +73,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'delete-paper'){
+  console.log("delete paper in here public storage " + JSON.stringify(parse));
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -85,12 +86,8 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
       }
       
       for(var i = 0; i < papers.length; i++)
-        if(papers[i].key == parse.key) {
-          var paper = papers[i].versions[parse.vnum]; 
-          paper.comments = ""; 
-          paper.title = "Deleted."; 
-          paper.binaryString = ""; 
-          paper.reviews = []; 
+        if(papers[i].pkey == parse.pkey) {
+          papers.splice(i, 1);
           break; 
         }
 

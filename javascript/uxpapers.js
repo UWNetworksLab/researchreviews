@@ -419,16 +419,25 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   $scope.deleteVersion = function() {
     $scope.currPaper.deleteVersion(--$scope.currVnum);
 
+
     if($scope.currPaper.versions.length === 0) { //deleted last version
       for(var i = 0; i < $scope.papers.length; i++)
         if($scope.papers[i].pkey === $scope.currPaper.pkey) {
           $scope.papers.splice(i, 1); 
           break; 
         }  
+    //send to public storage
+      if (!$scope.privatePaper) {
+        var delMsg = {
+          pkey: $scope.currPaper.pkey,
+          vnum: $scope.currVnum
+        };
+        window.freedom.emit('delete-paper', delMsg);
+      }
 
       $scope.currPaper = $scope.papers.length>0? $scope.papers[0] : false; 
       if($scope.currVnum < 1) $scope.currVnum = 1; 
-    }   
+    }
   };
 
   $scope.downloadVersion = function () {

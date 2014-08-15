@@ -33,6 +33,7 @@ Version.prototype.uploadPDF = function(file){
 };
 
 Version.prototype.shareVersion = function(){
+//maybe have this delete reviews as well?
   freedom.emit('share-version', this);
 };
 

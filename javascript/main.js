@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-store.clear();
-storebuffer.clear();
+//store.clear();
+//storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -85,6 +85,7 @@ vnum */
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
+  console.log("GOT TO PAPER REVIEW");
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -101,9 +102,10 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             action: 'got-paper-review',
             text: reviews[i].text,
             reviewer: username 
-          }; 
+          };
+          console.log("GOT HERE" + JSON.stringify(msg));
          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
-           // msg.text = "You do not have access to this review"; 
+            msg.text = "You do not have access to this review"; 
           social.sendMessage(parse.from, JSON.stringify(msg));
           break;
         }
@@ -650,30 +652,9 @@ freedom.on('load-public-storage', function(data){
   });
 });
 
-freedom.on('delete-version', function(data){
-  var promise = store.get(username + 'papers');
-  promise.then(function(val) {
-    var papers; 
-    try {
-      papers = JSON.parse(val);
-    } catch(e) {}
-
-    if(papers[data.key].versions.length == 1) {
-      delete papers[data.key]; 
-    }
-    else if(data.vnum == papers[data.key].versions.length-1) {
-      papers[data.key].versions.splice(data.vnum, 1); 
-    }
-    else {
-      var paper = papers[data.key].versions[data.vnum];
-      paper.comments = ""; 
-      paper.title = "Deleted."; 
-      paper.binaryString = ""; 
-      paper.reviews = []; 
-    }
-
+freedom.on('delete-paper', function(data){
     var paper ={
-      key: data.key, 
+      pkey: data.pkey, 
       vnum: data.vnum, 
       action: 'delete-paper'
     };
@@ -682,9 +663,6 @@ freedom.on('delete-version', function(data){
     }, function(err) {
       freedom.emit("recv-err", err);
     });
-
-    store.set(username+'papers', JSON.stringify(papers)); 
-    freedom.emit('display-delete-version', data.key);
   }); 
 });
 
