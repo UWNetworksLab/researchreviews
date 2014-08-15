@@ -308,7 +308,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       papers.push(newPaper);  
       currPaper = newPaper;
       ver.shareVersion();
-      getReviews(currPaper);
+     // getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
 
@@ -400,14 +400,21 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       }
 
       var vdata = {
+        vnum: paper.vnum,
+        pkey: paper.pkey,
+        title: files[0].name,
+        author: username,
         comments: comments,
         viewList: viewList,
         alertList: alertList,
         privateSetting: $scope.privatePaper
       };
 
-      var ver = new Version(vdata, paper);
+      var ver = new Version(vdata);
       ver.uploadPDF(files[0]);
+
+      paper.addVersion(ver);
+      ver.shareVersion();
       $modalInstance.dismiss('cancel');
     };
 
