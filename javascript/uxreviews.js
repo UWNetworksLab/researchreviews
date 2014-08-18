@@ -47,6 +47,7 @@ app.controller('reviewsController', function($scope, $modal) {
     console.log("SEND R PAPER " + JSON.stringify(msg));
     if (msg.err) {
       $scope.currRVersion = false;
+      alert(msg.err);
       $scope.$apply();
       return;
     }

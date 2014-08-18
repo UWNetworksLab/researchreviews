@@ -310,7 +310,11 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
 
       for (var i = 0; i < papers.length; i++){
         if (papers[i].pkey === parse.pkey){
-          msg.version = papers[i].versions[parse.vnum];
+          var version = papers[i].versions[parse.vnum];
+          if (version.privateSetting && version.viewList.indexOf(parse.from) === -1)
+            msg.err = "You do not have access to this paper.";
+          else msg.version = version;
+
           social.sendMessage(parse.from, JSON.stringify(msg));
           return;
         }
