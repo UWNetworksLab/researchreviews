@@ -1,5 +1,5 @@
 app.controller('papersController', function($scope, $modal, $location, $filter) {
-
+//hihihi
   $scope.$watch('papers', function(){
     window.freedom.emit('set-papers', $scope.papers);
   }, true);
@@ -185,14 +185,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       controller: editPrivacyCtrl,
       backdrop: 'static', 
       resolve: {
-        currPaper: function() {
-          return $scope.currPaper;
-        },
-        vnum: function() {
-          return $scope.currVnum-1;  
-        },
-        papers: function(){
-          return $scope.papers;
+        currVersion: function() {
+          return $scope.currPaper.versions[$scope.currVnum-1];
         }
       }
     });   
@@ -215,15 +209,22 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     }); 
   };
 
-  var editPrivacyCtrl = function ($scope, $modalInstance, currPaper, vnum, papers) {
-    var privateSetting = currPaper.versions[vnum].privateSetting;
-    $scope.currSetting = privateSetting? "private" : "public"; 
+  var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
+    $scope.alertList =[];// currVersion.alertList;
+    for (var i = 0; i < currVersion.alertList.length; i++){
+      $scope.alertList.push({val : currVersion.alertList[i]});
+    }
+    $scope.viewList = currVersion.viewList;
+    
+    console.log("CURR VERSION " + JSON.stringify(currVersion.alertList));
+    $scope.currSetting = currVersion.privateSetting? "private" : "public";
+  
     $scope.save = function () { 
       if($("#addPaperPublic2").is(':checked')){
-        currPaper.versions[vnum].editPrivacy(true);
+        currVersion.editPrivacy(true);
       }
       else if($('#addPaperPrivate2').is(':checked')) { //public to private  && !privateSetting
-        currPaper.versions[vnum].editPrivacy(false);
+        currVersion.editPrivacy(false);
       }
 
       $modalInstance.dismiss('cancel');

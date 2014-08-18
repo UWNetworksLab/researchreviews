@@ -7,8 +7,6 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-store.clear();
-storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -85,7 +83,6 @@ vnum */
 social.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(data.message);
   if (parse.action === "get-paper-review"){
-  console.log("GOT TO PAPER REVIEW");
     var promise = store.get(username + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -103,7 +100,6 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             text: reviews[i].text,
             reviewer: username 
           };
-          console.log("GOT HERE" + JSON.stringify(reviews[i].accessList));
          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
             msg.text = "You do not have access to this review"; 
           social.sendMessage(parse.from, JSON.stringify(msg));
@@ -133,7 +129,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             reviewer: parse.reviewer
           };
 
-          if(reviews[i].accessList!=="public" && reviews[i].accessList.indexOf(parse.from) == -1)
+          if(reviews[i].accessList && reviews[i].accessList.indexOf(parse.from) === -1)
             msg.text = "You do not have access to this review."; 
 
           social.sendMessage(parse.from, JSON.stringify(msg));
@@ -422,7 +418,6 @@ freedom.on('set-review', function(review) {
     if (!exists) {
       reviews.push(review); 
     }
-    console.log("reviews in set reviews xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(reviews));
     store.set(username + 'reviews', JSON.stringify(reviews));
   });
 }); 
@@ -603,7 +598,6 @@ freedom.on('load-private-papers', function(data) {
       papers = []; 
     }
     
-    console.log("got private papers " + JSON.stringify(papers));
     freedom.emit('send-private-papers', papers); 
   });  
 });

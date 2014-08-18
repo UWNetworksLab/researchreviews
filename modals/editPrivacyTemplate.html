@@ -1,5 +1,5 @@
 <div class='modal-container'> 
-  <h3>Edit privacy settings: currently {{currSetting}}</h3>
+  <h3>Edit privacy settings: currently {{currSetting}} moop {{currVersion.alertList.length}}</h3>
   <div class="radio">
     <label>
       <input type="radio" name="optionsRadios" id="addPaperPublic2"/>
@@ -11,7 +11,17 @@
       <input type="radio" name="optionsRadios" id="addPaperPrivate2"/>
       Private (only co-authors and invited reviewers can see this)
     </label>
-  </div>
+  <!--doesn't show up?-->
+  <table>
+    <tr ng-repeat="reviewer in alertList">
+      {{reviewer.val}}
+    </tr>
+  </table>
+  <table ng-show"viewList">
+    <tr ng-repeat="viewer in viewList">
+      {{viewer}}
+    </tr>
+  </table>
   <div id="file-container">
     <button type="button" class="btn btn-success" ng-click="save()">save</button>
     <button class="btn btn-danger" ng-click="cancel()">cancel</button>  
