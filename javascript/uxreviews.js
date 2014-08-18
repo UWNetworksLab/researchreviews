@@ -159,8 +159,8 @@ app.controller('reviewsController', function($scope, $modal) {
 			}
 			else currReview.accessList = false; 
 
-			window.freedom.emit('upload-review', currReview);
-			window.freedom.emit('set-reviews', reviews);
+			window.freedom.emit('set-review', currReview);
+		  window.freedom.emit('upload-review', currReview);
 
 			var index = currRVersion.reviews.map(function(el) {
 				return el.reviewer;
@@ -179,6 +179,7 @@ app.controller('reviewsController', function($scope, $modal) {
 	};
 
 	window.freedom.on('display-reviews', function(reviews) {
+  console.log("in dispaly-reviews, " + JSON.stringify(reviews));
 		$scope.reviews=[];
 		for (var i = 0; i < reviews.length; i++){
 			var review = new Review(reviews[i]);
@@ -194,9 +195,13 @@ app.controller('reviewsController', function($scope, $modal) {
 				to: $scope.currReview.author,
 				action: 'get-r-paper'
 			};
+      $scope.$apply();
+      console.log('here are the reviews ' + JSON.stringify($scope.reviews));
 			window.freedom.emit('get-r-paper', msg);
 		}
-    else $scope.currReview = false;
-		$scope.$apply();
-	});
+    else {
+      $scope.currReview = false;
+		  $scope.$apply();
+  	}
+  });
 });

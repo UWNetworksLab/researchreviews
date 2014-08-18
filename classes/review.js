@@ -7,7 +7,7 @@ function Review(rdata) {
   this.accessList = rdata.accessList; 
 
   this.reviewer = rdata.reviewer;
-  this.rkey = Math.random() + "";
+  this.rkey = rdata.rkey;
   this.date = new Date();
 }
 

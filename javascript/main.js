@@ -418,6 +418,7 @@ freedom.on('set-review', function(review) {
     if (!exists) {
       reviews.push(review); 
     }
+    console.log("reviews in set reviews xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + JSON.stringify(reviews));
     store.set(username + 'reviews', JSON.stringify(reviews));
   });
 }); 
@@ -429,7 +430,7 @@ freedom.on('edit-privacy', function(msg){
   });
 });
 
-freedom.on('upload-review', function(parse){
+freedom.on('upload-review', function(parse){//rename this to indicate this is sending to author
   //only info the author gets
   var reviewForAuth = {
     reviewer : parse.reviewer,
