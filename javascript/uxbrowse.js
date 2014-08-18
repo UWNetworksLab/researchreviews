@@ -195,7 +195,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 	}; 
 
 	window.freedom.on('send-private-papers', function(data) {
-		$scope.papers = data; 
+		$scope.papers = data;
+    console.log("sendprivate papersi mo" + JSON.stringify(data));
 		$scope.$apply(); 
 	}); 
 });

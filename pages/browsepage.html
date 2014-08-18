@@ -21,8 +21,10 @@
       
       <!--papers-->
         <div class="col-md-8">
-          <div class="landing-container">
-            <h1 align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
+          <h1 ng-show="papers.length===0" align="center">No papers</h1>
+          
+          <div ng-show="papers.length>0" class="landing-container">
+            <h1 ng-show="currPaper" align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
             <div id = "options-and-nav">
               <div class="btn-group" dropdown is-open="status.isopen">
                 <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper"> 

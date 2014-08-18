@@ -157,7 +157,7 @@ app.controller('reviewsController', function($scope, $modal) {
 				for(var i = 0; i < $scope.alerts.length; i++)
 					currReview.accessList.push($scope.alerts[i].msg); 
 			}
-			else currReview.accessList = "public"; 
+			else currReview.accessList = false; 
 
 			window.freedom.emit('upload-review', currReview);
 			window.freedom.emit('set-reviews', reviews);

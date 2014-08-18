@@ -103,7 +103,7 @@ social.on('onMessage', function(data) { //from social.mb.js, onmessage
             text: reviews[i].text,
             reviewer: username 
           };
-          console.log("GOT HERE" + JSON.stringify(msg));
+          console.log("GOT HERE" + JSON.stringify(reviews[i].accessList));
          if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
             msg.text = "You do not have access to this review"; 
           social.sendMessage(parse.from, JSON.stringify(msg));
@@ -597,7 +597,8 @@ freedom.on('load-private-papers', function(data) {
     if(!papers || typeof papers !== "object") {
       papers = []; 
     }
-
+    
+    console.log("got private papers " + JSON.stringify(papers));
     freedom.emit('send-private-papers', papers); 
   });  
 });
