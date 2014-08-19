@@ -67,7 +67,7 @@ freedom.on('get-reviews', function(past) {
 }); 
 
 freedom.on('get-r-paper', function(data){//TODO check tag
-  socialWrap.sendMessage(data.to, 'get-r-paper', JSON.stringify(data)).then(function(ret) {
+  socialWrap.sendMessage(data.to, 'control-msg', JSON.stringify(data)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -92,6 +92,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       freedom.emit('got-public-papers', parse.papers);
     }
     else if (parse.action==='invite-reviewer'){
+      console.log("GOT TO INVITE REVIEWER");
       var review = {
         title: parse.title, 
         pkey: parse.pkey,
@@ -123,108 +124,110 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
         store.set(username + 'reviews', JSON.stringify(reviews)); 
       });
     }
-  }
+    else if (parse.action === "get-paper-review"){
+      var promise = store.get(username + 'reviews');
+      promise.then(function(val) {
+        var reviews; 
+        try {
+          reviews = JSON.parse(val);
+        } catch(e) {}
 
-  if (data.tag === "get-paper-review"){
-    var promise = store.get(username + 'reviews');
-    promise.then(function(val) {
-      var reviews; 
-      try {
-        reviews = JSON.parse(val);
-      } catch(e) {}
-
-      if(!reviews || typeof reviews !== "object") reviews = []; 
-
-      for(var i = 0; i < reviews.length; i++) {
-        if(reviews[i].rkey === parse.rkey) {
-          var msg = {
-            text: reviews[i].text,
-            reviewer: username 
-          };
-         if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
-            msg.text = "You do not have access to this review"; 
-          socialWrap.sendMessage(parse.from, 'got-paper-review', JSON.stringify(msg));
-          break;
+        if(!reviews || typeof reviews !== "object") reviews = []; 
+  
+        for(var i = 0; i < reviews.length; i++) {
+          if(reviews[i].rkey === parse.rkey) {
+            var msg = {
+              text: reviews[i].text,
+              reviewer: username,
+              action: 'got-paper-review'
+            };
+           if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
+              msg.text = "You do not have access to this review"; 
+            socialWrap.sendMessage(parse.from, 'control-msg', JSON.stringify(msg));
+            break;
+          }
         }
-      }
-    });
-  }
-  else if(data.tag === 'got-public-papers') {
-    freedom.emit('got-public-papers', parse.papers);
-  }
-  else if (data.tag === "get-other-paper-review"){
-    var promise = store.get(username + 'reviews');
-    promise.then(function(val) {
-      var reviews; 
-      try {
-        reviews = JSON.parse(val);
-      } catch(e) {}
+      });
+    }
+    else if(parse.action=== 'got-public-papers') {
+      freedom.emit('got-public-papers', parse.papers);
+    }
+    else if (parse.action === "get-other-paper-review"){
+      var promise = store.get(username + 'reviews');
+      promise.then(function(val) {
+        var reviews; 
+        try {
+          reviews = JSON.parse(val);
+        } catch(e) {}
 
-      if(!reviews || typeof reviews !== "object") reviews = []; 
-      for (var i = 0; i < reviews.length; i++){
-        if (reviews[i].rkey === parse.rkey){
-          var msg = {
-            text: reviews[i].text,
-            accessList: reviews[i].accessList, 
-            reviewer: parse.reviewer
-          };
-
-          if(reviews[i].accessList && reviews[i].accessList.indexOf(parse.from) === -1)
-            msg.text = "You do not have access to this review."; 
-
-          socialWrap.sendMessage(parse.from,'got-paper-review', JSON.stringify(msg));
-          break;
+        if(!reviews || typeof reviews !== "object") reviews = []; 
+        for (var i = 0; i < reviews.length; i++){
+          if (reviews[i].rkey === parse.rkey){
+            var msg = {
+              text: reviews[i].text,
+              accessList: reviews[i].accessList, 
+              reviewer: parse.reviewer,
+              action: 'got-paper-review'
+            };
+            
+            if(reviews[i].accessList && reviews[i].accessList.indexOf(parse.from) === -1)
+              msg.text = "You do not have access to this review."; 
+  
+            socialWrap.sendMessage(parse.from, 'control-msg', JSON.stringify(msg));
+            break;
+          }
         }
-      }
-    });
-  }
-  else if (data.tag === "got-paper-review"){
-    freedom.emit('got-paper-review', parse);
-  } 
-  else if(data.tag === 'get-other-papers') {
-    var promise = store.get(username + 'papers'); 
-    promise.then(function(val) {
-      var papers; 
-      try {
-        papers = JSON.parse(val); 
-      } catch(e) {} 
+      });
+    }
+    else if (parse.action === "got-paper-review"){
+      freedom.emit('got-paper-review', parse);
+    } 
+    else if(parse.action === 'get-other-papers') {
+      var promise = store.get(username + 'papers'); 
+      promise.then(function(val) {
+        var papers; 
+        try {
+          papers = JSON.parse(val); 
+        } catch(e) {} 
+  
+        if(!papers || typeof papers !== "object") papers = {}; 
+  
+        var msg = {
+          papers: papers,
+          action: 'got-other-papers'
+        };
+        socialWrap.sendMessage(parse.from, 'control-msg', JSON.stringify(msg));
+      }); 
+    }
+    else if(parse.action === 'get-browse-paper') {
+      var promise = store.get(username + 'papers'); 
+      promise.then(function(val) {
+        var papers; 
+        try {
+          papers = JSON.parse(val); 
+        } catch(e) {} 
+  
+        if(!papers || typeof papers !== "object") papers = {}; 
+  
+        var msg = {
+          action: 'got-browse-paper'
+        };
 
-      if(!papers || typeof papers !== "object") papers = {}; 
-
-      var msg = {
-        papers: papers 
-      };
-
-      socialWrap.sendMessage(parse.from, 'got-other-papers', JSON.stringify(msg));
-    }); 
-  }
-  else if(data.tag === 'get-browse-paper') {
-    var promise = store.get(username + 'papers'); 
-    promise.then(function(val) {
-      var papers; 
-      try {
-        papers = JSON.parse(val); 
-      } catch(e) {} 
-
-      if(!papers || typeof papers !== "object") papers = {}; 
-
-      var msg;
-
-      for(var i = 0; i < papers.length; i++) 
-        if(papers[i].pkey === parse.pkey) {
-          msg.paper = papers[i]; 
-          break; 
-        }
-      socialWrap.sendMessage(parse.from,'got-browse-paper', JSON.stringify(msg));
-    }); 
-  }
-  else if(data.tag === 'got-other-papers') {
+        for(var i = 0; i < papers.length; i++) 
+          if(papers[i].pkey === parse.pkey) {
+            msg.paper = papers[i]; 
+            break; 
+          }
+        socialWrap.sendMessage(parse.from,'control-msg', JSON.stringify(msg));
+      }); 
+    }
+  else if(parse.action === 'got-other-papers') {
     freedom.emit('display-other-papers', parse.papers); 
   }
-  else if(data.tag === 'got-browse-paper') {
+  else if(parse.action === 'got-browse-paper') {
     freedom.emit('display-browse-paper', parse.paper);
   }
-  else if(data.tag === 'get-other-reviews') {
+  else if(parse.action=== 'get-other-reviews') {
     var promise = store.get(parse.to + 'reviews');
     promise.then(function(val) {
       var reviews; 
@@ -241,18 +244,19 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       }*/ 
 
       var msg = {
-        reviews: reviews 
+        reviews: reviews,
+        action: 'got-other-reviews'
       };
 
-      socialWrap.sendMessage(parse.from,'got-other-reviews', JSON.stringify(msg));
+      socialWrap.sendMessage(parse.from, 'control-msg', JSON.stringify(msg));
     });
   }
-  else if(data.tag === 'got-other-reviews') {
+  else if(parse.action=== 'got-other-reviews') {
     freedom.emit('display-other-reviews', parse.reviews);
   }
-  else if(data.tag === 'delete-r-paper') {
+  else if(parse.action=== 'delete-r-paper') {
   }
-  else if(data.tag === 'invite-group') {
+  else if(parse.action=== 'invite-group') {
     var alertmsg = {
       groupName: parse.name, 
       from: parse.from, 
@@ -260,39 +264,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     };
     freedom.emit('alert', alertmsg);
   }
-  else if (data.tag === "invite-reviewer"){
-    var review = {
-      title: parse.title, 
-      pkey: parse.pkey,
-      author: parse.author,
-      vnum: parse.vnum, 
-      rkey: Math.random() + "",
-      reviewer: username 
-    };
-
-    //TODO: r_comments 
-    var alertmsg = {
-      action: 'invite-reviewer',
-      title: parse.title,
-      author: parse.author,
-      vnum: parse.vnum  
-    };
-    freedom.emit('alert', alertmsg);
-
-    var promise = store.get(username + 'reviews');
-    promise.then(function(val) {
-      var reviews; 
-      try {
-        reviews = JSON.parse(val);
-      } catch(e) {}
-
-      if(!reviews || typeof reviews !== "object") reviews = []; 
-
-      reviews.push(review); 
-      store.set(username + 'reviews', JSON.stringify(reviews)); 
-    });
-  }
-  else if(data.tag === 'allow-access') {
+  else if(parse.action=== 'allow-access') {
     var promise = store.get(username+'private-papers');
     promise.then(function(val) {
       var papers; 
@@ -304,7 +276,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
   }
-  else if (data.tag === "get-profile"){
+  else if (parse.action=== "get-profile"){
     var promise = store.get(username + 'profile');
     promise.then(function(val) {
       var profile; 
@@ -315,13 +287,14 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
         profile = {
           string: "",
           description: "", 
+          action: 'got-profile'
         };
       }
       profile.username = username; 
-      socialWrap.sendMessage(parse.from,'got-profile', JSON.stringify(profile));
+      socialWrap.sendMessage(parse.from,'control-msg', JSON.stringify(profile));
     });
   }
-  else if (data.tag === "got-profile"){
+  else if (parse.action === "got-profile"){
     freedom.emit('display-profile', parse);
     var data = {
       id: parse.username, 
@@ -330,21 +303,26 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     freedom.emit('recv-uid', data); 
   }
 //get our own papers to send back
-  else if (data.tag === 'get-r-paper'){
-  console.log("get-r-paper reached here xxxxxxxxxxx :D");
+  else if (parse.action=== 'get-r-paper'){
+  console.log("get-r-paper reached here xxxxxxxxxxx :D" + JSON.stringify(parse));
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
-      var msg;
+      var msg = {
+        version: false,
+        action: 'send-r-paper'
+      };
 
       for (var i = 0; i < papers.length; i++){
         if (papers[i].pkey === parse.pkey){
           var version = papers[i].versions[parse.vnum];
-          if (version.privateSetting && version.viewList.indexOf(parse.from) === -1)
+          if (version.privateSetting && version.viewList.indexOf(parse.from) === -1){
             msg.err = "You do not have access to this paper.";
-          else msg.version = version;
-
-          socialWrap.sendMessage(parse.from, 'send-r-paper', JSON.stringify(msg));
+          }
+          else {
+            msg.version = version;
+          }
+          socialWrap.sendMessage(parse.from, 'control-msg', socialWrap._str2ab(JSON.stringify(msg)));
           return;
         }
       }
@@ -352,10 +330,10 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       socialWrap.sendMessage(parse.from, JSON.stringify(msg));
     });
   }
-  else if(data.tag === 'send-r-paper') {
+  else if(parse.action=== 'send-r-paper') {
     freedom.emit('send-r-paper', parse.version);
   }
-  else if (data.tag === 'add-review-on-author'){
+  else if (parse.action=== 'add-review-on-author'){
     var promise = store.get(username + 'papers');
     promise.then(function(val) {
       var papers = JSON.parse(val);
@@ -389,38 +367,47 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username + 'papers', JSON.stringify(papers)); 
     });
   }  
+
+
+
+  }
 });
 
 freedom.on('get-paper-review', function(msg){
-  socialWrap.sendMessage(msg.reviewer,'get-paper-review', JSON.stringify(msg)).then(function(ret) {
+  msg.action = 'get-paper-review';
+  socialWrap.sendMessage(msg.reviewer,'control-msg', JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 });
 
 freedom.on('get-other-paper-review', function(msg){
-  socialWrap.sendMessage(msg.reviewer, 'get-other-paper-review', JSON.stringify(msg)).then(function(ret) {
+  msg.action = 'get-other-paper-review';
+  socialWrap.sendMessage(msg.reviewer, 'control-msg', JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 });
 
 freedom.on('get-other-papers', function(msg) {
-  socialWrap.sendMessage(msg.to,'get-other-papers', JSON.stringify(msg)).then(function(ret) {
+  msg.action = 'get-other-papers';
+  socialWrap.sendMessage(msg.to,'control-msg', JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 }); 
 
 freedom.on('get-browse-paper', function(msg) {
-  socialWrap.sendMessage(msg.author,'get-browse-paper', JSON.stringify(msg)).then(function(ret) {
+  msg.action = 'get-browse-paper';
+  socialWrap.sendMessage(msg.author,'control-msg', JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });  
 });
 
 freedom.on('get-other-reviews', function(msg) {
-  socialWrap.sendMessage(msg.to, 'get-other-reviews', JSON.stringify(msg)).then(function(ret) {
+  msg.action = 'get-other-reviews';
+  socialWrap.sendMessage(msg.to, 'control-msg', JSON.stringify(msg)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -467,10 +454,11 @@ freedom.on('upload-review', function(parse){//rename this to indicate this is se
     pkey: parse.pkey,
     vnum: parse.vnum,
     date: parse.date,
-    accessList: parse.accessList 
+    accessList: parse.accessList,
+    action: 'add-review-on-author'
   };
 
-  socialWrap.sendMessage(parse.author,'add-review-on-author', JSON.stringify(reviewForAuth)).then(function(ret) {
+  socialWrap.sendMessage(parse.author,'control-msg', JSON.stringify(reviewForAuth)).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
@@ -539,9 +527,10 @@ freedom.on('load-profile', function(data) {
   }
   else {
     var message = {
-      from: username
+      from: username,
+      action: 'get-profile'
     };
-    socialWrap.sendMessage(data,'get-profile', JSON.stringify(message)).then(function(ret) {
+    socialWrap.sendMessage(data,'control-msg', JSON.stringify(message)).then(function(ret) {
     }, function(err) {
       freedom.emit("recv-err", err);
     });
@@ -569,7 +558,12 @@ freedom.on('share-version', function(data) {
       }
       
       else { //private (send private paper to viewList)
+        paper.action = 'allow-access';
+        var pString = JSON.stringify(paper);
+        var buf = socialWrap._str2ab(pString);
+
         for(var i = 0; i < data.viewList.length; i++) {
+        console.log("SENDING A PRIVATE PAPER TO " + data.viewList[i]);
           socialWrap.sendMessage(data.viewList[i], 'control-msg', buf).then(function(ret) {
           }, function(err) {
             freedom.emit("recv-err", err);
@@ -589,6 +583,7 @@ freedom.on('share-version', function(data) {
       var rbuf = socialWrap._str2ab(JSON.stringify(msg));
 
       for(var i = 0; i < data.alertList.length; i++) {
+        console.log(" SENT TO " + data.alertList[i]);
         socialWrap.sendMessage(data.alertList[i], 'control-msg', rbuf).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
@@ -642,14 +637,15 @@ freedom.on('load-public-storage', function(data){
 
   var buf = socialWrap._str2ab(JSON.stringify(message));
 
-  socialWrap.sendMessage("publicstorage", 'get-public-papers', buf).then(function(ret) {
+  socialWrap.sendMessage("publicstorage", 'control-msg', buf).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
 });
 
 freedom.on('delete-paper', function(data){
-    socialWrap.sendMessage("publicstorage",'delete-paper', JSON.stringify(data)).then(function(ret) {
+    data.action = 'delete-paper';
+    socialWrap.sendMessage("publicstorage",'control-msg', JSON.stringify(data)).then(function(ret) {
     }, function(err) {
       freedom.emit("recv-err", err);
     });

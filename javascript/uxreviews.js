@@ -36,6 +36,7 @@ app.controller('reviewsController', function($scope, $modal) {
 			vnum: $scope.currReview.vnum,
 			from: username,
 			to: $scope.currReview.author,
+      action: 'get-r-paper'
 		};
 		window.freedom.emit('get-r-paper', msg);
 	}; 

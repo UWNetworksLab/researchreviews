@@ -261,6 +261,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
 
     $scope.checkAlert = function(username) {
+    console.log(username + " has been checked" );
       var idx = $scope.checkList.indexOf(username); 
 
       if (idx > -1) $scope.checkList.splice(idx, 1);
@@ -402,7 +403,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
       var alertList = [];
       for(var i = 0; i < $scope.alerts.length; i++) 
-        alertList.push($scope.alerts[i].msg); 
+        alertList.push($scope.alerts[i]); 
 
       var viewList;
       if(!$scope.privatePaper) { //publicly shared

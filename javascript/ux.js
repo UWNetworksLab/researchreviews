@@ -60,6 +60,7 @@ app.controller('mainController', function($scope, $location) {
   });
 
   window.freedom.on('alert', function(msg){
+  console.log('got alert ' + JSON.stringify(msg));
     if (!messageList) messageList=[];
     messageList.push(msg);
     $scope.numAlerts = messageList.length;
