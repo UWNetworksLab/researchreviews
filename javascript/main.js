@@ -451,7 +451,9 @@ freedom.on('set-review', function(review) {
 }); 
 
 freedom.on('edit-privacy', function(msg){
-  socialWrap.sendMessage("publicstorage", msg).then(function(ret) {
+  console.log("EDIT PRIVACY MSG " + JSON.stringify(msg));
+  var buf = socialWrap._str2ab(JSON.stringify(msg));
+  socialWrap.sendMessage("publicstorage",'control-msg', buf).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });

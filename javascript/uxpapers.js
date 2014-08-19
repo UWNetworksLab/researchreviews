@@ -215,7 +215,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     }
     $scope.viewList = currVersion.viewList;
     
-    console.log("CURR VERSION " + JSON.stringify(currVersion.alertList));
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
   
     $scope.save = function () { 

@@ -36,6 +36,7 @@ Version.prototype.shareVersion = function(){
 };
 
 Version.prototype.editPrivacy = function(publicSetting) {
+  console.log("EDIT PRIVACY " + publicSetting);
   if (publicSetting){
     this.viewList = false; 
     this.privateSetting = false; 
@@ -53,9 +54,7 @@ Version.prototype.editPrivacy = function(publicSetting) {
     pkey : this.pkey,
     action : 'edit-privacy'
   };
-
-  console.log("msg " + JSON.stringify(msg));
-  window.freedom.emit('edit-privacy', JSON.stringify(msg));
+  window.freedom.emit('edit-privacy', msg);
 };
 
 window.freedom.on('got-pdf', function(ab){
