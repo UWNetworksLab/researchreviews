@@ -141,15 +141,17 @@ app.controller('browseController', function($scope, $location, $modal) {
 		};
 
 		window.freedom.emit('get-browse-paper', msg); 
-		window.freedom.on('display-browse-paper', function(paper) {
+	};
+  
+  window.freedom.on('display-browse-paper', function(paper) {
+    console.log("got display-browse-paper !" + JSON.stringify(paper));
 			$scope.currPaper = new Paper(paper);
 			$scope.currVnum = paper.versions.length; 
 			var len = paper.versions.length; 
 
 			$scope.$apply(); 
 			$scope.getReviews(); 
-		}); 
-	};
+	}); 
 
 	$scope.getReviews = function() {
 		var paperReviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;

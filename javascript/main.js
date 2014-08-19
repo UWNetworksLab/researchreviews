@@ -87,7 +87,12 @@ author
 vnum */ 
 
 socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
+  
   console.log("got to onmessage tag: " + data.tag);
+  if (data.tag === 'test'){
+    console.log("GOT TO TEST ASDFASDFAi " + socialWrap._ab2str(data.data));
+    return;
+  }
   try {
     var parse = JSON.parse(socialWrap._ab2str(data.data));
   }
@@ -220,6 +225,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       }); 
     }
     else if(parse.action === 'get-browse-paper') {
+      console.log("get browse paper on authors side " + JSON.stringify(parse));
       var promise = store.get(username + 'papers'); 
       promise.then(function(val) {
         var papers; 
@@ -419,10 +425,30 @@ freedom.on('get-other-papers', function(msg) {
 
 freedom.on('get-browse-paper', function(msg) {
   msg.action = 'get-browse-paper';
-  socialWrap.sendMessage(msg.author,'control-msg', JSON.stringify(msg)).then(function(ret) {
-  }, function(err) {
-    freedom.emit("recv-err", err);
-  });  
+  console.log("get browse paper lalalala" + JSON.stringify(msg));
+  if (msg.author != username){
+    socialWrap.sendMessage(msg.author,'control-msg', JSON.stringify(msg)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });  
+  }
+  else {
+    var promise = store.get(username + 'papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+  
+      if(!papers || typeof papers !== "object") {
+        papers = []; 
+      }
+      for (var i = 0; i < papers.length; i++){
+        if (papers[i].pkey === msg.pkey) 
+          freedom.emit('display-browse-paper', papers[i]);
+      }
+    });
+  }
 });
 
 freedom.on('get-other-reviews', function(msg) {
@@ -680,6 +706,18 @@ socialWrap.login({
 }).then(function(ret) {
   myClientState = ret;
   username = ret.userId; 
+  
+  console.log("USERNAME " + username);
+
+  var buf = socialWrap._str2ab("this is a test");
+
+  socialWrap.sendMessage(username, 'test', buf).then(function(ret){
+    console.log("PROMISE GOOD");
+  }, function(err){
+    console.log("ERROR PROMISE REJECT");
+  }); 
+
+
   if (ret.status == socialWrap.STATUS["ONLINE"]) {
     var data = {
       id: ret.userId, 
