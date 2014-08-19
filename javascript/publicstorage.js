@@ -1,6 +1,5 @@
 //var social = freedom.socialprovider(); 
 var store = freedom.localstorage();
-store.clear();
 
 var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 

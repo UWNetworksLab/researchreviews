@@ -68,5 +68,8 @@ Version.prototype.download = function(){
     pkey: this.pkey,
     vnum: this.vnum
   };
+  if(username != this.author) { 
+    data.author = this.author;  
+  }
   window.freedom.emit('download-pdf', data);
 };

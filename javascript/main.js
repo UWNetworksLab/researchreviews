@@ -7,8 +7,6 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-store.clear();
-storebuffer.clear();
 
 var myClientState = null;
 var username = null;
@@ -37,13 +35,18 @@ freedom.on('add-pdf', function(data){
 });
 
 freedom.on('download-pdf', function(data){
-  var key = data.pkey + data.vnum + '';
-  var promise = storebuffer.get(key);
-  promise.then(function(val){
-    if (val.byteLength) {
-    }
-    freedom.emit('got-pdf', val);
-  });
+  if (!data.author){
+    var key = data.pkey + data.vnum + '';
+    var promise = storebuffer.get(key);
+    promise.then(function(val){
+      freedom.emit('got-pdf', val);
+    });
+  }
+  else {
+  console.log("NOT AUTHOR");
+    var buf = socialWrap._str2ab(JSON.stringify(data));
+    socialWrap.sendMessage(data.author, 'get-pdf', buf);
+  }
 });
 
 freedom.on('get-reviews', function(past) {
@@ -85,9 +88,26 @@ vnum */
 
 socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   console.log("got to onmessage tag: " + data.tag);
-  var parse = JSON.parse(socialWrap._ab2str(data.data));
-  
-  if (data.tag === "control-msg"){
+  try {
+    var parse = JSON.parse(socialWrap._ab2str(data.data));
+  }
+  catch (err){//sending a pdf so parse will fail
+    console.log("GOT PDF");
+    freedom.emit('got-pdf', data.data);
+    return;
+  }
+  if (data.tag === "get-pdf"){
+    if (parse.pkey){
+      console.log("GOT HERE IN AUTHOR SIDE" + JSON.stringify(parse));
+      var key = parse.pkey + parse.vnum + '';
+      var promise = storebuffer.get(key);
+      promise.then(function(val){
+        console.log("GOT PDF SENDING TO " + data.from.clientId);
+        socialWrap.sendMessage(data.from.clientId, 'get-pdf', val);
+      });
+    }
+  }
+  else if (data.tag === "control-msg"){
     if (parse.action==='got-public-papers'){
       freedom.emit('got-public-papers', parse.papers);
     }
