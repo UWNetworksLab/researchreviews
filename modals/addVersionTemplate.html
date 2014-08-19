@@ -25,8 +25,8 @@
   <hr>
   <table> 
     <tr ng-repeat="alert in alerts"> 
-      <td class='col-md-10'> {{alert.msg}} </td> 
-      <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" tooltip = "invite to review" ng-click="checkAlert(alert.msg)"> </td> 
+      <td class='col-md-10'> {{alert}} </td> 
+      <td class='col-md-1'> <input type="checkbox" ng-show="privatePaper" tooltip = "invite to review" ng-click="checkAlert(alert)"> </td> 
       <td class='col-md-1'> <span tooltip = "remove user" ng-click="deleteUser($index)" class = 'glyphicon glyphicon-remove'></span> </td> 
     </tr> 
   </table>

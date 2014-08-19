@@ -155,7 +155,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       resolve: {
         paper: function() {
           return $scope.currPaper; 
-        } 
+        },
+        vnum : function(){
+          return $scope.currVnum;
+        }
       }
     }); 
   };
@@ -209,12 +212,12 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   };
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
-    $scope.alertList =[];// currVersion.alertList;
+    /*$scope.alertList =[];// currVersion.alertList;
     for (var i = 0; i < currVersion.alertList.length; i++){
       $scope.alertList.push({val : currVersion.alertList[i]});
     }
     $scope.viewList = currVersion.viewList;
-    
+    */
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
   
     $scope.save = function () { 
@@ -263,7 +266,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     $scope.checkAlert = function(username) {
     console.log(username + " has been checked" );
       var idx = $scope.checkList.indexOf(username); 
-
       if (idx > -1) $scope.checkList.splice(idx, 1);
       else $scope.checkList.push(username);
     }; 
@@ -279,13 +281,16 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       var alertList = [];
       for(var i = 0; i < $scope.alerts.length; i++) 
         alertList.push($scope.alerts[i]); 
+      
 
+      console.log("CHECK LIST " + JSON.stringify($scope.checkList));
       var viewList;
       if(!$scope.privatePaper) { //publicly shared
         viewList = false; 
       }
       else { //privately shared
         viewList = alertList; 
+        console.log("ALERT LIST " + JSON.stringify($scope.checkList));
         alertList = $scope.checkList; 
       }
        var newPaper = new Paper();
@@ -359,7 +364,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     };
   };
 
-  var addVersionCtrl = function ($scope, $modalInstance, paper) {
+  var addVersionCtrl = function ($scope, $modalInstance, paper, vnum) {
     $scope.states = userList; 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
@@ -400,11 +405,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         alert("No files found.");
         return;
       }
-
+      
       var alertList = [];
-      for(var i = 0; i < $scope.alerts.length; i++) 
-        alertList.push($scope.alerts[i]); 
-
+      for (var i = 0; i < $scope.alerts.length; i++)
+        alertList.push($scope.alerts[i]);
+      
       var viewList;
       if(!$scope.privatePaper) { //publicly shared
         viewList = false; 
@@ -415,7 +420,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       }
 
       var vdata = {
-        vnum: paper.vnum,
+        vnum: vnum,
         pkey: paper.pkey,
         title: files[0].name,
         author: username,
