@@ -2,7 +2,10 @@
   "name": "Public Storage",
   "description": "access to public data",
   "app": {
-    "script": "publicstorage.js"
+    "script": [
+      "../node_modules/freedom/demo/filedrop/freedom-modules/social-transport.js",
+      "publicstorage.js"
+    ]
   },
   "dependencies": {
     "socialprovider": {
@@ -10,6 +13,10 @@
       "url_": "javascript/social/social.rr.json",
       "url_": "../socialmailbox/provider/social.mb.json",
       "api": "social"
+    },
+    "transport": {
+      "url": "../node_modules/radiatus-providers/src/providers/transport.radiatus.json",
+      "api": "transport"
     },
     "localstorage": {
       "url": "../node_modules/radiatus-providers/src/providers/storage.radiatus.json",
