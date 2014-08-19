@@ -18,7 +18,6 @@ Version.prototype.addReview = function(rkey, reviewer) {
 };
 
 Version.prototype.uploadPDF = function(file){
-  console.log("IN PDF");
   var reader = new FileReader();
   reader.onload = function() {
     var data = {
@@ -26,7 +25,6 @@ Version.prototype.uploadPDF = function(file){
       vnum: this.vnum,
       arrayBuffer: reader.result
     };
-    console.log("TYEP OF " + data.arrayBuffer.byteLength);
     window.freedom.emit('add-pdf', data);
   }.bind(this);
   reader.readAsArrayBuffer(file);

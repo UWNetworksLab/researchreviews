@@ -302,13 +302,12 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       };
 
       var ver = new Version(vdata);
-      //ver.uploadPDF(files[0]);
+      ver.uploadPDF(files[0]);
 
       newPaper.addVersion(ver);
       papers.push(newPaper);  
       currPaper = newPaper;
       ver.shareVersion();
-     // getReviews(currPaper);
       $modalInstance.dismiss('cancel');
     };
 
