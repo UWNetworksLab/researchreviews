@@ -1,6 +1,5 @@
 //var social = freedom.socialprovider(); 
 var store = freedom.localstorage();
-
 var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
@@ -10,7 +9,6 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(socialWrap._ab2str(data.data)); //JSON.parse(data);
 //data tag should be control-msg
   if (parse.action === 'get-public-papers'){
-    console.log("GET PUBLIC PAPERS" + JSON.stringify(data));
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
