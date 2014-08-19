@@ -91,6 +91,38 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     if (parse.action==='got-public-papers'){
       freedom.emit('got-public-papers', parse.papers);
     }
+    else if (parse.action==='invite-reviewer'){
+      var review = {
+        title: parse.title, 
+        pkey: parse.pkey,
+        author: parse.author,
+        vnum: parse.vnum, 
+        rkey: Math.random() + "",
+        reviewer: username 
+      };
+
+      //TODO: r_comments 
+      var alertmsg = {
+        action: 'invite-reviewer',
+        title: parse.title,
+        author: parse.author,
+        vnum: parse.vnum  
+      };
+      freedom.emit('alert', alertmsg);
+
+      var promise = store.get(username + 'reviews');
+      promise.then(function(val) {
+        var reviews; 
+        try {
+          reviews = JSON.parse(val);
+        } catch(e) {}
+
+        if(!reviews || typeof reviews !== "object") reviews = []; 
+  
+        reviews.push(review); 
+        store.set(username + 'reviews', JSON.stringify(reviews)); 
+      });
+    }
   }
 
   if (data.tag === "get-paper-review"){
@@ -525,8 +557,6 @@ freedom.on('share-version', function(data) {
 
       if(!data.privateSetting){
       //public (send paper to public storage) 
-        console.log("PAEPR IN MAIN " + JSON.stringify(paper));
-
         var pString = JSON.stringify(paper);
         var buf = socialWrap._str2ab(pString);
 
@@ -538,27 +568,30 @@ freedom.on('share-version', function(data) {
       
       else { //private (send private paper to viewList)
         for(var i = 0; i < data.viewList.length; i++) {
-          socialWrap.sendMessage(data.viewList[i], 'add-paper', JSON.stringify(paper)).then(function(ret) {
+          socialWrap.sendMessage(data.viewList[i], 'control-msg', buf).then(function(ret) {
           }, function(err) {
             freedom.emit("recv-err", err);
           });
         }
       }
-/*
+
       //SHARE PAPER WITH REVIEWERS
       var msg = {
         title: data.title, 
         author: username, 
         vnum: data.vnum, 
-        pkey: data.pkey
+        pkey: data.pkey,
+        action: 'invite-reviewer'
       };
 
+      var rbuf = socialWrap._str2ab(JSON.stringify(msg));
+
       for(var i = 0; i < data.alertList.length; i++) {
-        socialWrap.sendMessage(data.alertList[i], 'invite-reviewer', JSON.stringify(msg)).then(function(ret) {
+        socialWrap.sendMessage(data.alertList[i], 'control-msg', rbuf).then(function(ret) {
         }, function(err) {
           freedom.emit("recv-err", err);
         });
-      }*/
+      }
 }); 
 
 freedom.on('set-reviews', function(reviews) {
