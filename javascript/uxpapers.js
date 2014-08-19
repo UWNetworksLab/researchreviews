@@ -237,7 +237,11 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   };
 
   var addPaperCtrl = function ($scope, $modalInstance, papers, currPaper) {
-    $scope.states = userList; 
+    $scope.states = userList;
+
+    var uidx = userList.indexOf(username);
+    if (uidx > -1) $scope.states.splice(uidx, 1);
+    //TODO: userlist should not include already reviewers? should somehow show which people have already reviewed to prevent duplicate reviews?
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
     $scope.selected = undefined;
@@ -323,6 +327,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   var inviteReviewersCtrl = function ($scope, $modalInstance, currPaper, vnum) {
     $scope.states = userList; 
+    var uidx = userList.indexOf(username);
+    if (uidx > -1) $scope.states.splice(uidx, 1);
+ 
     $scope.selected = undefined;
     $scope.alerts = [];
     $scope.privateSetting = currPaper.versions[vnum].privateSetting;
@@ -366,6 +373,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   var addVersionCtrl = function ($scope, $modalInstance, paper, vnum) {
     $scope.states = userList; 
+    var uidx = userList.indexOf(username);
+    if (uidx > -1) $scope.states.splice(uidx, 1);
+ 
     $scope.privacyHeading = "Invite reviewers.";
     $scope.privatePaper = false;
     $scope.selected = undefined;
