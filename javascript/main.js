@@ -7,7 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -164,6 +165,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
             var msg = {
               text: reviews[i].text,
               reviewer: username,
+              rkey: parse.rkey,
               action: 'got-paper-review'
             };
            if((reviews[i].accessList) && reviews[i].accessList.indexOf(parse.from) === -1)
@@ -187,11 +189,13 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
 
         if(!reviews || typeof reviews !== "object") reviews = []; 
         for (var i = 0; i < reviews.length; i++){
+          console.log("REVIEWS " + i + " " + JSON.stringify(reviews[i]));
           if (reviews[i].rkey === parse.rkey){
             var msg = {
               text: reviews[i].text,
               accessList: reviews[i].accessList, 
               reviewer: parse.reviewer,
+              rkey: parse.rkey,
               action: 'got-paper-review'
             };
             
@@ -468,15 +472,17 @@ freedom.on('set-review', function(review) {
     } catch(e) {}
 
     if(!reviews || typeof reviews !== "object") reviews = []; 
-
+console.log("REVIEWS HERE " + JSON.stringify(reviews));
     var exists = false;
     for (var i = 0; i < reviews.length; i++){
       if (reviews[i].rkey === review.rkey){
+        console.log("FOUND IT " + reviews[i].rkey + " " + review.rkey);
         reviews[i] = review;
         exists = true;
       }
     }
     if (!exists) {
+      console.log("NOT FOUND, PUSHING " + JSON.stringify(review));
       reviews.push(review); 
     }
     store.set(username + 'reviews', JSON.stringify(reviews));

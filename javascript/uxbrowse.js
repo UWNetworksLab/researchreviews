@@ -26,7 +26,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 		    		var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
 		    		for (var i = 0; i < reviews.length; i++){
 		    			if (reviews[i].reviewer === username) {
-		    				console.log("FOUND REVIEW: " + JSON.stringify(reviews[i]));
+		    				console.log("REVIEWS ARRAY " + JSON.stringify(reviews));
+                console.log("FOUND REVIEW: " + JSON.stringify(reviews[i]));
 		    				return reviews[i];
 		    			}
 		    		}
@@ -83,17 +84,23 @@ app.controller('browseController', function($scope, $location, $modal) {
 			    title: currRVersion.title,
           rkey: currReview.rkey
 	  		};
+
+        
 	  		if (!currReview){
 				review.rkey = Math.random() + "";	  			
 	  		}
+
+        console.log("A REVIEW UPLOADED " + JSON.stringify(review));
 
 			if ($scope.privacySetting) {
 				review.accessList.push(username);
 				review.accessList.push(currRVersion.author); 
 				for(var i = 0; i < $scope.alerts.length; i++)
-					review.accessList.push($scope.alerts[i].msg); 
+					review.accessList.push($scope.alerts[i].msg);
 			}
 			else review.accessList = false; 
+
+      console.log("ASDFASDFASDFASDF " + JSON.stringify(review));
 			var newReview = new Review(review);
 
 			//TODO: make this a method
@@ -184,7 +191,8 @@ app.controller('browseController', function($scope, $location, $modal) {
         return el.reviewer;
       }).indexOf(review.reviewer);
       if(index === -1) version.reviews.push(review);
-      else version.reviews[index] = review; 
+      else version.reviews[index] = review;
+      console.log("GOT PAPER REVIEW " + JSON.stringify(review));
       $scope.$apply();
     });
 
