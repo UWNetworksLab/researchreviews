@@ -45,8 +45,7 @@ app.controller('profileController', function($scope, $modal, $location) {
 
   	$scope.displayDetailedPapers = function() {//problem here????
   		if($scope.ownProfile == true) $scope.changeView('paperspage');
-  		else if($scope.ownProfile != true) $location.path('paperspage').search({username: $scope.ownProfile});
-  		console.log("username " + $scope.ownProfile); 	
+  		else if($scope.ownProfile != true) $location.path('paperspage').search({username: $scope.ownProfile}); 	
   	}; 
 
   	$scope.displayDetailedReviews = function() {
