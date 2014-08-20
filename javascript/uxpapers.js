@@ -1,7 +1,12 @@
 app.controller('papersController', function($scope, $modal, $location, $filter) {
-  $scope.$watch('papers', function(){
-    window.freedom.emit('set-papers', $scope.papers);
-  }, true);
+  if($location.search().username && $location.search().username !== username) { //soemone else's
+    console.log("don't change anything");
+  }
+  else {
+    $scope.$watch('papers', function(){
+        window.freedom.emit('set-papers', $scope.papers);
+    }, true);
+  }
 
   //for paperTable
   $scope.papers = [];
