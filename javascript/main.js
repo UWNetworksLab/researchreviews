@@ -219,7 +219,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
           papers = JSON.parse(val); 
         } catch(e) {} 
   
-        if(!papers || typeof papers !== "object") papers = {}; 
+        if(!papers || typeof papers !== "object") papers = []; 
   
         var msg = {
           papers: papers,
@@ -237,7 +237,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
           papers = JSON.parse(val); 
         } catch(e) {} 
   
-        if(!papers || typeof papers !== "object") papers = {}; 
+        if(!papers || typeof papers !== "object") papers = []; 
   
         var msg = {
           action: 'got-browse-paper'

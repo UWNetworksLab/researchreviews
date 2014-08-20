@@ -62,8 +62,9 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         from: username 
       }); 
       window.freedom.on('display-other-papers', function(papers) {
-        for(var key in papers) {
-          $scope.papers.push(papers[key]); 
+        console.log("LOADIN GOTHER POAPERS " + JSON.stringify(papers));
+        for(var i = 0; i < papers.length; i++) {
+          $scope.papers.push(papers[i]); 
         } 
         $scope.accessAddBtn = false; 
         $scope.$apply(); 
@@ -72,6 +73,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     else { //load own papers
       window.freedom.emit('get-papers'); 
       window.freedom.on('display-papers', function(papers) {
+        console.log("LOADING OWN PAPERS " + JSON.stringify(papers));
         $scope.papers = []; 
 
         for(var i = 0; i < papers.length; i++) {
