@@ -18,7 +18,7 @@
               </span>
 
           <table class="table table-hover">
-            <tr ng-repeat="paper in (accessBtn? papers : otherPapers) | orderBy:order"> 
+            <tr ng-repeat="paper in papers | orderBy:order"> 
               <td ng-click="showPaperView(paper.pkey)"> {{paper.versions[paper.versions.length-1].title}} by {{paper.versions[paper.versions.length-1].author}} on {{paper.versions[paper.versions.length-1].date.getFullYear()}}-{{paper.versions[paper.versions.length-1].date.getMonth()+1}}-{{paper.versions[paper.versions.length-1].date.getDate()}} </td> 
             </tr> 
           </table>

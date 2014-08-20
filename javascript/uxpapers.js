@@ -5,7 +5,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
   //for paperTable
   $scope.papers = [];
-  $scope.otherPapers = []; 
 
   $scope.showNav = true; 
   //for paperView
