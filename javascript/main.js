@@ -301,8 +301,8 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       try {
         papers = JSON.parse(val);
       } catch(e) {}
-     if(!papers || typeof papers !== "object") papers = {}; 
-      papers[parse.key] = parse; 
+     if(!papers || typeof papers !== "object") papers = []; 
+      papers.push(parse);
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
   }
