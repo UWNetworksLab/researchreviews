@@ -65,7 +65,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
       window.freedom.on('display-other-papers', function(papers) {
         console.log("LOADIN GOTHER POAPERS " + JSON.stringify(papers));
         for(var i = 0; i < papers.length; i++) {
-          $scope.papers.push(papers[i]); 
+          $scope.otherPapers.push(papers[i]); 
         } 
         $scope.accessAddBtn = false; 
         $scope.$apply(); 
