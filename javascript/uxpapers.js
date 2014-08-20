@@ -55,7 +55,6 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
   }; 
 
   var loadPapersPage = function() {
-    console.log("LOCATION:  " + $location.search().username + " my username " + username);
     if($location.search().username && $location.search().username !== username) { //load someone else's papers 
       window.freedom.emit('get-other-papers', {
         to: $location.search().username, 
