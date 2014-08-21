@@ -7,6 +7,12 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         window.freedom.emit('set-papers', $scope.papers);
     }, true);
   }
+$('table').on('click','tr',function(e){
+  alert("clicked");
+  $('table').find('tr.active').removeClass('active');
+  $(this).addClass('active');
+});
+
 
   //for paperTable
   $scope.papers = [];
