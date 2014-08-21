@@ -4,7 +4,8 @@ function Paper(paper) {
     this.pkey = paper.pkey; 
     this.versions = [];
     for (var i = 0; i < paper.versions.length; i++){
-      this.addVersion(new Version(paper.versions[i]));
+      if (paper.versions[i]) this.addVersion(new Version(paper.versions[i]));
+      else this.addVersion(false); 
     }
     return;
   }

@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -242,9 +242,9 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
 
         for(var i = 0; i < papers.length; i++) 
           if(papers[i].pkey === parse.pkey) {
-            for(var j = 0; j < papers.versions.length; j++) {
+            for(var j = 0; j < papers[i].versions.length; j++) {
               if(papers[i].versions[j].privateSetting && papers[i].versions[j].viewList.indexOf(parse.from) === -1) {
-                papers[i].versions[j].title = false; 
+                papers[i].versions[j] = false; 
               }
             }
             msg.paper = papers[i]; 

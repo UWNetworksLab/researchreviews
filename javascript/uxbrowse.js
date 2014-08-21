@@ -152,12 +152,13 @@ app.controller('browseController', function($scope, $location, $modal) {
   
   window.freedom.on('display-browse-paper', function(paper) {
     console.log("got display-browse-paper !" + JSON.stringify(paper));
+      
 			$scope.currPaper = new Paper(paper);
 			$scope.currVnum = paper.versions.length; 
 			var len = paper.versions.length; 
 
 			$scope.$apply(); 
-			$scope.getReviews(); 
+			if (paper.versions[paper.versions.length-1]) $scope.getReviews(); 
 	}); 
 
 	$scope.getReviews = function() {
@@ -197,8 +198,8 @@ app.controller('browseController', function($scope, $location, $modal) {
     });
 
 	$scope.displayVersion = function(offset) {
-		$scope.currVnum = $scope.currVnum + offset; 
-		$scope.getReviews(); 
+		$scope.currVnum = $scope.currVnum + offset;
+    if ($scope.currPaper.versions[$scope.currVnum-1]) $scope.getReviews(); 
 	}; 
 
 	$scope.downloadVersion = function() {

@@ -22,33 +22,35 @@
       <!--papers-->
         <div class="col-md-8">
           <h1 ng-show="papers.length===0" align="center">No papers</h1>
-          
           <div ng-show="papers.length>0" class="landing-container">
-            <h1 ng-show="currPaper" align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
-            <div id = "options-and-nav">
-              <div class="btn-group" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper"> 
-                  Options <span class="caret">
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a ng-click="addReview()">Upload Review</a></li>
-                  <li><a ng-click="downloadVersion()">Download this paper</a></li>
-                </ul>
-              </div>
-
+            <h1 ng-show="currPaper && !currPaper.versions[currVnum-1]">You do not have access to this version</h1>
+            
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default"  ng-disabled="currVnum == 1" ng-click="displayVersion(-1)" ng-hide="!currPaper">Previous</button>
               <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-hide="!currPaper">Next</button>
             </div>
+            
+            <div ng-show="currPaper.versions[currVnum-1]">
+              <h1 align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
+              <div id = "options-and-nav">
+                <div class="btn-group" dropdown is-open="status.isopen">
+                  <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper"> 
+                    Options <span class="caret">
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a ng-click="addReview()">Upload Review</a></li>
+                    <li><a ng-click="downloadVersion()">Download this paper</a></li>
+                  </ul>
+                </div>
+              </div> <!--options and nav-->
+              <h4 ng-hide="!currPaper"> Comments </h4> 
+              <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
 
+              <h4 ng-hide="!currPaper"> Reviews </h4> 
+              <accordion ng-hide="!currPaper">
+                <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+              </accordion>
             </div>
-            <h4 ng-hide="!currPaper"> Comments </h4> 
-            <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
-
-            <h4 ng-hide="!currPaper"> Reviews </h4> 
-            <accordion ng-hide="!currPaper">
-              <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
-            </accordion>
           </div> <!--landing-container-->
         </div> <!--column-->
       </div> <!--row-->
