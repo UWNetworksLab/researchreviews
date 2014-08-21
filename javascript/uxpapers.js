@@ -494,4 +494,8 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
 
     $scope.currPaper.versions[$scope.currVnum-1].download();
   }
+
+  window.freedom.on('recv-err', function(data) {
+    alert("error in papers " + JSON.stringify(data) + data);
+  });
 });

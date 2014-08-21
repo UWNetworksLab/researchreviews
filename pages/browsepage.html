@@ -43,7 +43,7 @@
 
             </div>
             <h4 ng-hide="!currPaper"> Comments </h4> 
-            {{ currPaper.versions[currVnum-1].comments }} 
+            <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
 
             <h4 ng-hide="!currPaper"> Reviews </h4> 
             <accordion ng-hide="!currPaper">

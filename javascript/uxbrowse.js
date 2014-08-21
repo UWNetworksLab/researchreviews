@@ -10,11 +10,11 @@ app.controller('browseController', function($scope, $location, $modal) {
   	$scope.currVnum = 1; 
 
 	$scope.addReview = function() {
-		var version = $scope.currPaper.versions[$scope.currVnum-1];
+		/*var version = $scope.currPaper.versions[$scope.currVnum-1];
 		if(version.privateSetting && version.viewList.indexOf(username) === -1) {
 			alert("You do not have permission to review this paper.");
 			return;
-		}
+		}*/ 
 
 		var modalInstance = $modal.open({
 		  	templateUrl: '/modals/addReviewTemplate.html',
@@ -179,8 +179,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 
 	window.freedom.on('got-public-papers', function(papers) {
 		$scope.papers = papers; 
-	  console.log("public papers " + JSON.stringify(papers));
-  $scope.$apply(); 
+	  	console.log("public papers " + JSON.stringify(papers));
+  		$scope.$apply(); 
 	}); 
 
     window.freedom.on('got-paper-review', function(review){
@@ -210,4 +210,8 @@ app.controller('browseController', function($scope, $location, $modal) {
     console.log("sendprivate papersi mo" + JSON.stringify(data));
 		$scope.$apply(); 
 	}); 
+
+	window.freedom.on('recv-err', function(data) {
+		alert("error in browse " + JSON.stringify(data) + data);
+	});
 });

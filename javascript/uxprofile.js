@@ -252,4 +252,8 @@ app.controller('profileController', function($scope, $modal, $location) {
 	  });
 	 } 
 	}; 
+
+	window.freedom.on('recv-err', function(data) {
+		alert("error in profile " + JSON.stringify(data) + data);
+	});
 });
