@@ -8,7 +8,7 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
     }, true);
   }
 
-$("table tr:first").addClass('info'); 
+$("table:first").find("tr:first").addClass('info');
 $('table').on('click','tr',function(e){
   $('table').find('tr.info').removeClass('info');
   $(this).addClass('info');
