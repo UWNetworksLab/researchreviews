@@ -42,9 +42,10 @@ freedom.on('download-pdf', function(data){
     var promise = storebuffer.get(key);
     promise.then(function(val){
       var blob = new Blob([val], {type:'application/pdf'});
-      console.log("DOWNLOAD TITLE: " + data.title + JSON.stringify(data));
-      saveAs(blob, data.title);
-    });
+      console.log("LALALALA");
+      console.log("DOWNLOAD TITLE: " + this.title + JSON.stringify(this));
+      saveAs(blob, this.title);
+    }.bind(data));
   }
   else {
   console.log("NOT AUTHOR");
