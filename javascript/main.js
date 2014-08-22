@@ -43,7 +43,7 @@ freedom.on('download-pdf', function(data){
       var blob = new Blob([val], {type:'application/pdf'});
       console.log("DOWNLOAD TITLE: " + this.title + JSON.stringify(this));
       saveAs(blob, this.title);
-    }).bind(data);
+    }.bind(data));
   }
   else {
   console.log("NOT AUTHOR");
