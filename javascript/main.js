@@ -40,10 +40,8 @@ freedom.on('download-pdf', function(data){
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
     promise.then(function(val){
-      var blob = new Blob([val], {type:'application/pdf'});
-      console.log("DOWNLOAD TITLE: " + this.title + JSON.stringify(this));
-      saveAs(blob, this.title);
-    }).bind(data);
+      freedom.emit('got-pdf', val);
+    });
   }
   else {
   console.log("NOT AUTHOR");
