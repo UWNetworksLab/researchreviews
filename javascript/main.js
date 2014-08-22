@@ -37,13 +37,10 @@ freedom.on('add-pdf', function(data){
 
 freedom.on('download-pdf', function(data){
   if (!data.author){
-
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
     promise.then(function(val){
-      var blob = new Blob([val], {type:'application/pdf'});
-      console.log("AFTER BLOB");
-      saveAs(blob, "download");
+     freedom.emit('got-pdf', val);
     });
   }
   else {

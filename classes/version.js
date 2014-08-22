@@ -57,11 +57,17 @@ Version.prototype.editPrivacy = function(publicSetting) {
   window.freedom.emit('edit-privacy', msg);
 };
 
+window.freedom.on('got-pdf', function(ab){
+  console.log('gotpdf');
+  var blob = new Blob([ab], {type:'application/pdf'});
+  console.log("DOWNLOAD TITLE: " + this.title);
+  saveAs(blob, this.title);
+});
+
 Version.prototype.download = function(){
   var data = {
     pkey: this.pkey,
-    vnum: this.vnum,
-    title: this.title
+    vnum: this.vnum
   };
   if(username != this.author) { 
     data.author = this.author;  
