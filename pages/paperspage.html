@@ -30,7 +30,7 @@
           <h1 align="center" ng-show="papers.length===0"> Please add a paper. </h1>
           <h1 align="center" ng-show="!currPaper&&papers.length>0"> Please choose a paper. </h1>
           <div>
-            <div class="btn-group" dropdown is-open="isopen">
+            <!--<div class="btn-group" dropdown is-open="isopen">
               <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper">
                 Options <span class="caret">
               </button>
@@ -45,7 +45,19 @@
                 <li><a ng-click="downloadVersion()">Download This Version</a></li>
                 <li><a ng-click="addReview()"> Add Review </a></li>
               </ul>
+            </div>--> 
+
+            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper">
+              <div class="btn-group" ng-if="accessBtn">
+                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-star"></span></button>
+                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-star"></span></button>
+              </div>
+              <div class="btn-group" ng-if="!accessBtn">
+                <button type="button" class="btn btn-default">a</button>
+                <button type="button" class="btn btn-default">b</button>
+              </div>
             </div>
+
 
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default"  ng-disabled="currVnum === 1" ng-click="displayVersion(-1)" ng-show="currPaper">Previous</button>
