@@ -36,16 +36,14 @@ freedom.on('add-pdf', function(data){
 });
 
 freedom.on('download-pdf', function(data){
-  console.log("DOWNLOAD PDF " + JSON.stringify(data));
   if (!data.author){
+
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
     promise.then(function(val){
       var blob = new Blob([val], {type:'application/pdf'});
-      console.log("LALALALA");
-      console.log("DOWNLOAD TITLE: " + this.title + JSON.stringify(this));
-      saveAs(blob, this.title);
-    }.bind(data));
+      saveAs(blob, "download");
+    });
   }
   else {
   console.log("NOT AUTHOR");
