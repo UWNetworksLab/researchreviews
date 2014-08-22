@@ -60,7 +60,8 @@ Version.prototype.editPrivacy = function(publicSetting) {
 Version.prototype.download = function(){
   var data = {
     pkey: this.pkey,
-    vnum: this.vnum
+    vnum: this.vnum,
+    title: this.title
   };
   if(username != this.author) { 
     data.author = this.author;  
