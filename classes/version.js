@@ -60,6 +60,7 @@ Version.prototype.editPrivacy = function(publicSetting) {
 window.freedom.on('got-pdf', function(ab){
   console.log('gotpdf');
   var blob = new Blob([ab], {type:'application/pdf'});
+  console.log("DOWNLOAD TITLE: " + this.title);
   saveAs(blob, this.title);
 });
 

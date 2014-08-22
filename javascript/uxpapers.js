@@ -294,6 +294,7 @@ $('table').on('click','tr',function(e){
         return;
       }
 
+      var title = document.getElementById("add-paper-title").value; 
       var comments = document.getElementById("add-paper-comments").value;
       var alertList = [];
       for(var i = 0; i < $scope.alerts.length; i++) 
@@ -315,7 +316,7 @@ $('table').on('click','tr',function(e){
       var vdata = {
         vnum: 0,
         pkey: newPaper.pkey,
-        title: files[0].name,
+        title: title,
         author: username,
         comments: comments,
         viewList: viewList,
