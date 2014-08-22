@@ -8,6 +8,11 @@ app.controller('browseController', function($scope, $location, $modal) {
   	//for browse paper view
   	$scope.currPaper; 
   	$scope.currVnum = 1; 
+$('table').on('click','tr',function(e){
+  $('table').find('tr.info').removeClass('info');
+  $(this).addClass('info');
+});
+
 
 	$scope.addReview = function() {
 		/*var version = $scope.currPaper.versions[$scope.currVnum-1];
@@ -125,7 +130,10 @@ app.controller('browseController', function($scope, $location, $modal) {
 		window.freedom.emit('load-public-storage');
 	};
 
-	$scope.getPublicPapers(); 
+	$scope.getPublicPapers();
+ if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
+
+
 
 	$scope.getPrivatePapers = function() {
 		$("#privateBtn").attr('class', "btn btn-default active"); 
@@ -179,7 +187,10 @@ app.controller('browseController', function($scope, $location, $modal) {
 	};
 
 	window.freedom.on('got-public-papers', function(papers) {
-		$scope.papers = papers; 
+		$scope.papers = papers;
+ if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
+
+
 	  	console.log("public papers " + JSON.stringify(papers));
   		$scope.$apply(); 
 	}); 
@@ -208,6 +219,8 @@ app.controller('browseController', function($scope, $location, $modal) {
 
 	window.freedom.on('send-private-papers', function(data) {
 		$scope.papers = data;
+     if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
+
     console.log("sendprivate papersi mo" + JSON.stringify(data));
 		$scope.$apply(); 
 	}); 

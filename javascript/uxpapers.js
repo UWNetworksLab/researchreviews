@@ -7,10 +7,10 @@ app.controller('papersController', function($scope, $modal, $location, $filter) 
         window.freedom.emit('set-papers', $scope.papers);
     }, true);
   }
+
 $('table').on('click','tr',function(e){
-  alert("clicked");
-  $('table').find('tr.active').removeClass('active');
-  $(this).addClass('active');
+  $('table').find('tr.info').removeClass('info');
+  $(this).addClass('info');
 });
 
 
@@ -99,6 +99,7 @@ $('table').on('click','tr',function(e){
   };  
 
   loadPapersPage(); 
+  if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
 
   $scope.showPaperView = function(key) {
     //LOAD PAPER VIEW
