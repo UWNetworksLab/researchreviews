@@ -36,7 +36,6 @@ freedom.on('add-pdf', function(data){
 });
 
 freedom.on('download-pdf', function(data){
-  console.log("DOWNLOAD PDF " + JSON.stringify(data));
   if (!data.author){
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
