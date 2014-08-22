@@ -36,6 +36,7 @@ $('table').on('click','tr',function(e){
 
   $scope.setOrder = function(order) {
     $scope.order = order; 
+    $('table').children('tr:first').addClass('info'); 
   }
 
   $scope.displayVersion = function(offset) {
