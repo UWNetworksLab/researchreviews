@@ -1,4 +1,13 @@
 app.controller('reviewsController', function($scope, $modal) {
+  if($location.search().username && $location.search().username !== username) { //soemone else's
+    console.log("don't change anything");
+  }
+  else {
+    $scope.$watch('currRVersion', function(){
+        console.log("currRVersion changed " + JSON.stringify($scope.currRVersion));
+    }, true);
+  }
+
 	$scope.showNav = true; 
 	$scope.reviews = []; 
 
@@ -184,7 +193,7 @@ app.controller('reviewsController', function($scope, $modal) {
 			else currReview.accessList = false; 
 
 			window.freedom.emit('set-review', currReview);
-		  window.freedom.emit('upload-review', currReview);
+		  	window.freedom.emit('upload-review', currReview);
 
 			var index = currRVersion.reviews.map(function(el) {
 				return el.reviewer;
@@ -194,7 +203,6 @@ app.controller('reviewsController', function($scope, $modal) {
 			else currRVersion.reviews[index] = currReview; 
 
 		    $modalInstance.dismiss('cancel'); 
-		    //TODO: make a review instance
 	  };
 
 	  $scope.cancel = function () {
