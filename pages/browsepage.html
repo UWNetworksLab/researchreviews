@@ -32,7 +32,8 @@
             
             <div ng-show="currPaper.versions[currVnum-1]">
               <h1 align="center"> {{ currPaper.versions[currVnum-1].title }} </h1>
-              <div id = "options-and-nav">
+
+              <!--<div id = "options-and-nav">
                 <div class="btn-group" dropdown is-open="status.isopen">
                   <button type="button" class="btn btn-default dropdown-toggle" ng-hide="!currPaper"> 
                     Options <span class="caret">
@@ -42,7 +43,17 @@
                     <li><a ng-click="downloadVersion()">Download this paper</a></li>
                   </ul>
                 </div>
-              </div> <!--options and nav-->
+              </div> -->  
+
+
+            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-click="downloadVersion()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
+                <button type="button" class="btn btn-default" ng-click="addReview()"><span tooltip="add review" class="glyphicon glyphicon-list-alt"></span></button>
+              </div>
+            </div>
+
+
               <h4 ng-hide="!currPaper"> Comments </h4> 
               <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
 

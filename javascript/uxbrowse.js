@@ -148,6 +148,11 @@ $('table').on('click','tr',function(e){
 	};
 
 	$scope.getPaper = function(paper) {
+		if(!paper) {
+			alert("Sorry, this user is currently unresponsive.");
+			return;  	
+		} 
+
 		var msg = {
 			title: paper.title,
 			author: paper.author,
