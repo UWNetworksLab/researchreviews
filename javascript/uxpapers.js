@@ -291,7 +291,10 @@ $('table').on('click','tr',function(e){
         return;
       }
 
-      var title = document.getElementById("add-paper-title").value; 
+      var title = document.getElementById("add-paper-title").value;
+
+      if (!title) title = "Untitled"
+
       var comments = document.getElementById("add-paper-comments").value;
       var alertList = [];
       for(var i = 0; i < $scope.alerts.length; i++) 
@@ -421,7 +424,9 @@ $('table').on('click','tr',function(e){
     $scope.upload = function () {
       var files = document.getElementById("addFile").files;
       var comments = document.getElementById("add-version-comments").value;
-
+      var vtitle = document.getElementById("version-title").value;
+      if (!vtitle) vtitle = "Untitled";
+      
       if (files.length < 1) {
         alert("No files found.");
         return;
@@ -443,7 +448,7 @@ $('table').on('click','tr',function(e){
       var vdata = {
         vnum: vnum,
         pkey: paper.pkey,
-        title: files[0].name,
+        title: vtitle,
         author: username,
         comments: comments,
         viewList: viewList,
