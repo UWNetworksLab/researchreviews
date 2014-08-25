@@ -31,7 +31,8 @@
           <h1 align="center" ng-show="!currPaper&&papers.length>0"> Please choose a paper. </h1>
           <div>
 
-            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper" class="col-md-2">
+            <div class="col-md-4"> 
+            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper">
               <div class="btn-group btn btn-lg" ng-if="accessBtn">
                 <button type="button" class="btn btn-default" ng-click="downloadVersion()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
                 <button type="button" class="btn btn-default" ng-click="inviteReviewers()"><span tooltip="share paper" class="glyphicon glyphicon-send"></span></button>
@@ -44,14 +45,17 @@
                 <button type="button" class="btn btn-default" ng-click="addReview()"><span tooltip="add review" class="glyphicon glyphicon-list-alt"></span></button>
               </div>
             </div>
+          </div>
 
+            <div class="col-md-4"> 
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default"  ng-disabled="currVnum === 1" ng-click="displayVersion(-1)" ng-show="currPaper">Previous</button>
               <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-show="currPaper">Next</button>
             </div>
           </div>
+          </div>
 
-
+        <div>
           <h4 ng-show="currPaper"> Comments </h4>
           <p ng-show="currPaper"> {{currPaper.versions[currVnum-1].comments}} </p>
           <br>
@@ -59,7 +63,7 @@
           <accordion ng-show="currPaper">
             <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
           </accordion>
-
+        </div>
           <p></p>
         </div> <!--landing-container-->
       </div> <!--column-->
