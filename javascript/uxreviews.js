@@ -1,13 +1,4 @@
 app.controller('reviewsController', function($scope, $modal) {
-  if($location.search().username && $location.search().username !== username) { //soemone else's
-    console.log("don't change anything");
-  }
-  else {
-    $scope.$watch('currRVersion', function(){
-        console.log("currRVersion changed " + JSON.stringify($scope.currRVersion));
-    }, true);
-  }
-
 	$scope.showNav = true; 
 	$scope.reviews = []; 
 
