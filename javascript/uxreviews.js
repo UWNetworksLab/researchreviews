@@ -36,7 +36,7 @@ app.controller('reviewsController', function($scope, $modal) {
 			vnum: $scope.currReview.vnum,
 			from: username,
 			to: $scope.currReview.author,
-      action: 'get-r-paper'
+      		action: 'get-r-paper'
 		};
 		window.freedom.emit('get-r-paper', msg);
 	}; 
@@ -90,8 +90,12 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	$scope.getPastReviews = function() {
 		$("#pastBtn").attr('class', "btn btn-default active"); 
-  	$("#pendingBtn").attr('class', "btn btn-default"); 
+  		$("#pendingBtn").attr('class', "btn btn-default"); 
 		window.freedom.emit('get-reviews', 1); 
+	}; 
+
+	$scope.downloadReviews = function() {
+		console.log("reviews....." + JSON.stringify($scope.reviews));
 	}; 
 
 	$scope.addReview = function() {
