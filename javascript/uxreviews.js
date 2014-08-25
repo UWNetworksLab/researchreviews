@@ -96,7 +96,26 @@ app.controller('reviewsController', function($scope, $modal) {
 
 	$scope.downloadReviews = function() {
 		console.log("reviews....." + JSON.stringify($scope.reviews));
+
+		var totalReviews = "Reviews for " + $scope.currRVersion.title; 
+		for(var i = 0; i < $scope.reviews.length; i++) 
+			totalReviews = totalReviews + "\n" + $scope.reviews[i].reviewer + " on " + $scope.reviews[i].date + ": " + scope.reviews[i].text; 
+		
+		var ab =str2ab(totalReviews);
+		var reader = new FileReader(); 
+		var blob = new Blob([ab], {type:'text/plain'});
+		reader.readAsArrayBuffer(blob);
+    	saveAs(blob, $scope.currRVersion.title+"_reviews");
 	}; 
+
+	function str2ab(str) {
+	    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+	    var bufView = new Uint8Array(buf);
+	    for (var i=0, strLen=str.length; i<strLen; i++) {
+	      bufView[i] = str.charCodeAt(i);
+	    }
+	    return buf;
+  	}
 
 	$scope.addReview = function() {
 		var modalInstance = $modal.open({
