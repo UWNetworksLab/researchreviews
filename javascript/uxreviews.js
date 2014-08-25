@@ -99,7 +99,7 @@ app.controller('reviewsController', function($scope, $modal) {
 
 		var totalReviews = "Reviews for " + $scope.currRVersion.title; 
 		for(var i = 0; i < $scope.reviews.length; i++) 
-			totalReviews = totalReviews + "\n" + $scope.reviews[i].reviewer + " on " + $scope.reviews[i].date + ": " + scope.reviews[i].text; 
+			totalReviews = totalReviews + "\n" + $scope.reviews[i].reviewer + " on " + $scope.reviews[i].date + ": " + $scope.reviews[i].text; 
 		
 		var ab =str2ab(totalReviews);
 		var reader = new FileReader(); 
