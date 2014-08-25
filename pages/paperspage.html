@@ -31,7 +31,7 @@
           <h1 align="center" ng-show="!currPaper&&papers.length>0"> Please choose a paper. </h1>
           <div>
 
-            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper">
+            <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper" class="col-md-2">
               <div class="btn-group btn btn-lg" ng-if="accessBtn">
                 <button type="button" class="btn btn-default" ng-click="downloadVersion()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
                 <button type="button" class="btn btn-default" ng-click="inviteReviewers()"><span tooltip="share paper" class="glyphicon glyphicon-send"></span></button>

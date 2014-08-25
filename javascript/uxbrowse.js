@@ -148,6 +148,7 @@ $('table').on('click','tr',function(e){
 	};
 
 	$scope.getPaper = function(paper) {
+		console.log("GETTING PAPER " + JSON.stringify(paper));
 		if(!paper) {
 			alert("Sorry, this user is currently unresponsive.");
 			return;  	
