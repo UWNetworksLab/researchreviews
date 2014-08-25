@@ -158,10 +158,8 @@ $('table').on('click','tr',function(e){
 		window.freedom.emit('get-browse-paper', msg); 
 	};
   
-  window.freedom.on('display-browse-paper', function(paper) {
-    console.log("got display-browse-paper !" + JSON.stringify(paper));
-      
-    if(JSON.stringify(paper)==='undefined') {
+  window.freedom.on('display-browse-paper', function(paper) {      
+    if(paper==undefined) {
      alert("Sorry this user is currently irresponsive.");
      return; 
     }
