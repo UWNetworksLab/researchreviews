@@ -39,6 +39,10 @@ textarea {
     resize: none;
 }
 
+.rr-toolbar {
+    overflow: hidden;
+}
+
 .std-container {
     text-align: center;
     position: relative;
