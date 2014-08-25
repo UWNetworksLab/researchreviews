@@ -148,12 +148,6 @@ $('table').on('click','tr',function(e){
 	};
 
 	$scope.getPaper = function(paper) {
-		console.log("GETTING PAPER " + JSON.stringify(paper));
-		if(!paper) {
-			alert("Sorry, this user is currently unresponsive.");
-			return;  	
-		} 
-
 		var msg = {
 			title: paper.title,
 			author: paper.author,
@@ -167,12 +161,17 @@ $('table').on('click','tr',function(e){
   window.freedom.on('display-browse-paper', function(paper) {
     console.log("got display-browse-paper !" + JSON.stringify(paper));
       
-			$scope.currPaper = new Paper(paper);
-			$scope.currVnum = paper.versions.length; 
-			var len = paper.versions.length; 
+    if(JSON.stringify(paper)==='undefined') {
+     alert("Sorry this user is currently irresponsive.");
+     return; 
+    }
 
-			$scope.$apply(); 
-			if (paper.versions[paper.versions.length-1]) $scope.getReviews(); 
+	$scope.currPaper = new Paper(paper);
+	$scope.currVnum = paper.versions.length; 
+	var len = paper.versions.length; 
+
+	$scope.$apply(); 
+	if (paper.versions[paper.versions.length-1]) $scope.getReviews(); 
 	}); 
 
 	$scope.getReviews = function() {
