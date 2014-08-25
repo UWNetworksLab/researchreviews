@@ -19,6 +19,107 @@ app.controller('profileController', function($scope, $modal, $location) {
   		}
   	];
 
+$scope.addPaper = function() {
+    var modalInstance = $modal.open({
+      templateUrl: '/modals/addPaperTemplate.html',
+      windowClass:'normal',
+      controller: addPaperCtrl,
+      backdrop: 'static' 
+    }); 
+  };
+
+var addPaperCtrl = function ($scope, $modalInstance) {
+    $scope.states = userList;
+
+    var uidx = userList.indexOf(username);
+    if (uidx > -1) $scope.states.splice(uidx, 1);
+    //TODO: userlist should not include already reviewers? should somehow show which people have already reviewed to prevent duplicate reviews?
+    $scope.privacyHeading = "Invite reviewers.";
+    $scope.privatePaper = false;
+    $scope.selected = undefined;
+    $scope.alerts = [];
+    $scope.checkList = []; 
+    $scope.setPrivate = function(){
+      $scope.privatePaper = true;
+    };
+
+    $scope.setPublic = function(){
+      $scope.privatePaper = false;
+    };
+
+    $scope.deleteUser = function(id) {
+      var idx = $scope.checkList.indexOf($scope.alerts[id]);
+      if(idx > -1) 
+        $scope.checkList.splice(idx, 1); 
+
+      $scope.alerts.splice(id, 1);
+    };
+
+    $scope.selectMatch = function(selection) {
+      $scope.alerts.push(selection);
+    };
+
+    $scope.checkAlert = function(username) {
+    console.log(username + " has been checked" );
+      var idx = $scope.checkList.indexOf(username); 
+      if (idx > -1) $scope.checkList.splice(idx, 1);
+      else $scope.checkList.push(username);
+    }; 
+
+    $scope.upload = function () {
+      var files = document.getElementById("addFile").files;
+      if (files.length < 1) {
+        alert("No files found.");
+        return;
+      }
+
+      var title = document.getElementById("add-paper-title").value; 
+      var comments = document.getElementById("add-paper-comments").value;
+      var alertList = [];
+      for(var i = 0; i < $scope.alerts.length; i++) 
+        alertList.push($scope.alerts[i]); 
+      
+
+      console.log("CHECK LIST " + JSON.stringify($scope.checkList));
+      var viewList;
+      if(!$scope.privatePaper) { //publicly shared
+        viewList = false; 
+      }
+      else { //privately shared
+        viewList = alertList; 
+        console.log("ALERT LIST " + JSON.stringify($scope.checkList));
+        alertList = $scope.checkList; 
+      }
+       var newPaper = new Paper();
+     
+      var vdata = {
+        vnum: 0,
+        pkey: newPaper.pkey,
+        title: title,
+        author: username,
+        comments: comments,
+        viewList: viewList,
+        alertList: alertList,
+        privateSetting: $scope.privatePaper, 
+      };
+
+      var ver = new Version(vdata);
+      ver.uploadPDF(files[0]);
+
+      newPaper.addVersion(ver);
+console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
+
+      window.freedom.emit('set-paper', newPaper);
+      ver.shareVersion();
+      $modalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+  };
+
+
   	$scope.init = function() {
   		if($location.search().username && $location.search().username !== username) { //load someone else's profile
   			$scope.ownProfile = $location.search().username; 

@@ -40,7 +40,7 @@ freedom.on('download-pdf', function(data){
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
     promise.then(function(val){
-      freedom.emit('got-pdf', val);
+     freedom.emit('got-pdf', val);
     });
   }
   else {
@@ -650,7 +650,28 @@ freedom.on('set-reviews', function(reviews) {
 
 freedom.on('set-papers', function(papers) {
   store.set(username+'papers', JSON.stringify(papers)); 
-}); 
+});
+
+freedom.on('set-paper', function(paper){
+  console.log("IN SET PAPERS " + JSON.stringify(paper));
+  var promise = store.get(username + 'papers');
+  promise.then(function(val) {
+    console.log("in promise");
+    var papers; 
+    try {
+      papers = JSON.parse(val);
+    } catch(e) {}
+
+    if(!papers || typeof papers !== "object") {
+      papers = []; 
+    }
+    console.log("PAPERS " + JSON.stringify(papers));
+    papers.push(paper);
+
+    console.log("MROE PAPERS " + JSON.stringify(papers));
+    store.set(username+'papers', JSON.stringify(papers));
+  });
+});
 
 freedom.on('get-papers', function(data) {
   var promise = store.get(username + 'papers');
