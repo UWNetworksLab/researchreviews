@@ -64,7 +64,6 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
 
   else if (parse.action === 'add-paper'){
-    console.log("DATA ADD PAPER " + JSON.stringify(parse));
     var promise = store.get('public-papers');
     promise.then(function(val) {
       var papers; 
@@ -75,7 +74,13 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
      if(!papers || typeof papers !== "object") {
         papers = []; 
       }
-      papers.push(parse);
+
+      var found = false; 
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i].pkey === parse.pkey)
+          found = true;
+
+      if(!found) papers.push(parse);
       store.set('public-papers', JSON.stringify(papers)); 
     });
   }
