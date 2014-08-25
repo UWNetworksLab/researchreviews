@@ -1,59 +1,51 @@
- <div>
-    <div class="view-container">
-      <div class="row">
-        <div class="col-md-4">
-          <div style="margin-bottom:20px; margin-top:20px">
-            <div class="btn-group">
-              <button type="button" id="publicBtn" class="btn btn-default active" ng-click="getPublicPapers()">Public Papers</button>
-              <button type="button" id="privateBtn" class="btn btn-default" ng-click="getPrivatePapers()">Shared Private Papers</button>
-            </div>
-          </div>
-
-    <table class="table table-hover">
-      <tr ng-repeat="paper in papers"> 
-        <td ng-click="getPaper(paper)"> 
-          <a ng-click="getPaper(paper)">{{paper.title}}</a> by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> 
-        </td>   
-      </tr> 
-    </table> 
-
+<div class="view-container">
+  
+  <div class="row">
+    <div class="col-md-4">
+      <div style="margin-bottom:20px; margin-top:20px">
+        <div class="btn-group">
+          <button type="button" id="publicBtn" class="btn btn-default active" ng-click="getPublicPapers()">Public Papers</button>
+          <button type="button" id="privateBtn" class="btn btn-default" ng-click="getPrivatePapers()">Shared Private Papers</button>
+        </div>
+      </div>
+      <table class="table table-hover">
+        <tr ng-repeat="paper in papers"> 
+          <td ng-click="getPaper(paper)"> 
+            <a ng-click="getPaper(paper)">{{paper.title}}</a> by <a ng-click="getProfile(paper.author)"> {{paper.author}} </a> 
+          </td>   
+        </tr> 
+      </table> 
+    </div> <!--col-->
+    
+    <!--papers-->
+    <div class="col-md-8">
+      <h1 ng-show="papers.length===0" align="center">No papers</h1>
+      <h1 ng-show="papers.length != 0 && !currPaper" align="center">Select a paper</h1>
+      <div ng-show="currPaper" class="landing-container">
+        <h1 ng-show="!currPaper.versions[currVnum-1]">You do not have access to this version</h1>
+        <h1 align="center" ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].title }} </h1>
+        
+        <div class="btn-group pull-left">
+          <button type="button" class="btn btn-default" ng-click="downloadVersion()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
+          <button type="button" class="btn btn-default" ng-click="addReview()"><span tooltip="add review" class="glyphicon glyphicon-list-alt"></span></button>
+        </div>
+        
+        <div class="btn-group pull-right">
+          <button type="button" class="btn btn-default"  ng-disabled="currVnum == 1" ng-click="displayVersion(-1)" ng-hide="!currPaper">Previous</button>
+          <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-hide="!currPaper">Next</button>
+        </div>
+        <br><br>
+        
+        <div>
+          <h4 ng-hide="!currPaper"> Comments </h4> 
+          <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
+            <h4 ng-hide="!currPaper"> Reviews </h4> 
+            <accordion ng-hide="!currPaper">
+              <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+            </accordion>
         </div>
       
-      <!--papers-->
-        <div class="col-md-8">
-          <h1 ng-show="papers.length===0" align="center">No papers</h1>
-          <div ng-show="papers.length>0" class="landing-container">
-            <h1 ng-show="currPaper && !currPaper.versions[currVnum-1]">You do not have access to this version</h1>
-            <h1 align="center" ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].title }} </h1>
-
-
-            <div class="rr-toolbar">
-              <div class="btn-toolbar" role="toolbar" ng-hide="!currPaper">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default" ng-click="downloadVersion()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
-                  <button type="button" class="btn btn-default" ng-click="addReview()"><span tooltip="add review" class="glyphicon glyphicon-list-alt"></span></button>
-                </div>
-              </div>
-
-              <div class="btn-group pull-right">
-                <button type="button" class="btn btn-default"  ng-disabled="currVnum == 1" ng-click="displayVersion(-1)" ng-hide="!currPaper">Previous</button>
-                <button type="button" class="btn btn-default" ng-disabled="currVnum >= currPaper.versions.length" ng-click="displayVersion(1)" ng-hide="!currPaper">Next</button>
-              </div>
-            </div>
-            
-
-            <div>
-              <h4 ng-hide="!currPaper"> Comments </h4> 
-              <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
-
-              <h4 ng-hide="!currPaper"> Reviews </h4> 
-              <accordion ng-hide="!currPaper">
-                <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
-              </accordion>
-            </div>
-
-          </div> <!--landing-container-->
-        </div> <!--column-->
-      </div> <!--row-->
-    </div>
-  </div> 
+      </div> <!--landing-container-->
+    </div> <!--column-->
+  </div>
+</div>
