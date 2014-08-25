@@ -225,15 +225,12 @@ $('table').on('click','tr',function(e){
   };
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
-    /*$scope.alertList =[];// currVersion.alertList;
-    for (var i = 0; i < currVersion.alertList.length; i++){
-      $scope.alertList.push({val : currVersion.alertList[i]});
-    }
-    $scope.viewList = currVersion.viewList;
-    */
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
+    $scope.currComments = currVersion.comments; 
   
     $scope.save = function () { 
+      currVersion.editComments(document.getElementById('comments').value)
+
       if($("#addPaperPublic2").is(':checked')){
         currVersion.editPrivacy(true);
       }

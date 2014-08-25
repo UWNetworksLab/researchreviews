@@ -35,6 +35,10 @@ Version.prototype.shareVersion = function(){
   freedom.emit('share-version', this);
 };
 
+Version.prototype.editComments = function(comments) {
+  this.comments = comments; 
+};
+
 Version.prototype.editPrivacy = function(publicSetting) {
   console.log("EDIT PRIVACY " + publicSetting);
   if (publicSetting){
