@@ -26,11 +26,14 @@
           typeahead-on-select="selectMatch(selected); selected='';" 
           class="form-control">
   <hr>
-
-<table>
+<table ng-show="alerts.length >0">
+  <tr>
+    <th class = 'col-md-10'>{{ privatePaper? 'Viewers' : 'Reviewers' }}</td>
+    <th class = 'col-md-1' ng-show="privatePaper">Alert</td>
+  </tr>
   <tr ng-repeat="alert in alerts"> 
     <td class='col-md-10'> {{alert}} </td> 
-    <td class='col-md-1'> <input tooltip="invite to review" ng-show="privatePaper" type="checkbox"  ng-click="checkAlert(alert)"> </td> 
+    <td class='col-md-1'> <input tooltip="alert to review" ng-show="privatePaper" type="checkbox"  ng-click="checkAlert(alert)"> </td> 
     <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove user" class='glyphicon glyphicon-remove'></span> </td> 
   </tr> 
 </table>
