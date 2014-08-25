@@ -13,14 +13,7 @@ $('table').on('click','tr',function(e){
   $(this).addClass('info');
 });
 
-
 	$scope.addReview = function() {
-		/*var version = $scope.currPaper.versions[$scope.currVnum-1];
-		if(version.privateSetting && version.viewList.indexOf(username) === -1) {
-			alert("You do not have permission to review this paper.");
-			return;
-		}*/ 
-
 		var modalInstance = $modal.open({
 		  	templateUrl: '/modals/addReviewTemplate.html',
 		  	windowClass:'normal',
@@ -31,8 +24,6 @@ $('table').on('click','tr',function(e){
 		    		var reviews = $scope.currPaper.versions[$scope.currVnum-1].reviews;
 		    		for (var i = 0; i < reviews.length; i++){
 		    			if (reviews[i].reviewer === username) {
-		    				console.log("REVIEWS ARRAY " + JSON.stringify(reviews));
-                console.log("FOUND REVIEW: " + JSON.stringify(reviews[i]));
 		    				return reviews[i];
 		    			}
 		    		}
@@ -87,15 +78,12 @@ $('table').on('click','tr',function(e){
 			    vnum: currRVersion.vnum,
 			    author: currRVersion.author,
 			    title: currRVersion.title,
-          rkey: currReview.rkey
+          		rkey: currReview.rkey
 	  		};
-
         
 	  		if (!currReview){
 				review.rkey = Math.random() + "";	  			
 	  		}
-
-        console.log("A REVIEW UPLOADED " + JSON.stringify(review));
 
 			if ($scope.privacySetting) {
 				review.accessList.push(username);
@@ -105,13 +93,16 @@ $('table').on('click','tr',function(e){
 			}
 			else review.accessList = false; 
 
-      console.log("ASDFASDFASDFASDF " + JSON.stringify(review));
 			var newReview = new Review(review);
 
-			//TODO: make this a method
-      //?
+			if(!currReview)
+				currRVersion.reviews.push(newReview); 
+			else 
+		    	for(var i = 0; i < currRVersion.reviews.length; i++) 
+		    		if(currRVersion.reviews[i].reviewer === username) 
+		    			currRVersion.reviews[i] = newReview; 
+
 			window.freedom.emit('upload-review', newReview);
-      console.log("Setting review "  + JSON.stringify(newReview));
 			window.freedom.emit('set-review', newReview);
 		    $modalInstance.dismiss('cancel'); 
 	  };

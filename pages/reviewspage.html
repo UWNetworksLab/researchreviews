@@ -25,20 +25,6 @@
           <div ng-show="currReview" id = "review-view-container" class="landing-container">
             <h1 align="center"> {{ currRVersion.title }} </h1>
 
-
-            <!--
-            <div id = "options-and-nav">
-              <div class="btn-group" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle">  
-                  Options <span class="caret">
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li><a ng-click="addReview()">Upload Review</a></li>
-                  <li><a ng-click="downloadRPaper()">Download this paper</a></li>
-                </ul>
-              </div>
-            </div> --> 
-
             <div class="btn-toolbar" role="toolbar">
               <div class="btn-group">
                 <button type="button" class="btn btn-default" ng-click="downloadRPaper()"><span tooltip="download this version" class="glyphicon glyphicon-download"></span></button>
