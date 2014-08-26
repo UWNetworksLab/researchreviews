@@ -308,7 +308,33 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
         papers = JSON.parse(val);
       } catch(e) {}
      if(!papers || typeof papers !== "object") papers = []; 
-      papers.push(parse);
+
+      var found = false; 
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i].pkey === parse.pkey)
+          found = true;
+
+      if(!found) papers.push(parse);
+
+      store.set(username+'private-papers', JSON.stringify(papers)); 
+    });
+  }
+  else if(parse.action === "delete-private-paper") {
+    console.log("DELETE PRIVATE PAPER (IF ONLY ONE VERSION)");
+    var promise = store.get(username+'private-papers');
+    promise.then(function(val) {
+      var papers; 
+      try {
+        papers = JSON.parse(val);
+      } catch(e) {}
+     //if(!papers || typeof papers !== "object") papers = []; 
+
+      for(var i = 0; i < papers.length; i++) 
+        if(papers[i].pkey === parse.pkey) {
+          papers.splice(i, 1);
+          break; 
+        }
+
       store.set(username+'private-papers', JSON.stringify(papers)); 
     });
   }
@@ -403,9 +429,6 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       store.set(username + 'papers', JSON.stringify(papers)); 
     });
   }  
-
-
-
   }
 });
 
@@ -724,6 +747,14 @@ freedom.on('load-public-storage', function(data){
 freedom.on('delete-paper', function(data){
     data.action = 'delete-paper';
     socialWrap.sendMessage("publicstorage",'control-msg', JSON.stringify(data)).then(function(ret) {
+    }, function(err) {
+      freedom.emit("recv-err", err);
+    });
+});
+
+freedom.on('delete-private-paper', function(data){
+    data.action = 'delete-private-paper';
+    socialWrap.sendMessage(data.to,'control-msg', JSON.stringify(data)).then(function(ret) {
     }, function(err) {
       freedom.emit("recv-err", err);
     });

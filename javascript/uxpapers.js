@@ -493,13 +493,24 @@ $('table').on('click','tr',function(e){
           $scope.papers.splice(i, 1); 
           break; 
         }  
-    //send to public storage
+      //send to public storage
       if (!$scope.privatePaper) {
         var delMsg = {
           pkey: $scope.currPaper.pkey,
           vnum: $scope.currVnum
         };
         window.freedom.emit('delete-paper', delMsg);
+      }
+      //delete from acl's private-papers
+      if($scope.privatePaper) {
+        for(var i = 0; i < $scope.currPaper.viewList.length; i++) {
+          var delMsg = {
+            pkey: $scope.currPaper.pkey,
+            vnum: $scope.currVnum,
+            to: $scope.currPaper.viewList[i]
+          };
+          window.freedom.emit('delete-private-paper', delMsg);
+        }
       }
 
       $scope.currPaper = $scope.papers.length>0? $scope.papers[0] : false; 

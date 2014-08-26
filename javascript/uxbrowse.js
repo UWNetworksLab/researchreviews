@@ -117,14 +117,12 @@ $('table').on('click','tr',function(e){
   		$("#privateBtn").attr('class', "btn btn-default"); 	
 
   		$scope.publicSetting = true;
-      console.log("get public papers");
+      	console.log("get public papers");
 		window.freedom.emit('load-public-storage');
 	};
 
 	$scope.getPublicPapers();
- if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
-
-
+ 	if ($scope.papers.length > 0) $('table').children('tr:first').addClass('info');
 
 	$scope.getPrivatePapers = function() {
 		$("#privateBtn").attr('class', "btn btn-default active"); 
