@@ -23,18 +23,22 @@
     </label>
   </div>
 
-  <!--doesn't show up?-->
+  <h3> Users who you invited to review: </h3> 
   <div>
-  <table>
-    <tr ng-repeat="reviewer in alertList">
-      <td> {{reviewer.val}} </td> 
-    </tr>
-  </table>
-  <table>
-    <tr ng-repeat="viewer in viewList">
-      <td> {{viewer}} </td> 
-    </tr>
-  </table>
+    <table>
+      <tr ng-repeat="reviewer in alertList">
+        <td> {{reviewer.val}} </td> 
+      </tr>
+    </table>
+  </div>
+
+  <h3> Users with access to this version: </h3> 
+  <div>
+    <table>
+      <tr ng-repeat="viewer in viewList">
+        <td> {{viewer}} </td> 
+      </tr>
+    </table>
   </div>  
   
   <div id="file-container">

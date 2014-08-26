@@ -225,17 +225,8 @@ $('table').on('click','tr',function(e){
   };
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
-    $scope.alertList = [];
-
-    for (var i = 0; i < currVersion.alertList.length; i++){
-      $scope.alertList.push({val: currVersion.alertList[i]});
-    }
-    
-    //$scope.alertList = currVersion.alertList;
+    $scope.alertList = currVersion.alertList;
     $scope.viewList = currVersion.viewList;
-
-    console.log("ALERT LIST " + JSON.stringify($scope.alertList));
-
 
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
     $scope.currComments = currVersion.comments; 
