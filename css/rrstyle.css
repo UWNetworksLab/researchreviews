@@ -61,11 +61,14 @@ textarea {
 }
 
 .landing-container {
+    background-color: white;
     position: relative;
+    border-radius: 20px;
+    padding: 20px;
 }
 
 .view-container {
-    margin: 25px;
+    margin: 20px;
     padding: 20px;
     background-color: whitesmoke;
     border-radius: 20px;

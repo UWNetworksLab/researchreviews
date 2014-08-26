@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="row">
       <div class="col-md-4">
-        <div style="margin-bottom:20px; margin-top:20px">
+        <div>
           <button class="btn btn-success" ng-click="addPaper()" ng-show="accessAddBtn">add paper</button>
 
             <!-- Simple dropdown -->
@@ -50,9 +50,11 @@
               <br>
               <br>
               <h4> Comments </h4>
+              <p ng-show="!currPaper.versions[currVnum-1].comments"><i>There are currently no comments for this version.</i></p>
               <p> {{currPaper.versions[currVnum-1].comments}} </p>
               <br>
               <h4> Reviews </h4>
+              <p ng-show="currPaper.versions[currVnum-1].reviews.length === 0"><i> There are currently no reviews for this version.</i></p>
               <accordion>
                 <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
               </accordion>
