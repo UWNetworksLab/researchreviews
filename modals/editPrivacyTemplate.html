@@ -19,7 +19,7 @@
   <div class="radio">
     <label>
       <input type="radio" name="optionsRadios" id="addPaperPrivate2"/>
-      Private (only co-authors and invited reviewers can see this)
+      Private (only invited viewers and reviewers can see this)
     </label>
   </div>
 
@@ -34,6 +34,7 @@
 
   <h3> Users with access to this version: </h3> 
   <div>
+    <h4 ng-show="currSetting==='public'">public paper</h4>
     <table>
       <tr ng-repeat="viewer in viewList">
         <td> {{viewer}} </td> 
