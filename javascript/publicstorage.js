@@ -4,7 +4,7 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-store.clear()
+//store.clear()
 socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   var parse = JSON.parse(socialWrap._ab2str(data.data)); //JSON.parse(data);
 //data tag should be control-msg

@@ -21,17 +21,22 @@
       <input type="radio" name="optionsRadios" id="addPaperPrivate2"/>
       Private (only co-authors and invited reviewers can see this)
     </label>
+  </div>
+
   <!--doesn't show up?-->
+  <div>
   <table>
     <tr ng-repeat="reviewer in alertList">
       {{reviewer.val}}
     </tr>
   </table>
-  <table ng-show"viewList">
+  <table>
     <tr ng-repeat="viewer in viewList">
       {{viewer}}
     </tr>
   </table>
+  </div>  
+  
   <div id="file-container">
     <button type="button" class="btn btn-success" ng-click="save()">save</button>
     <button class="btn btn-danger" ng-click="cancel()">cancel</button>  

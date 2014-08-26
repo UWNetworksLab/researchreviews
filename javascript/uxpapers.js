@@ -225,6 +225,18 @@ $('table').on('click','tr',function(e){
   };
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
+    $scope.alertList = [];
+
+    for (var i = 0; i < currVersion.alertList.length; i++){
+      $scope.alertList.push({val: currVersion.alertList[i]});
+    }
+    
+    //$scope.alertList = currVersion.alertList;
+    $scope.viewList = currVersion.viewList;
+
+    console.log("ALERT LIST " + JSON.stringify($scope.alertList));
+
+
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
     $scope.currComments = currVersion.comments; 
     $scope.currTitle = currVersion.title; 
@@ -507,8 +519,4 @@ $('table').on('click','tr',function(e){
 
     $scope.currPaper.versions[$scope.currVnum-1].download();
   }
-
-  window.freedom.on('recv-err', function(data) {
-    alert("error in papers " + JSON.stringify(data) + data);
-  });
 });

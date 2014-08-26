@@ -353,8 +353,4 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 	  });
 	 } 
 	}; 
-
-	window.freedom.on('recv-err', function(data) {
-		alert("error in profile " + JSON.stringify(data) + data);
-	});
 });

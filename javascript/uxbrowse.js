@@ -218,8 +218,4 @@ $('table').on('click','tr',function(e){
     console.log("sendprivate papersi mo" + JSON.stringify(data));
 		$scope.$apply(); 
 	}); 
-
-	window.freedom.on('recv-err', function(data) {
-		alert("error in browse " + JSON.stringify(data) + data);
-	});
 });
