@@ -151,7 +151,7 @@ $('table').on('click','tr',function(e){
   
   window.freedom.on('display-browse-paper', function(paper) {      
     if(paper==undefined) {
-     alert("Sorry this user is currently irresponsive.");
+     alert("Sorry this user is currently unresponsive.");
      return; 
     }
 
