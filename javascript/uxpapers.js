@@ -484,8 +484,8 @@ $('table').on('click','tr',function(e){
   };
 
   $scope.deleteVersion = function() {
+    console.log("**" + JSON.stringify($scope.currPaper) + " ... " + $scope.currVnum);
     $scope.currPaper.deleteVersion(--$scope.currVnum);
-
 
     if($scope.currPaper.versions.length === 0) { //deleted last version
       for(var i = 0; i < $scope.papers.length; i++)
@@ -503,7 +503,6 @@ $('table').on('click','tr',function(e){
       }
       //delete from acl's private-papers
       if($scope.privatePaper) {
-        console.log(JSON.stringify($scope.currPaper) + " ... " + $scope.currVnum);
         for(var i = 0; i < $scope.currPaper.viewList.length; i++) {
           var delMsg = {
             pkey: $scope.currPaper.pkey,
