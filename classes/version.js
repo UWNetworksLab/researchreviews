@@ -18,8 +18,10 @@ Version.prototype.addReview = function(rkey, reviewer) {
 };
 
 Version.prototype.uploadPDF = function(file){
+  console.log("UPLOAD PDF " + new Date());
   var reader = new FileReader();
   reader.onload = function() {
+    console.log("READER DONE IN UPLOAD PDF " + new Date());
     var data = {
       pkey: this.pkey,
       vnum: this.vnum,
@@ -67,13 +69,16 @@ Version.prototype.editPrivacy = function(publicSetting) {
 };
 
 window.freedom.on('got-pdf', function(ab){
+  console.log("GOT PDF DATE " + new Date());
   console.log('gotpdf');
   var blob = new Blob([ab], {type:'application/pdf'});
   console.log("DOWNLOAD TITLE: " + this.title);
   saveAs(blob, this.title);
+  console.log("END DATE " + new Date());
 });
 
 Version.prototype.download = function(){
+  console.log("DOWNLOAD DATE " + new Date());
   var data = {
     pkey: this.pkey,
     vnum: this.vnum
