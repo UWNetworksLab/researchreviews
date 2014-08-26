@@ -485,6 +485,8 @@ $('table').on('click','tr',function(e){
 
   $scope.deleteVersion = function() {
     console.log("**" + JSON.stringify($scope.currPaper) + " ... " + $scope.currVnum);
+    $scope.privateSetting = $scope.currPaper.versions[$scope.currVnum-1].privateSetting; 
+    $scope.viewList = $scope.currPaper.versions[$scope.currVnum-1].viewList; 
     $scope.currPaper.deleteVersion(--$scope.currVnum);
 
     if($scope.currPaper.versions.length === 0) { //deleted last version
@@ -494,7 +496,7 @@ $('table').on('click','tr',function(e){
           break; 
         }  
       //send to public storage
-      if (!$scope.privatePaper) {
+      if (!$scope.privateSetting) {
         var delMsg = {
           pkey: $scope.currPaper.pkey,
           vnum: $scope.currVnum
@@ -502,12 +504,12 @@ $('table').on('click','tr',function(e){
         window.freedom.emit('delete-paper', delMsg);
       }
       //delete from acl's private-papers
-      if($scope.privatePaper) {
-        for(var i = 0; i < $scope.currPaper.viewList.length; i++) {
+      if($scope.privateSetting) {
+        for(var i = 0; i < $scope.viewList.length; i++) {
           var delMsg = {
             pkey: $scope.currPaper.pkey,
             vnum: $scope.currVnum,
-            to: $scope.currPaper.viewList[i]
+            to: $scope.viewList[i]
           };
           console.log("**DEL MSG IN UXPAPERS " + JSON.stringify(delMsg));
           window.freedom.emit('delete-private-paper', delMsg);
