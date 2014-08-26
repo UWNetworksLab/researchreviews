@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
@@ -32,15 +32,19 @@ freedom.on('boot', function(val) {
 }); 
 
 freedom.on('add-pdf', function(data){
+  console.log("add PDF IN MAIN " + new Date());
   storebuffer.set(data.pkey+data.vnum +"", data.arrayBuffer);
+  console.log("END OF ADD PDF IN MAIN " + new Date());
 });
 
 freedom.on('download-pdf', function(data){
+  console.log("DOWNLOAD DATE IN MAIN " + new Date());
   if (!data.author){
     var key = data.pkey + data.vnum + '';
     var promise = storebuffer.get(key);
     promise.then(function(val){
-     freedom.emit('got-pdf', val);
+      console.log("IN PROMISE " + new Date());
+      freedom.emit('got-pdf', val);
     });
   }
   else {
