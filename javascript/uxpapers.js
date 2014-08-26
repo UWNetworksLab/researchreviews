@@ -225,8 +225,17 @@ $('table').on('click','tr',function(e){
   };
 
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
-    $scope.alertList = currVersion.alertList;
-    $scope.viewList = currVersion.viewList;
+    $scope.alertList = [];
+    $scope.viewList = []; 
+
+    for (var i = 0; i < currVersion.alertList.length; i++){
+      $scope.alertList.push(currVersion.alertList[i]);
+    }
+    for(var i = 0; i < currVersion.viewList.length; i++) 
+      $scope.viewList.push(currVersion.viewList[i]);
+    
+    //$scope.alertList = currVersion.alertList;
+    //$scope.viewList = currVersion.viewList;
 
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
     $scope.currComments = currVersion.comments; 
