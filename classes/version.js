@@ -39,6 +39,11 @@ Version.prototype.editComments = function(comments) {
   this.comments = comments; 
 };
 
+Version.prototype.editTitle = function(title) {
+  this.title = title; 
+};
+
+
 Version.prototype.editPrivacy = function(publicSetting) {
   console.log("EDIT PRIVACY " + publicSetting);
   if (publicSetting){

@@ -227,9 +227,11 @@ $('table').on('click','tr',function(e){
   var editPrivacyCtrl = function ($scope, $modalInstance, currVersion) {
     $scope.currSetting = currVersion.privateSetting? "private" : "public";
     $scope.currComments = currVersion.comments; 
+    $scope.currTitle = currVersion.title; 
   
     $scope.save = function () { 
       currVersion.editComments(document.getElementById('comments').value)
+      currVersion.editTitle(document.getElementById('title').value);
 
       if($("#addPaperPublic2").is(':checked')){
         currVersion.editPrivacy(true);
