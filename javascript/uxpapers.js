@@ -509,6 +509,7 @@ $('table').on('click','tr',function(e){
             vnum: $scope.currVnum,
             to: $scope.currPaper.viewList[i]
           };
+          console.log("**DEL MSG IN UXPAPERS " + JSON.stringify(delMsg));
           window.freedom.emit('delete-private-paper', delMsg);
         }
       }

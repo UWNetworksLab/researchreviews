@@ -320,7 +320,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     });
   }
   else if(parse.action === "delete-private-paper") {
-    console.log("DELETE PRIVATE PAPER (IF ONLY ONE VERSION)");
+    console.log("**DELETE PRIVATE PAPER (IF ONLY ONE VERSION)");
     var promise = store.get(username+'private-papers');
     promise.then(function(val) {
       var papers; 
@@ -754,6 +754,7 @@ freedom.on('delete-paper', function(data){
 
 freedom.on('delete-private-paper', function(data){
     data.action = 'delete-private-paper';
+    console.log("**ABOUT TO SEND MSG " + JSON.stringify(data));
     socialWrap.sendMessage(data.to,'control-msg', JSON.stringify(data)).then(function(ret) {
     }, function(err) {
       freedom.emit("recv-err", err);
