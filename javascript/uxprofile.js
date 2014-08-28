@@ -250,6 +250,10 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 
 		$scope.save = function() {
 			var groupName = $("#name").val();
+			if(groupName === "") {
+				alert("No group name added"); 
+				return; 
+			}
 
 			window.freedom.emit('add-group', {
 				name: groupName,
