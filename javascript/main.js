@@ -325,6 +325,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if(parse.action=== 'delete-r-paper') {
   }
   else if(parse.action=== 'invite-group') {
+    console.log("INVITED TO GROUP");
     var alertmsg = {
       name: parse.group.name, 
       from: parse.group.owner, 
@@ -585,10 +586,10 @@ freedom.on('send-message', function(val) {
   });
 });
 
-freedom.on('invite-group', function(msg){
-  console.log("INVITE GROUP " + JSON.stringify(msg));
-  var buf = socialWrap._str2ab(JSON.stringify(msg));
-  socialWrap.sendMessage(msg.to,'control-msg', buf).then(function(ret) {
+freedom.on('invite-group', function(data){
+  console.log("INVITE GROUP " + JSON.stringify(data));
+  var buf = socialWrap._str2ab(JSON.stringify(data));
+  socialWrap.sendMessage(data.to,'control-msg', buf).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });
