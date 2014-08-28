@@ -779,6 +779,7 @@ freedom.on('get-groups', function(data) {
     if(!groups || typeof groups !== "object") {
       groups = []; 
     }
+    console.log("DISPLAY GROUPS..." + JSON.stringify(groups));
     freedom.emit('display-groups', groups);
   });  
 });

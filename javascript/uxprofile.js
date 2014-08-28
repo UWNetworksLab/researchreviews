@@ -265,7 +265,7 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 
 			var gdata = {
 				name: groupName,
-				description: $("description").val(),  
+				description: $("#description").val(),  
 				users: $scope.alerts, 
 				owner: username 				
 			};	
