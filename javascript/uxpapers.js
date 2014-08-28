@@ -150,7 +150,7 @@ $('table').on('click','tr',function(e){
         if(!version.reviews) version.reviews=[];
         for (var i = 0; i < version.reviews.length; i++){
           if (version.reviews[i].reviewer === review.reviewer){
-            version.reviews[i] = review; 
+            version.reviews[i] = new Review(review); 
             $scope.$apply();
            break;
           }

@@ -9,6 +9,7 @@ function Review(rdata) {
   this.reviewer = rdata.reviewer;
   this.rkey = rdata.rkey;
   this.date = new Date();
+  this.responses = rdata.responses;
 }
 
 Review.prototype.editReview = function(newText){
@@ -16,3 +17,9 @@ Review.prototype.editReview = function(newText){
 };
 
 //TOOD: privacy, delete, upload?
+
+Review.prototype.respond = function(response){
+  console.log("got here in respond");
+  if (!this.responses) this.responses = [];
+  this.responses.push(response);
+};

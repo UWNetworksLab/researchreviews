@@ -7,8 +7,8 @@ var socialWrap = new SocialTransport(
   [ freedom.socialprovider ], 
   [ freedom.transport ]
 );
-//store.clear();
-//storebuffer.clear();
+store.clear();
+storebuffer.clear();
 var myClientState = null;
 var username = null;
 var userList = []; 
