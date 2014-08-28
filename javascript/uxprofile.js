@@ -5,20 +5,6 @@ app.controller('profileController', function($scope, $modal, $location) {
   	$scope.showNav = true; 
   	$scope.ownProfile = true; 
 
-  	$scope.groups = [{
-	  		name: "class1",
-	  		users: ["a", "b", "c"] 
-  		}, 
-  		{
-  			name: "class2",
-  			users: ["d", "e"]
-  		}, 
-  		{
-  			name: "class3",
-  			users: "s"
-  		}
-  	];
-
 $scope.addPaper = function() {
     var modalInstance = $modal.open({
       templateUrl: '/modals/addPaperTemplate.html',
@@ -107,7 +93,6 @@ var addPaperCtrl = function ($scope, $modalInstance) {
       ver.uploadPDF(files[0]);
 
       newPaper.addVersion(ver);
-console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 
       window.freedom.emit('set-paper', newPaper);
       ver.shareVersion();
@@ -220,13 +205,18 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 		  backdrop: 'static', 
 		  resolve: {
 			groups: function() {
-		  		return $scope.groups; //TODO: window.freedom.emit here
+				window.freedom.emit("get-groups", 0);
+				window.freedom.on("display-groups", function(groups) {
+					return groups; 
+				}); 
 			} 
 		  } 
 		}); 		
 	}; 
 
 	var editGroupsCtrl = function($scope, $modalInstance, groups) {
+		console.log("groups..." + JSON.stringify(groups));
+
 		$scope.groups = groups; 
 		$scope.states = userList; 
 
@@ -253,6 +243,19 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 		  $scope.alerts.push(selection);
 		};
 
+		$scope.leaveGroup = function(id) {
+			var msg = {
+				action: 'leave-group',
+				user: username, 
+				name: $scope.groups[id].name 
+			};
+
+			window.freedom.emit('send-message', {
+				to: $scope.groups[id].owner,
+				msg: JSON.stringify(msg) 
+			});
+		}; 
+
 		$scope.save = function() {
 			var groupName = $("#name").val();
 			if($scope.alerts.length > 0 && groupName === "") {
@@ -260,25 +263,17 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 				return; 
 			}
 
-			window.freedom.emit('add-group', {
+			var gdata = {
 				name: groupName,
 				description: $("description").val(),  
 				users: $scope.alerts, 
-				founder: username 
-			});
+				owner: username 				
+			};	
 
-			var msg = {
-				action: 'invite-group',
-				name: groupName,
-				from: username
-			};
+			var newGroup = new Group(gdata)
 
-			for(var i = 0; i < $scope.alerts.length; i++) 
-				if($scope.alerts[i] !== username)
-					freedom.emit('send-message', {
-					  to: $scope.alerts[i],
-					  msg: JSON.stringify(msg)
-					});
+     		window.freedom.emit('set-group', newGroup);
+     		//newGroup.inviteUsers(); 
 			
 			$modalInstance.dismiss('cancel');
 		};

@@ -26,16 +26,16 @@
   <h4> Groups I'm currently in </h4> 
   <table>
     <tr ng-repeat="group in groups"> 
-            <td class='col-md-10'> 
-              <accordion>
-                <accordion-group heading={{group.name}}>
-                  <ul ng-repeat="user in group.users">
-                    <li>{{user}}</li>
-                  </ul>
-                </accordion>
-              </accordion> 
-          </td> 
-      <td class='col-md-1'> <span ng-click="deleteUser($index)" tooltip="remove myself from group" class='glyphicon glyphicon-eject'></span> </td> 
+      <td class='col-md-10'> 
+        <accordion>
+          <accordion-group heading={{group.name}}>
+            <ul ng-repeat="user in group.users">
+              <li>{{user}}</li>
+            </ul>
+          </accordion>
+        </accordion> 
+      </td> 
+      <td class='col-md-1'> <span ng-click="leaveGroup($index)" tooltip="remove myself from group" class='glyphicon glyphicon-eject'></span> </td> 
     </tr> 
   </table>
 
