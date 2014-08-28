@@ -226,9 +226,8 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 	 			window.freedom.on('display-groups', function(groups) {
 	 				console.log("IN UX PROFILE " + JSON.stringify(groups));
 	 				$scope.groups = groups; 
+	 				$scope.$apply(); 
 	 			});
-
-	 			$scope.$apply(); 
 	 	}; 
 
 	 	$scope.init(); 
