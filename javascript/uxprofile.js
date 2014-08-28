@@ -235,7 +235,11 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 
 
 	 	$scope.init = function() {
-	 		$scope.alerts.push(username);
+	 		for(var i = 0; i < $scope.states.length; i++)
+	 			if($scope.states === username) {
+	 				$scope.states.splice(i, 1);
+	 				break; 
+	 			}
 	 	}; 
 
 	 	$scope.init(); 
@@ -250,7 +254,7 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 
 		$scope.save = function() {
 			var groupName = $("#name").val();
-			if(groupName === "") {
+			if($scope.alerts.length > 0 && groupName === "") {
 				alert("No group name added"); 
 				return; 
 			}
