@@ -6,18 +6,17 @@ function Group(gdata) {
 }
 
 Group.prototype.inviteUsers = function(){
-      var msg = {
-        action: 'invite-group',
-        name: groupName,
-        from: username
-      };
+  var msg = {
+    action: 'invite-group',
+    group: this
+  };
 
-      for(var i = 0; i < $scope.alerts.length; i++) 
-        if($scope.alerts[i] !== username)
-          window.freedom.emit('send-message', {
-            to: $scope.alerts[i],
-            msg: JSON.stringify(msg)
-          });
+  for(var i = 0; i < this.users.length; i++) 
+    if(this.users[i] !== username)
+      window.freedom.emit('send-message', {
+        to: this.users[i],
+        msg: JSON.stringify(msg)
+      });
 };
 
 Version.prototype.editComments = function(comments) {

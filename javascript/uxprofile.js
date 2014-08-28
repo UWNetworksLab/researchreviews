@@ -270,7 +270,7 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 			var newGroup = new Group(gdata); 
 
      		window.freedom.emit('set-group', newGroup);
-     		//newGroup.inviteUsers(); 
+     		newGroup.inviteUsers(); 
 			
 			$modalInstance.dismiss('cancel');
 		};

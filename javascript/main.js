@@ -326,10 +326,12 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
   else if(parse.action=== 'invite-group') {
     var alertmsg = {
-      name: parse.name, 
-      from: parse.from, 
+      name: parse.group.name, 
+      from: parse.group.owner, 
       action: 'invite-group'
     };
+
+    freedom.emit('set-group', parse.group); 
     freedom.emit('alert', alertmsg);
   }
   else if(parse.action=== 'allow-access') {
