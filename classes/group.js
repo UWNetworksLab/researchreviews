@@ -2,7 +2,7 @@ function Group(gdata) {
   this.name = gdata.name;
   this.description = gdata.description;
   this.users = gdata.users;
-  this.founder = gdata.founder;
+  this.owner = gdata.owner;
 }
 
 Group.prototype.inviteUsers = function(){
