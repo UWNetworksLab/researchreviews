@@ -29,7 +29,18 @@ freedom.on('boot', function(val) {
       freedom.emit('recv-status', "offline");
     }
   }
-}); 
+});
+
+freedom.on('add-r-response', function(data){
+  console.log("ADD R RESPONSE " + JSON.stringify(data));
+  var msg = {
+    action : 'add-r-response',
+    response : data.response,
+    rkey : data.rkey
+  };
+
+  socialWrap.sendMessage(data.reviewer, 'control-msg', JSON.stringify(msg));
+});
 
 freedom.on('add-pdf', function(data){
   console.log("add PDF IN MAIN " + new Date());
@@ -121,6 +132,27 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     if (parse.action==='got-public-papers'){
       freedom.emit('got-public-papers', parse.papers);
     }
+    else if (parse.action==='add-r-response'){
+      console.log("PARSE BLAH " + JSON.stringify(parse));
+      var promise = store.get(username + 'reviews');
+      promise.then(function(val) {
+        var reviews; 
+        try {
+          reviews = JSON.parse(val);
+        } catch(e) {}
+
+        if(!reviews || typeof reviews !== "object") reviews = []; 
+        for (var i = 0; i < reviews.length; i++){
+          if (reviews[i].rkey === parse.rkey) {
+            if (!reviews[i].responses) reviews[i].responses = [];
+            reviews[i].responses.push(parse.response);
+          }
+        }
+
+        console.log("IN PROMISE SETTING REVIEWS " + JSON.stringify(reviews));
+        store.set(username + 'reviews', JSON.stringify(reviews)); 
+      });
+    }
     else if (parse.action==='invite-reviewer'){
       console.log("GOT TO INVITE REVIEWER");
       var review = {
@@ -167,7 +199,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
         for(var i = 0; i < reviews.length; i++) {
           if(reviews[i].rkey === parse.rkey) {
             var msg = {
-              text: reviews[i].text,
+              review: reviews[i],
               reviewer: username,
               rkey: parse.rkey,
               action: 'got-paper-review'
@@ -193,7 +225,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
           console.log("REVIEWS " + i + " " + JSON.stringify(reviews[i]));
           if (reviews[i].rkey === parse.rkey){
             var msg = {
-              text: reviews[i].text,
+              review: reviews[i],
               accessList: reviews[i].accessList, 
               reviewer: parse.reviewer,
               rkey: parse.rkey,

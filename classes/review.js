@@ -18,8 +18,20 @@ Review.prototype.editReview = function(newText){
 
 //TOOD: privacy, delete, upload?
 
-Review.prototype.respond = function(response){
-  console.log("got here in respond");
+Review.prototype.respond = function(rText){
+  console.log("got here in respond " + rText);
+  
   if (!this.responses) this.responses = [];
-  this.responses.push(response);
+  var str = username + ": " + rText; 
+  this.responses.push(str);
+
+
+
+  var msg = {
+    reviewer: this.reviewer,
+    rkey: this.rkey,
+    response: str
+  };
+
+  window.freedom.emit('add-r-response', msg);
 };

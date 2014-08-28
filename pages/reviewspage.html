@@ -37,8 +37,17 @@
             {{ currRVersion.comments }} 
 
             <h4> Reviews </h4> 
-            <accordion>
-              <accordion-group ng-repeat="review in currRVersion.reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+            <accordion ng-show="currRVersion.reviews.length > 0">
+              <accordion-group ng-repeat="review in currRVersion.reviews" heading={{review.reviewer}}>{{review.text}}
+                <ul>
+                  <li ng-repeat="response in review.responses">
+                    {{response}}
+                  </li>
+                </ul>
+                <form ng-submit="review.respond(text)">
+                  <input type="text" ng-model="text" name="text" class="form-control" placeholder = "Write a response">
+                </form>
+              </accordion>
             </accordion>
           </div> <!--landing-container-->
         </div> <!--column-->

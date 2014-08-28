@@ -69,15 +69,15 @@ app.controller('reviewsController', function($scope, $modal) {
 		$scope.$apply();
 	});
 	
-  window.freedom.on('got-paper-review', function(review) {
+  window.freedom.on('got-paper-review', function(data) {
 		if(!$scope.currRVersion.reviews) $scope.currRVersion.reviews = []; 
 		
 		for (var i = 0; i < $scope.currRVersion.reviews.length; i++){
-			if ($scope.currRVersion.reviews[i].reviewer === review.reviewer){
-				$scope.currRVersion.reviews[i] = review; 
+      console.log("DATA HERE " + JSON.stringify(data));
+			if ($scope.currRVersion.reviews[i].reviewer === data.reviewer){
+				$scope.currRVersion.reviews[i] = new Review(data.review); 
 			}
-		}
-		
+		}	
 		$scope.$apply(); 
 	});
 

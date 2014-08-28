@@ -187,16 +187,16 @@ $('table').on('click','tr',function(e){
   		$scope.$apply(); 
 	}); 
 
-    window.freedom.on('got-paper-review', function(review){
+    window.freedom.on('got-paper-review', function(data){
     var version = $scope.currPaper.versions[$scope.currVnum-1];
 
       if(!version.reviews) version.reviews=[];
       var index = version.reviews.map(function(el) {
         return el.reviewer;
-      }).indexOf(review.reviewer);
-      if(index === -1) version.reviews.push(review);
-      else version.reviews[index] = review;
-      console.log("GOT PAPER REVIEW " + JSON.stringify(review));
+      }).indexOf(data.reviewer);
+      if(index === -1) version.reviews.push(new Review(data.review));
+      else version.reviews[index] = new Review(data.review);
+      console.log("GOT PAPER REVIEW " + JSON.stringify(data.review));
       $scope.$apply();
     });
 

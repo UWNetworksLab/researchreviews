@@ -43,7 +43,8 @@
       "modals/inviteReviewersTemplate.html",
       "classes/paper.js",
       "classes/review.js",
-      "classes/version.js"
+      "classes/version.js",
+      "classes/group.js"
     ]
   },
   "dependencies": {

@@ -37,7 +37,7 @@ $('table').on('click','tr',function(e){
 
   $scope.setOrder = function(order) {
     $scope.order = order; 
-  }
+  }  
 
   $scope.displayVersion = function(offset) {
     $scope.currVnum = $scope.currVnum + offset;
@@ -145,12 +145,13 @@ $('table').on('click','tr',function(e){
       }
       if($location.search().username && $location.search().username !== username)  //load someone else's paper's reviews 
         $scope.accessBtn = false;
-      window.freedom.on('got-paper-review', function(review){
+      window.freedom.on('got-paper-review', function(data){
         var version = $scope.currPaper.versions[$scope.currVnum-1];
         if(!version.reviews) version.reviews=[];
         for (var i = 0; i < version.reviews.length; i++){
-          if (version.reviews[i].reviewer === review.reviewer){
-            version.reviews[i] = new Review(review); 
+          if (version.reviews[i].reviewer === data.reviewer){
+            version.reviews[i] = new Review(data.review);
+            console.log("REVIEW HERE " + JSON.stringify(data.review));
             $scope.$apply();
            break;
           }

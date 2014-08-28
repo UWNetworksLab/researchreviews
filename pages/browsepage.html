@@ -41,7 +41,16 @@
           <span ng-show="currPaper.versions[currVnum-1]"> {{ currPaper.versions[currVnum-1].comments }} </span>
             <h4 ng-hide="!currPaper"> Reviews </h4> 
             <accordion ng-hide="!currPaper">
-              <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}</accordion>
+              <accordion-group ng-repeat="review in currPaper.versions[currVnum-1].reviews" heading={{review.reviewer}}>{{review.text}}
+                <ul>
+                  <li ng-repeat="response in review.responses">
+                    {{response}}
+                  </li>
+                </ul>
+                <form ng-submit="review.respond(text)">
+                  <input type="text" ng-model="text" name="text" class="form-control" placeholder = "Write a response">
+                </form>
+              </accordion>
             </accordion>
         </div>
       
