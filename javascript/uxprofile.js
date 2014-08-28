@@ -236,7 +236,7 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 
 	 	$scope.init = function() {
 	 		for(var i = 0; i < $scope.states.length; i++)
-	 			if($scope.states === username) {
+	 			if($scope.states[i] === username) {
 	 				$scope.states.splice(i, 1);
 	 				console.log("username found and deleted");
 	 				break; 
