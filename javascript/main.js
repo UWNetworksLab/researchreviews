@@ -579,8 +579,16 @@ freedom.on('upload-review', function(parse){//rename this to indicate this is se
 });
 
 freedom.on('send-message', function(val) {
-  console.log("TRYING TO SEND MESSAGE..." + JSON.stringify(val));
   socialWrap.sendMessage(val.to, val.msg).then(function(ret) {
+  }, function(err) {
+    freedom.emit("recv-err", err);
+  });
+});
+
+freedom.on('invite-group', function(msg){
+  console.log("INVITE GROUP " + JSON.stringify(msg));
+  var buf = socialWrap._str2ab(JSON.stringify(msg));
+  socialWrap.sendMessage(msg.to,'control-msg', buf).then(function(ret) {
   }, function(err) {
     freedom.emit("recv-err", err);
   });

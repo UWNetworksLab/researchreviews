@@ -13,7 +13,7 @@ Group.prototype.inviteUsers = function(){
 
   for(var i = 0; i < this.users.length; i++) 
     if(this.users[i] !== username)
-      window.freedom.emit('send-message', {
+      window.freedom.emit('invite-group', {
         to: this.users[i],
         msg: JSON.stringify(msg)
       });
