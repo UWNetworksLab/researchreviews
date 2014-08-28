@@ -743,7 +743,7 @@ freedom.on('set-group', function(group){
     } catch(e) {}
 
     if(!groups || typeof groups !== "object") {
-      groups = []; 
+      groups = []
     }
     console.log("GROUPS " + JSON.stringify(groups));
     groups.push(group);
@@ -774,7 +774,7 @@ freedom.on('get-groups', function(data) {
     var groups; 
     try {
       groups = JSON.parse(val);
-    } catch(e) {}
+    } catch(e) {} 
 
     if(!groups || typeof groups !== "object") {
       groups = []; 

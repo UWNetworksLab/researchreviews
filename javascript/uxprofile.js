@@ -202,22 +202,12 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 		  templateUrl: '/modals/editGroupsTemplate.html',
 		  windowClass:'normal',
 		  controller: editGroupsCtrl,
-		  backdrop: 'static', 
-		  resolve: {
-			groups: function() {
-				window.freedom.emit("get-groups", 0);
-				window.freedom.on("display-groups", function(groups) {
-					return groups; 
-				}); 
-			} 
-		  } 
+		  backdrop: 'static'
 		}); 		
 	}; 
 
-	var editGroupsCtrl = function($scope, $modalInstance, groups) {
-		console.log("groups..." + JSON.stringify(groups));
-
-		$scope.groups = groups; 
+	var editGroupsCtrl = function($scope, $modalInstance) {
+		$scope.groups; 
 		$scope.states = userList; 
 
 	    $scope.selected = undefined;
@@ -231,6 +221,14 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 	 				console.log("username found and deleted");
 	 				break; 
 	 			}
+
+	 			window.freedom.emit("get-groups", 0);
+	 			window.freedom.on('display-groups', function(groups) {
+	 				console.log("IN UX PROFILE " + JSON.stringify(groups));
+	 				$scope.groups = groups; 
+	 			});
+
+	 			$scope.$apply(); 
 	 	}; 
 
 	 	$scope.init(); 
