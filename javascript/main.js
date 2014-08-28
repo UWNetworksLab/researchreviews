@@ -700,6 +700,27 @@ freedom.on('set-paper', function(paper){
   });
 });
 
+freedom.on('set-group', function(group){
+  console.log("IN SET GROUP " + JSON.stringify(group));
+  var promise = store.get(username + 'groups');
+  promise.then(function(val) {
+    console.log("in promise");
+    var groups; 
+    try {
+      groups = JSON.parse(val);
+    } catch(e) {}
+
+    if(!groups || typeof groups !== "object") {
+      groups = []; 
+    }
+    console.log("GROUPS " + JSON.stringify(groups));
+    groups.push(group);
+
+    console.log("SET GROUPS " + JSON.stringify(groups));
+    store.set(username+'groups', JSON.stringify(groups));
+  });
+});
+
 freedom.on('get-papers', function(data) {
   var promise = store.get(username + 'papers');
   promise.then(function(val) {
@@ -712,6 +733,21 @@ freedom.on('get-papers', function(data) {
       papers = []; 
     }
     freedom.emit('display-papers', papers);
+  });  
+});
+
+freedom.on('get-groups', function(data) {
+  var promise = store.get(username + 'groups');
+  promise.then(function(val) {
+    var groups; 
+    try {
+      groups = JSON.parse(val);
+    } catch(e) {}
+
+    if(!groups || typeof groups !== "object") {
+      groups = []; 
+    }
+    freedom.emit('display-groups', groups);
   });  
 });
 
