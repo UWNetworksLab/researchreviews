@@ -294,7 +294,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   }
   else if(parse.action=== 'invite-group') {
     var alertmsg = {
-      groupName: parse.name, 
+      name: parse.name, 
       from: parse.from, 
       action: 'invite-group'
     };

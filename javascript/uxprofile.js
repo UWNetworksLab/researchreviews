@@ -220,7 +220,7 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 		  backdrop: 'static', 
 		  resolve: {
 			groups: function() {
-		  		return $scope.groups; 
+		  		return $scope.groups; //TODO: window.freedom.emit here
 			} 
 		  } 
 		}); 		
@@ -249,12 +249,13 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 		};
 
 		$scope.save = function() {
-			var groupName = $("#group-name").val(); 
+			var groupName = $("#name").val();
 
-			//TODO: not until oop
-			window.freedom.emit('edit-groups', {
-				name: groupName, 
-				users: $scope.alerts
+			window.freedom.emit('add-group', {
+				name: groupName,
+				description: $("description").val(),  
+				users: $scope.alerts, 
+				founder: username 
 			});
 
 			var msg = {
