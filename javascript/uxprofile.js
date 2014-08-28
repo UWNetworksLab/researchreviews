@@ -238,6 +238,7 @@ console.log("JSON NEWPAPER " + JSON.stringify(newPaper));
 	 		for(var i = 0; i < $scope.states.length; i++)
 	 			if($scope.states === username) {
 	 				$scope.states.splice(i, 1);
+	 				console.log("username found and deleted");
 	 				break; 
 	 			}
 	 	}; 
