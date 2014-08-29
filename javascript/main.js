@@ -330,9 +330,7 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       owner: parse.msg.owner, 
       action: 'invite-group'
     };
-    console.log("INVITED TO GROUP " + JSON.stringify(alertmsg) + JSON.stringify(parse));
-    freedom.emit('set-group', parse); 
-    console.log("ALERTMSG " + JSON.stringify(alertmsg));
+    freedom.emit('set-group', parse.msg); 
     freedom.emit('alert', alertmsg);
   }
   else if(parse.action=== 'allow-access') {
@@ -745,7 +743,7 @@ freedom.on('set-paper', function(paper){
 });
 
 freedom.on('set-group', function(group){
-  console.log("IN SET GROUP " + JSON.stringify(group));
+  console.log("IN SET GROUP " + username + JSON.stringify(group));
   var promise = store.get(username + 'groups');
   promise.then(function(val) {
     console.log("in promise");
