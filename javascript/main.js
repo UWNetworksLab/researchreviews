@@ -325,13 +325,12 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if(parse.action=== 'delete-r-paper') {
   }
   else if(parse.action=== 'invite-group') {
-    console.log("INVITED TO GROUP");
     var alertmsg = {
-      name: parse.name, 
-      owner: parse.owner, 
+      name: parse.msg.name, 
+      owner: parse.msg.owner, 
       action: 'invite-group'
     };
-
+    console.log("INVITED TO GROUP " + JSON.stringify(alertmsg) + JSON.stringify(parse));
     freedom.emit('set-group', parse); 
     console.log("ALERTMSG " + JSON.stringify(alertmsg));
     freedom.emit('alert', alertmsg);

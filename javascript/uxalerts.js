@@ -23,8 +23,9 @@ app.controller('alertsController', function($scope, $controller, $location) {
       }
       else if(msg.action === 'invite-group') {
         if($scope.alerts) $scope.alerts = []; 
-        alert.msg = msg.owner + " has added you to the group " + msg.name; 
+  alert.msg = msg.owner + " has added you to the group " + msg.name; 
         alert.action = "profilepage"; 
+        console.log("ALERTS PAGE" + alert.msg + " asdfasdf " + JSON.stringify(msg));
         if(oldMessageList.indexOf(alert) == -1)
           oldMessageList.unshift(alert); 
       }
