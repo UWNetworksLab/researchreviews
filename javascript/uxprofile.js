@@ -260,6 +260,7 @@ var addPaperCtrl = function ($scope, $modalInstance) {
 				return; 
 			}
 
+			$scope.alerts.push(username);
 			var gdata = {
 				name: groupName,
 				description: $("#description").val(),  

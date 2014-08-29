@@ -6,11 +6,6 @@ function Group(gdata) {
 }
 
 Group.prototype.inviteUsers = function(){
-  /*var msg = {
-    action: 'invite-group',
-    group: this
-  };*/
-
   for(var i = 0; i < this.users.length; i++) 
     if(this.users[i] !== username)
       window.freedom.emit('invite-group', {
