@@ -327,8 +327,8 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
   else if(parse.action=== 'invite-group') {
     console.log("INVITED TO GROUP");
     var alertmsg = {
-      name: parse.name, 
-      owner: parse.owner, 
+      name: parse.msg.name, 
+      owner: parse.msg.owner, 
       action: 'invite-group'
     };
 
