@@ -330,7 +330,25 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
       owner: parse.msg.owner, 
       action: 'invite-group'
     };
-    freedom.emit('set-group', parse.msg); 
+
+    var promise = store.get(username + 'groups');
+    promise.then(function(val) {
+      console.log("in promise");
+      var groups; 
+      try {
+        groups = JSON.parse(val);
+      } catch(e) {}
+
+      if(!groups || typeof groups !== "object") {
+        groups = []
+      }
+      console.log("GROUPS " + JSON.stringify(groups));
+      groups.push(parse.msg);
+
+      console.log("SET GROUPS " + JSON.stringify(groups));
+      store.set(username+'groups', JSON.stringify(groups));
+    });
+
     freedom.emit('alert', alertmsg);
   }
   else if(parse.action=== 'allow-access') {
