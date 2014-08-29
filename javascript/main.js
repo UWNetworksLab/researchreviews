@@ -328,11 +328,12 @@ socialWrap.on('onMessage', function(data) { //from social.mb.js, onmessage
     console.log("INVITED TO GROUP");
     var alertmsg = {
       name: parse.name, 
-      from: parse.owner, 
+      owner: parse.owner, 
       action: 'invite-group'
     };
 
     freedom.emit('set-group', parse); 
+    console.log("ALERTMSG " + JSON.stringify(alertmsg));
     freedom.emit('alert', alertmsg);
   }
   else if(parse.action=== 'allow-access') {
